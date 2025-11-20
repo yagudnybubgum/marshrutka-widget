@@ -172,7 +172,7 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
 
   const getScheduleWindow = (times, currentTime, followingCount = 3) => {
     if (!times || times.length === 0) {
-      return { nextTrip: null, followingTrips: [] }
+      return { nextTrip: null, followingTrips: [], previousTrip: null }
     }
 
     const minutesInDay = 24 * 60
@@ -193,6 +193,15 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
       }
     }
 
+    // Находим предыдущую маршрутку
+    let previousIndex = nextIndex - 1
+    let previousOffset = baseOffset
+    if (previousIndex < 0) {
+      previousIndex = times.length - 1
+      previousOffset = baseOffset - 1
+    }
+    const previousTrip = previousOffset >= 0 ? buildTrip(previousIndex, previousOffset) : null
+
     const nextTrip = buildTrip(nextIndex, baseOffset)
     const followingTrips = []
 
@@ -203,7 +212,7 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
       followingTrips.push(buildTrip(wrappedIndex, wrapOffset))
     }
 
-    return { nextTrip, followingTrips }
+    return { nextTrip, followingTrips, previousTrip }
   }
 
   const formatTime = (minutes) => {
@@ -233,12 +242,14 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
 
   const currentTime = useMemo(() => getCurrentTimeInMinutes(), [now])
 
-  const windowDir1 = schedule ? getScheduleWindow(schedule.direction1, currentTime) : { nextTrip: null, followingTrips: [] }
-  const windowDir2 = schedule ? getScheduleWindow(schedule.direction2, currentTime) : { nextTrip: null, followingTrips: [] }
+  const windowDir1 = schedule ? getScheduleWindow(schedule.direction1, currentTime) : { nextTrip: null, followingTrips: [], previousTrip: null }
+  const windowDir2 = schedule ? getScheduleWindow(schedule.direction2, currentTime) : { nextTrip: null, followingTrips: [], previousTrip: null }
   const nextTrip1 = windowDir1.nextTrip
   const nextTrip2 = windowDir2.nextTrip
   const followingTrips1 = windowDir1.followingTrips
   const followingTrips2 = windowDir2.followingTrips
+  const previousTrip1 = windowDir1.previousTrip
+  const previousTrip2 = windowDir2.previousTrip
 
   return (
     <div className="w-full space-y-5">
@@ -276,6 +287,11 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
                         </p>
                       </div>
                     </div>
+                      {previousTrip1 && (
+                        <p className="text-sm text-black/80">
+                          {`До этого ушла в ${formatTime(previousTrip1.time)}${previousTrip1.isTomorrow ? ' (завтра)' : ''}`}
+                        </p>
+                      )}
                       {followingTrips1.length > 0 && (
                         <p className="text-sm text-black/80">
                         {`После этого в ${followingTrips1
@@ -314,6 +330,11 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
                           </p>
                         </div>
                       </div>
+                      {previousTrip2 && (
+                        <p className="text-sm text-black/80">
+                          {`До этого ушла в ${formatTime(previousTrip2.time)}${previousTrip2.isTomorrow ? ' (завтра)' : ''}`}
+                        </p>
+                      )}
                       {followingTrips2.length > 0 && (
                         <p className="text-sm text-black/80">
                           {`После этого в ${followingTrips2
