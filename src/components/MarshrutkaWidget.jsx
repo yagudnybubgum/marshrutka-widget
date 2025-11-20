@@ -13,7 +13,8 @@ const MarshrutkaWidget = () => {
 
   const loadScheduleFile = async () => {
     try {
-      const response = await fetch('/schedule.xlsx')
+      const baseUrl = import.meta.env.BASE_URL
+      const response = await fetch(`${baseUrl}schedule.xlsx`)
       if (!response.ok) {
         throw new Error('Файл расписания не найден')
       }
