@@ -243,15 +243,15 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
   return (
     <div className="w-full space-y-5">
       {loading && (
-        <div className="flex flex-col items-center gap-3 py-10 text-base-content/70">
-          <span className="loading loading-spinner loading-lg text-primary" />
-          <p className="text-sm sm:text-base font-normal">Загружаем расписание…</p>
+        <div className="flex flex-col items-center gap-3 py-10 text-black/70">
+          <span className="loading loading-spinner loading-lg text-black" />
+          <p className="text-sm sm:text-base font-normal text-black">Загружаем расписание…</p>
         </div>
       )}
 
       {error && (
         <div className="alert alert-error">
-          <span>{error}</span>
+          <span className="text-black">{error}</span>
         </div>
       )}
 
@@ -264,20 +264,20 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
                   <div className="space-y-4">
                     <div className="flex items-start justify-between gap-4">
                       <div className="space-y-2">
-                        <h3 className="text-xl font-normal text-primary">{schedule.direction1Name}</h3>
+                        <h3 className="text-xl font-normal text-black">{schedule.direction1Name}</h3>
                       </div>
                       <div className="text-right">
-                        <p className="text-4xl font-normal text-primary">
+                        <p className="text-4xl font-normal text-black">
                           {formatTime(nextTrip1.time)}
                         </p>
-                        <p className="text-sm text-base-content/70">
+                        <p className="text-sm text-black/70">
                           {`Через ${formatTimeUntil(nextTrip1.minutesUntil)}`}
                           {nextTrip1.isTomorrow ? ' (завтра)' : ''}
                         </p>
                       </div>
                     </div>
-                    {followingTrips1.length > 0 && (
-                      <p className="text-sm text-base-content/80">
+                      {followingTrips1.length > 0 && (
+                        <p className="text-sm text-black/80">
                         {`После этого в ${followingTrips1
                           .slice(0, 3)
                           .map(t => `${formatTime(t.time)}${t.isTomorrow ? ' (завтра)' : ''}`)
@@ -287,7 +287,7 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
                   </div>
                 ) : (
                   <div className="alert alert-info">
-                    <span>Нет данных по этому направлению.</span>
+                    <span className="text-black">Нет данных по этому направлению.</span>
                   </div>
                 )}
               </div>
@@ -300,22 +300,22 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
                     <div className="space-y-4">
                       <div className="flex items-start justify-between gap-4">
                         <div className="space-y-2">
-                          <h3 className="text-xl font-normal text-secondary">
+                          <h3 className="text-xl font-normal text-black">
                             {schedule.direction2Name}
                           </h3>
                         </div>
                         <div className="text-right">
-                          <p className="text-4xl font-normal text-secondary">
+                          <p className="text-4xl font-normal text-black">
                             {formatTime(nextTrip2.time)}
                           </p>
-                          <p className="text-sm text-base-content/70">
+                          <p className="text-sm text-black/70">
                             {`Через ${formatTimeUntil(nextTrip2.minutesUntil)}`}
                             {nextTrip2.isTomorrow ? ' (завтра)' : ''}
                           </p>
                         </div>
                       </div>
                       {followingTrips2.length > 0 && (
-                        <p className="text-sm text-base-content/80">
+                        <p className="text-sm text-black/80">
                           {`После этого в ${followingTrips2
                             .slice(0, 3)
                             .map(t => `${formatTime(t.time)}${t.isTomorrow ? ' (завтра)' : ''}`)
@@ -325,7 +325,7 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
                     </div>
                   ) : (
                     <div className="alert alert-info">
-                      <span>Нет данных по этому направлению.</span>
+                      <span className="text-black">Нет данных по этому направлению.</span>
                     </div>
                   )}
                 </div>
@@ -339,8 +339,8 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
         <div className="hero py-10 bg-base-200 rounded-2xl">
           <div className="hero-content text-center">
             <div className="max-w-md space-y-2">
-              <h2 className="text-2xl font-normal text-base-content">Добавьте расписание</h2>
-              <p className="text-base-content/70">
+              <h2 className="text-2xl font-normal text-black">Добавьте расписание</h2>
+              <p className="text-black/70">
                 Поместите файл `schedule.xlsx` в папку `public`, и мы автоматически подтянем данные.
               </p>
             </div>

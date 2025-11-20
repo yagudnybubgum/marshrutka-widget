@@ -8,15 +8,11 @@ function App() {
     <div className="min-h-screen bg-base-200 py-6 px-3 sm:py-10">
       <div className="max-w-5xl mx-auto space-y-6 sm:space-y-8">
         <div className="flex justify-between items-center">
-          <h1 className="text-3xl sm:text-4xl font-normal text-base-content">
+          <h1 className="text-3xl sm:text-4xl font-normal text-black">
             Маршрутка 533
           </h1>
           {schedule && (
-            <div
-              className={`badge badge-lg font-normal ${
-                schedule.isWeekend ? 'badge-warning' : 'badge-info'
-              }`}
-            >
+            <div className="badge badge-lg font-normal bg-gray-100 text-black">
               {schedule.isWeekend ? 'Выходной день' : 'Будний день'}
             </div>
           )}
