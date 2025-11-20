@@ -36,7 +36,7 @@ function App() {
           </h1>
           {schedule && (
             <div className="badge badge-lg font-normal bg-white text-black rounded-full flex-shrink-0 whitespace-nowrap">
-              {isWeekend ? 'Выходной' : 'Будний день'}
+              {isWeekend ? 'выходной' : 'будний день'}
             </div>
           )}
         </div>
