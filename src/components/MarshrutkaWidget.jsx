@@ -258,7 +258,7 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
       {schedule && !loading && (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="card bg-base-100 border border-primary/20">
+            <div className="card bg-base-100 border border-primary/20 rounded-none">
               <div className="card-body gap-4 p-4">
                 {nextTrip1 ? (
                   <div className="space-y-4">
@@ -294,7 +294,7 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
             </div>
 
             {schedule.direction2.length > 0 && (
-              <div className="card bg-base-100 border border-secondary/20">
+              <div className="card bg-base-100 border border-secondary/20 rounded-none">
                 <div className="card-body gap-4 p-4">
                   {nextTrip2 ? (
                     <div className="space-y-4">

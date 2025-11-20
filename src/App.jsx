@@ -12,7 +12,7 @@ function App() {
             Маршрутка 533
           </h1>
           {schedule && (
-            <div className="badge badge-lg font-normal bg-gray-100 text-black">
+            <div className="badge badge-lg font-normal bg-gray-100 text-black rounded-full">
               {schedule.isWeekend ? 'Выходной день' : 'Будний день'}
             </div>
           )}
