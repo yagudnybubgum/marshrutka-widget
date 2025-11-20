@@ -13,34 +13,29 @@ const MarshrutkaWidget = () => {
 
   const loadScheduleFile = async () => {
     try {
-      // Используем BASE_URL из Vite, который автоматически учитывает base path
-      const baseUrl = import.meta.env.BASE_URL || '/'
-      // Убираем завершающий слэш если есть
-      const normalizedBase = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl
-      // Строим путь к файлу
-      const filePath = `${normalizedBase}/schedule.xlsx`
-      console.log('Загрузка файла по пути:', filePath, 'BASE_URL:', baseUrl)
+      // Определяем base path из текущего location или из Vite env
+      const getBasePath = () => {
+        // Если есть BASE_URL из Vite, используем его
+        if (import.meta.env.BASE_URL && import.meta.env.BASE_URL !== '/') {
+          return import.meta.env.BASE_URL
+        }
+        // Иначе определяем из window.location
+        const path = window.location.pathname
+        // Если путь содержит /marshrutka-widget/, используем его как base
+        if (path.includes('/marshrutka-widget/')) {
+          return '/marshrutka-widget/'
+        }
+        return '/'
+      }
+      
+      const basePath = getBasePath()
+      const filePath = `${basePath}schedule.xlsx`.replace(/\/\//g, '/') // Убираем двойные слэши
+      console.log('Загрузка файла по пути:', filePath, 'BASE_URL:', import.meta.env.BASE_URL, 'location.pathname:', window.location.pathname)
       
       const response = await fetch(filePath)
       if (!response.ok) {
         console.error('Ошибка загрузки:', response.status, response.statusText, 'URL:', filePath)
-        // Пробуем альтернативный путь без base
-        const altPath = '/schedule.xlsx'
-        console.log('Пробуем альтернативный путь:', altPath)
-        const altResponse = await fetch(altPath)
-        if (!altResponse.ok) {
-          throw new Error(`Файл расписания не найден (${response.status})`)
-        }
-        const arrayBuffer = await altResponse.arrayBuffer()
-        const data = new Uint8Array(arrayBuffer)
-        const workbook = XLSX.read(data, { type: 'array' })
-        const firstSheet = workbook.Sheets[workbook.SheetNames[0]]
-        const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: null })
-        console.log('Excel файл загружен по альтернативному пути. Первые 10 строк:', jsonData.slice(0, 10))
-        const processedSchedule = processScheduleData(jsonData)
-        setSchedule(processedSchedule)
-        setLoading(false)
-        return
+        throw new Error(`Файл расписания не найден (${response.status})`)
       }
       const arrayBuffer = await response.arrayBuffer()
       const data = new Uint8Array(arrayBuffer)
