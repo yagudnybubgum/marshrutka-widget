@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import * as XLSX from 'xlsx'
 
-const MarshrutkaWidget = () => {
+const MarshrutkaWidget = ({ onScheduleChange }) => {
   const [schedule, setSchedule] = useState(null)
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -50,6 +50,7 @@ const MarshrutkaWidget = () => {
       const processedSchedule = processScheduleData(jsonData)
       console.log('Обработанное расписание:', processedSchedule)
       setSchedule(processedSchedule)
+      onScheduleChange?.(processedSchedule)
       setLoading(false)
     } catch (err) {
       console.error('Ошибка загрузки файла:', err)
@@ -256,16 +257,6 @@ const MarshrutkaWidget = () => {
 
       {schedule && !loading && (
         <>
-          <div className="flex justify-center">
-            <div
-              className={`badge badge-lg font-normal ${
-                schedule.isWeekend ? 'badge-warning' : 'badge-info'
-              }`}
-            >
-              {schedule.isWeekend ? 'Выходной день' : 'Будний день'}
-            </div>
-          </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="card bg-base-100 border border-primary/20">
               <div className="card-body gap-4 p-4">
