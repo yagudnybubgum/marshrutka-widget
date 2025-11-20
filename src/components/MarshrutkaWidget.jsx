@@ -223,11 +223,11 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
 
   const formatTimeUntil = (minutes) => {
     if (minutes < 60) {
-      return `${minutes} мин.`
+      return `${minutes} мин`
     }
     const hours = Math.floor(minutes / 60)
     const mins = minutes % 60
-    return mins > 0 ? `${hours} ч. ${mins} мин.` : `${hours} ч.`
+    return mins > 0 ? `${hours} ч. ${mins} мин` : `${hours} ч.`
   }
 
   // Обновляем текущее время каждую секунду для точного отображения
@@ -269,7 +269,7 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
       {schedule && !loading && (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="card bg-base-100 border border-primary/20 rounded-none">
+            <div className="card bg-base-100 rounded-none">
               <div className="card-body gap-4 p-4">
                 {nextTrip1 ? (
                   <div className="space-y-4">
@@ -290,12 +290,12 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
                       <div className="space-y-2">
                         {previousTrip1 && (
                           <p className="text-sm text-black/80">
-                            {`До этого ушла в ${formatTime(previousTrip1.time)}${previousTrip1.isTomorrow ? ' (завтра)' : ''}`}
+                            {`Прошлая была в ${formatTime(previousTrip1.time)}${previousTrip1.isTomorrow ? ' (завтра)' : ''}`}
                           </p>
                         )}
                         {followingTrips1.length > 0 && (
                           <p className="text-sm text-black/80">
-                          {`После этого в ${followingTrips1
+                          {`После в ${followingTrips1
                             .slice(0, 3)
                             .map(t => `${formatTime(t.time)}${t.isTomorrow ? ' (завтра)' : ''}`)
                             .join(', ')}`}
@@ -312,7 +312,7 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
             </div>
 
             {schedule.direction2.length > 0 && (
-              <div className="card bg-base-100 border border-secondary/20 rounded-none">
+              <div className="card bg-base-100 rounded-none">
                 <div className="card-body gap-4 p-4">
                   {nextTrip2 ? (
                     <div className="space-y-4">
@@ -335,12 +335,12 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
                       <div className="space-y-2">
                         {previousTrip2 && (
                           <p className="text-sm text-black/80">
-                            {`До этого ушла в ${formatTime(previousTrip2.time)}${previousTrip2.isTomorrow ? ' (завтра)' : ''}`}
+                            {`Прошлая была в ${formatTime(previousTrip2.time)}${previousTrip2.isTomorrow ? ' (завтра)' : ''}`}
                           </p>
                         )}
                         {followingTrips2.length > 0 && (
                           <p className="text-sm text-black/80">
-                            {`После этого в ${followingTrips2
+                            {`После в ${followingTrips2
                               .slice(0, 3)
                               .map(t => `${formatTime(t.time)}${t.isTomorrow ? ' (завтра)' : ''}`)
                               .join(', ')}`}
