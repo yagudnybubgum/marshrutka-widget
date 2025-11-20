@@ -8,7 +8,7 @@ function App() {
     <div className="min-h-screen bg-base-200 py-6 px-3 sm:py-10">
       <div className="max-w-5xl mx-auto space-y-6 sm:space-y-8">
         <div className="flex justify-between items-center">
-          <h1 className="text-3xl sm:text-4xl font-normal text-black">
+          <h1 className="text-base font-normal text-black">
             Маршрутка 533
           </h1>
           {schedule && (
