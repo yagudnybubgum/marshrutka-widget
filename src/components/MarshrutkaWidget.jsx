@@ -281,7 +281,7 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
                           {nextTrip1.isTomorrow ? ' (завтра)' : ''}
                         </p>
                       </div>
-                      <div className="text-right">
+                      <div className="text-right self-start">
                         <p className="font-normal text-black" style={{ fontSize: '40px' }}>
                           {formatTime(nextTrip1.time)}
                         </p>
@@ -327,7 +327,7 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
                           {nextTrip2.isTomorrow ? ' (завтра)' : ''}
                         </p>
                         </div>
-                        <div className="text-right">
+                        <div className="text-right self-start">
                           <p className="font-normal text-black" style={{ fontSize: '40px' }}>
                             {formatTime(nextTrip2.time)}
                           </p>

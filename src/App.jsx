@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import MarshrutkaWidget from './components/MarshrutkaWidget'
+import FullSchedule from './components/FullSchedule'
 
 function App() {
   const [schedule, setSchedule] = useState(null)
   const [currentDateTime, setCurrentDateTime] = useState(new Date())
+  const [showFullSchedule, setShowFullSchedule] = useState(false)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -27,6 +29,10 @@ function App() {
 
   const isWeekend = currentDateTime.getDay() === 0 || currentDateTime.getDay() === 6
 
+  if (showFullSchedule) {
+    return <FullSchedule onBack={() => setShowFullSchedule(false)} />
+  }
+
   return (
     <div className="h-[100dvh] bg-base-200 pt-6 pb-2 px-4 sm:py-10 overflow-hidden flex flex-col">
       <div className="max-w-5xl mx-auto space-y-6 sm:space-y-8 w-full flex-1 min-h-0 flex flex-col">
@@ -43,6 +49,16 @@ function App() {
 
         <div className="flex-1 min-h-0 overflow-y-auto">
           <MarshrutkaWidget onScheduleChange={setSchedule} />
+          {schedule && (
+            <div className="mt-4 flex justify-center">
+              <button
+                onClick={() => setShowFullSchedule(true)}
+                className="text-sm font-normal text-black/70 hover:text-black transition-colors"
+              >
+                Полное расписание
+              </button>
+            </div>
+          )}
         </div>
       </div>
       <footer className="max-w-5xl mx-auto w-full py-2 sm:mt-8 sm:pb-4 flex-shrink-0">
