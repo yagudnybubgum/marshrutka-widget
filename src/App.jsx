@@ -28,9 +28,9 @@ function App() {
   const isWeekend = currentDateTime.getDay() === 0 || currentDateTime.getDay() === 6
 
   return (
-    <div className="min-h-screen bg-base-200 py-6 px-3 sm:py-10 overflow-x-hidden flex flex-col">
-      <div className="max-w-5xl mx-auto space-y-6 sm:space-y-8 w-full flex-1">
-        <div className="flex justify-between items-center gap-2">
+    <div className="h-screen bg-base-200 pt-6 pb-2 px-4 sm:py-10 overflow-x-hidden flex flex-col">
+      <div className="max-w-5xl mx-auto space-y-2 sm:space-y-8 w-full flex-1 min-h-0 flex flex-col">
+        <div className="flex justify-between items-center gap-2 flex-shrink-0">
           <h1 className="text-xl font-normal text-black flex-shrink-0">
             Маршрутка 533
           </h1>
@@ -41,9 +41,11 @@ function App() {
           )}
         </div>
 
-        <MarshrutkaWidget onScheduleChange={setSchedule} />
+        <div className="flex-1 min-h-0">
+          <MarshrutkaWidget onScheduleChange={setSchedule} />
+        </div>
       </div>
-      <footer className="max-w-5xl mx-auto w-full mt-8 pb-4">
+      <footer className="max-w-5xl mx-auto w-full py-2 sm:mt-8 sm:pb-4 flex-shrink-0">
         <p className="text-sm text-black/70 text-center">
           {formatDateTime(currentDateTime)}
         </p>

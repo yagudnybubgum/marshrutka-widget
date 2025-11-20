@@ -252,7 +252,7 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
   const previousTrip2 = windowDir2.previousTrip
 
   return (
-    <div className="w-full space-y-5">
+    <div className="w-full space-y-2 sm:space-y-5">
       {loading && (
         <div className="flex flex-col items-center gap-3 py-10 text-black/70">
           <span className="loading loading-spinner loading-lg text-black" />
@@ -268,22 +268,22 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
 
       {schedule && !loading && (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4">
             <div className="card bg-base-100 rounded-none">
-              <div className="card-body gap-4 p-4">
+              <div className="card-body gap-2 sm:gap-4 p-3 sm:p-4">
                 {nextTrip1 ? (
-                  <div className="space-y-4">
+                  <div className="space-y-2 sm:space-y-4">
                     <div className="flex items-start justify-between gap-4">
                       <div className="space-y-2">
                         <h3 className="text-xl font-normal text-black">{schedule.direction1Name}</h3>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-4xl font-normal text-black">
-                          {formatTime(nextTrip1.time)}
-                        </p>
                         <p className="text-sm text-black/70">
                           {`Через ${formatTimeUntil(nextTrip1.minutesUntil)}`}
                           {nextTrip1.isTomorrow ? ' (завтра)' : ''}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-normal text-black" style={{ fontSize: '40px' }}>
+                          {formatTime(nextTrip1.time)}
                         </p>
                       </div>
                     </div>
@@ -313,22 +313,22 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
 
             {schedule.direction2.length > 0 && (
               <div className="card bg-base-100 rounded-none">
-                <div className="card-body gap-4 p-4">
+                <div className="card-body gap-2 sm:gap-4 p-3 sm:p-4">
                   {nextTrip2 ? (
-                    <div className="space-y-4">
+                    <div className="space-y-2 sm:space-y-4">
                       <div className="flex items-start justify-between gap-4">
                         <div className="space-y-2">
                           <h3 className="text-xl font-normal text-black">
                             {schedule.direction2Name}
                           </h3>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-4xl font-normal text-black">
-                            {formatTime(nextTrip2.time)}
-                          </p>
                           <p className="text-sm text-black/70">
                             {`Через ${formatTimeUntil(nextTrip2.minutesUntil)}`}
                             {nextTrip2.isTomorrow ? ' (завтра)' : ''}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-normal text-black" style={{ fontSize: '40px' }}>
+                            {formatTime(nextTrip2.time)}
                           </p>
                         </div>
                       </div>
