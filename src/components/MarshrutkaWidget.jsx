@@ -287,19 +287,21 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
                         </p>
                       </div>
                     </div>
-                      {previousTrip1 && (
-                        <p className="text-sm text-black/80">
-                          {`До этого ушла в ${formatTime(previousTrip1.time)}${previousTrip1.isTomorrow ? ' (завтра)' : ''}`}
+                      <div className="space-y-2">
+                        {previousTrip1 && (
+                          <p className="text-sm text-black/80">
+                            {`До этого ушла в ${formatTime(previousTrip1.time)}${previousTrip1.isTomorrow ? ' (завтра)' : ''}`}
+                          </p>
+                        )}
+                        {followingTrips1.length > 0 && (
+                          <p className="text-sm text-black/80">
+                          {`После этого в ${followingTrips1
+                            .slice(0, 3)
+                            .map(t => `${formatTime(t.time)}${t.isTomorrow ? ' (завтра)' : ''}`)
+                            .join(', ')}`}
                         </p>
                       )}
-                      {followingTrips1.length > 0 && (
-                        <p className="text-sm text-black/80">
-                        {`После этого в ${followingTrips1
-                          .slice(0, 3)
-                          .map(t => `${formatTime(t.time)}${t.isTomorrow ? ' (завтра)' : ''}`)
-                          .join(', ')}`}
-                      </p>
-                    )}
+                      </div>
                   </div>
                 ) : (
                   <div className="alert alert-info">
@@ -330,19 +332,21 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
                           </p>
                         </div>
                       </div>
-                      {previousTrip2 && (
-                        <p className="text-sm text-black/80">
-                          {`До этого ушла в ${formatTime(previousTrip2.time)}${previousTrip2.isTomorrow ? ' (завтра)' : ''}`}
-                        </p>
-                      )}
-                      {followingTrips2.length > 0 && (
-                        <p className="text-sm text-black/80">
-                          {`После этого в ${followingTrips2
-                            .slice(0, 3)
-                            .map(t => `${formatTime(t.time)}${t.isTomorrow ? ' (завтра)' : ''}`)
-                            .join(', ')}`}
-                        </p>
-                      )}
+                      <div className="space-y-2">
+                        {previousTrip2 && (
+                          <p className="text-sm text-black/80">
+                            {`До этого ушла в ${formatTime(previousTrip2.time)}${previousTrip2.isTomorrow ? ' (завтра)' : ''}`}
+                          </p>
+                        )}
+                        {followingTrips2.length > 0 && (
+                          <p className="text-sm text-black/80">
+                            {`После этого в ${followingTrips2
+                              .slice(0, 3)
+                              .map(t => `${formatTime(t.time)}${t.isTomorrow ? ' (завтра)' : ''}`)
+                              .join(', ')}`}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   ) : (
                     <div className="alert alert-info">
