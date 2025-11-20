@@ -287,6 +287,7 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
                         </p>
                       </div>
                     </div>
+                    <div className="divider my-0"></div>
                       <div className="space-y-2">
                         {previousTrip1 && (
                           <p className="text-sm text-black/80">
@@ -332,6 +333,7 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
                           </p>
                         </div>
                       </div>
+                      <div className="divider my-0"></div>
                       <div className="space-y-2">
                         {previousTrip2 && (
                           <p className="text-sm text-black/80">
