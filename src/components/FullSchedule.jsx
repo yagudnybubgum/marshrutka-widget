@@ -8,6 +8,10 @@ const FullSchedule = ({ onBack }) => {
   const [now, setNow] = useState(new Date())
   const [headerVisible, setHeaderVisible] = useState(true)
   const lastScrollTopRef = useRef(0)
+  
+  // Определяем активный таб (будние или выходные)
+  const isWeekend = now.getDay() === 0 || now.getDay() === 6
+  const [activeTab, setActiveTab] = useState(isWeekend ? 'weekend' : 'weekday')
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -198,49 +202,39 @@ const FullSchedule = ({ onBack }) => {
     return now.getHours() * 60 + now.getMinutes()
   }
 
-  // Получаем все уникальные времена для таймлайна (отсортированные сверху вниз)
-  const allTimes = useMemo(() => {
+  // Фильтруем колонки по активному табу
+  const activeColumns = useMemo(() => {
     if (!scheduleData) return []
+    
+    const targetPeriod = activeTab === 'weekday' ? 'Будние дни' : 'Выходные дни'
+    return scheduleData.columns.filter(col => col.period === targetPeriod)
+  }, [scheduleData, activeTab])
+
+  // Получаем все уникальные времена для активного таба
+  const allTimes = useMemo(() => {
+    if (activeColumns.length === 0) return []
     const timesSet = new Set()
-    scheduleData.columns.forEach(col => {
+    activeColumns.forEach(col => {
       col.times.forEach(time => timesSet.add(time))
     })
     return Array.from(timesSet).sort((a, b) => a - b)
-  }, [scheduleData])
+  }, [activeColumns])
 
   // Создаём массив строк для таблицы, где каждая строка соответствует времени
   const tableRows = useMemo(() => {
-    if (!scheduleData || allTimes.length === 0) return []
+    if (activeColumns.length === 0 || allTimes.length === 0) return []
     
     return allTimes.map(time => {
       const row = {
         time,
-        cells: scheduleData.columns.map(col => {
+        cells: activeColumns.map(col => {
           const hasTime = col.times.includes(time)
           return hasTime ? time : null
         })
       }
       return row
     })
-  }, [scheduleData, allTimes])
-
-  // Группируем колонки по периодам для заголовка
-  const groupedColumns = useMemo(() => {
-    if (!scheduleData) return []
-    
-    const groups = {}
-    scheduleData.columns.forEach(col => {
-      if (!groups[col.period]) {
-        groups[col.period] = []
-      }
-      groups[col.period].push(col)
-    })
-    
-    return Object.entries(groups).map(([period, cols]) => ({
-      period,
-      columns: cols
-    }))
-  }, [scheduleData])
+  }, [activeColumns, allTimes])
 
   const currentTime = getCurrentTimeInMinutes()
 
@@ -305,28 +299,51 @@ const FullSchedule = ({ onBack }) => {
           <div className={`h-full overflow-y-auto schedule-scroll-container pb-4 transition-all duration-300 ${
             headerVisible ? 'px-4' : 'px-4'
           }`}>
-            {/* Table with 4 columns */}
+            {/* Tabs and Table Header - combined sticky */}
+            <div className="sticky top-0 bg-base-200 z-20">
+              <div className="flex gap-2 mb-0">
+                <button
+                  onClick={() => setActiveTab('weekday')}
+                  className={`flex-1 py-3 px-4 text-sm font-normal transition-colors ${
+                    activeTab === 'weekday'
+                      ? 'bg-white text-black'
+                      : 'bg-transparent text-black/70 hover:text-black'
+                  }`}
+                >
+                  Будние дни
+                </button>
+                <button
+                  onClick={() => setActiveTab('weekend')}
+                  className={`flex-1 py-3 px-4 text-sm font-normal transition-colors ${
+                    activeTab === 'weekend'
+                      ? 'bg-white text-black'
+                      : 'bg-transparent text-black/70 hover:text-black'
+                  }`}
+                >
+                  Выходные дни
+                </button>
+              </div>
+              
+              {/* Table header */}
+              <div className="flex border-b border-black/20">
+                {activeColumns.map((col, idx) => (
+                  <div
+                    key={idx}
+                    className="flex-1 text-left px-3 py-3 text-sm font-normal text-black/70"
+                  >
+                    {col.name}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Table with 2 columns */}
             <table className="w-full border-collapse">
-              <thead className="sticky top-0 bg-base-200 z-10">
-                {/* Первая строка: периоды */}
+              <thead className="sr-only">
+                {/* Скрытый thead для семантики */}
                 <tr>
-                  {groupedColumns.map((group, groupIdx) => (
-                    <th
-                      key={groupIdx}
-                      colSpan={group.columns.length}
-                      className="text-center px-3 pt-3 pb-0 border-b-0 text-sm font-normal text-black"
-                    >
-                      {group.period}
-                    </th>
-                  ))}
-                </tr>
-                {/* Вторая строка: названия направлений */}
-                <tr>
-                  {scheduleData.columns.map((col, idx) => (
-                    <th
-                      key={idx}
-                      className="text-left px-3 pt-0 pb-3 border-b border-black/20 text-xs font-normal text-black/70"
-                    >
+                  {activeColumns.map((col, idx) => (
+                    <th key={idx}>
                       {col.name}
                     </th>
                   ))}
