@@ -282,7 +282,10 @@ const FullSchedule = ({ onBack }) => {
             onClick={onBack}
             className="text-black hover:text-black/70 transition-colors flex items-center gap-1 text-sm font-normal"
           >
-            ← назад
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+            </svg>
+            назад
           </button>
           <h1 className="text-xl font-normal text-black flex-1 text-center">
             Маршрутка 533

@@ -15,19 +15,15 @@ function App() {
     return () => clearInterval(interval)
   }, [])
 
-  const formatDateTime = (date) => {
+  const formatDate = (date) => {
     const months = [
       'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
       'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
     ]
     const day = date.getDate()
     const month = months[date.getMonth()]
-    const hours = date.getHours().toString().padStart(2, '0')
-    const minutes = date.getMinutes().toString().padStart(2, '0')
-    return `Сегодня ${day} ${month}, ${hours}:${minutes}`
+    return `${day} ${month}`
   }
-
-  const isWeekend = currentDateTime.getDay() === 0 || currentDateTime.getDay() === 6
 
   if (showFullSchedule) {
     return <FullSchedule onBack={() => setShowFullSchedule(false)} />
@@ -42,7 +38,7 @@ function App() {
           </h1>
           {schedule && (
             <div className="badge badge-lg font-normal bg-white text-black rounded-full flex-shrink-0 whitespace-nowrap">
-              {isWeekend ? 'выходной' : 'будний день'}
+              {formatDate(currentDateTime)}
             </div>
           )}
         </div>
@@ -53,18 +49,24 @@ function App() {
             <div className="mt-4 flex justify-center">
               <button
                 onClick={() => setShowFullSchedule(true)}
-                className="text-sm font-normal text-black/70 hover:text-black transition-colors"
+                className="text-sm font-normal text-black/70 hover:text-black transition-colors flex items-center gap-1"
               >
                 Полное расписание
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                </svg>
               </button>
             </div>
           )}
         </div>
       </div>
       <footer className="max-w-5xl mx-auto w-full py-2 sm:mt-8 sm:pb-4 flex-shrink-0">
-        <p className="text-sm text-black/70 text-center">
-          {formatDateTime(currentDateTime)}
-        </p>
+        <a 
+          href="mailto:tamamizmir1999@gmail.com"
+          className="text-sm text-black/70 text-center hover:text-black transition-colors block"
+        >
+          Связаться с разработчиком
+        </a>
       </footer>
     </div>
   )
