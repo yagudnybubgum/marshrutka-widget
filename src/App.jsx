@@ -46,15 +46,12 @@ function App() {
         <div className="flex-1 min-h-0 overflow-y-auto">
           <MarshrutkaWidget onScheduleChange={setSchedule} />
           {schedule && (
-            <div className="mt-4 flex justify-center">
+            <div className="mt-6 flex justify-center">
               <button
                 onClick={() => setShowFullSchedule(true)}
-                className="text-sm font-normal text-black/70 hover:text-black transition-colors flex items-center gap-1"
+                className="text-sm font-normal text-black/70 hover:text-black transition-colors"
               >
                 Полное расписание
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                </svg>
               </button>
             </div>
           )}
