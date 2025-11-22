@@ -49,7 +49,7 @@ function App() {
             <div className="mt-6 flex justify-center">
               <button
                 onClick={() => setShowFullSchedule(true)}
-                className="text-sm font-normal text-black/70 hover:text-black transition-colors"
+                className="text-base font-normal text-black/70 hover:text-black transition-colors"
               >
                 Полное расписание
               </button>
@@ -60,7 +60,7 @@ function App() {
       <footer className="max-w-5xl mx-auto w-full py-2 sm:mt-8 sm:pb-4 flex-shrink-0">
         <a 
           href="mailto:sotskiidenis@gmail.com"
-          className="text-sm text-black/70 text-center hover:text-black transition-colors block"
+          className="text-xs text-black/70 text-center hover:text-black transition-colors block"
         >
           Связаться с разработчиком
         </a>
