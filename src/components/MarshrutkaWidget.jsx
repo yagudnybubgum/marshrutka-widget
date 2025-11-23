@@ -282,7 +282,7 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
                         </p>
                       </div>
                       <div className="text-right self-start">
-                        <p className="font-normal text-black" style={{ fontSize: '40px' }}>
+                        <p className="font-normal text-black" style={{ fontSize: '40px', lineHeight: '40px' }}>
                           {formatTime(nextTrip1.time)}
                         </p>
                       </div>
@@ -328,7 +328,7 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
                         </p>
                         </div>
                         <div className="text-right self-start">
-                          <p className="font-normal text-black" style={{ fontSize: '40px' }}>
+                          <p className="font-normal text-black" style={{ fontSize: '40px', lineHeight: '40px' }}>
                             {formatTime(nextTrip2.time)}
                           </p>
                         </div>

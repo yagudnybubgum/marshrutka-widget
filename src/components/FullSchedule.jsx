@@ -210,31 +210,6 @@ const FullSchedule = ({ onBack }) => {
     return scheduleData.columns.filter(col => col.period === targetPeriod)
   }, [scheduleData, activeTab])
 
-  // Получаем все уникальные времена для активного таба
-  const allTimes = useMemo(() => {
-    if (activeColumns.length === 0) return []
-    const timesSet = new Set()
-    activeColumns.forEach(col => {
-      col.times.forEach(time => timesSet.add(time))
-    })
-    return Array.from(timesSet).sort((a, b) => a - b)
-  }, [activeColumns])
-
-  // Создаём массив строк для таблицы, где каждая строка соответствует времени
-  const tableRows = useMemo(() => {
-    if (activeColumns.length === 0 || allTimes.length === 0) return []
-    
-    return allTimes.map(time => {
-      const row = {
-        time,
-        cells: activeColumns.map(col => {
-          const hasTime = col.times.includes(time)
-          return hasTime ? time : null
-        })
-      }
-      return row
-    })
-  }, [activeColumns, allTimes])
 
   const currentTime = getCurrentTimeInMinutes()
 
@@ -340,47 +315,28 @@ const FullSchedule = ({ onBack }) => {
               </div>
             </div>
 
-            {/* Table with 2 columns */}
-            <table className="w-full border-collapse">
-              <thead className="sr-only">
-                {/* Скрытый thead для семантики */}
-                <tr>
-                  {activeColumns.map((col, idx) => (
-                    <th key={idx}>
-                      {col.name}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {tableRows.map((row, rowIdx) => {
-                  const isCurrent = Math.abs(row.time - currentTime) < 2
-                  return (
-                    <tr 
-                      key={rowIdx} 
-                      className={`border-b border-black/10 ${
-                        isCurrent ? 'bg-yellow-100' : ''
-                      }`}
-                      style={{ height: '48px' }}
-                    >
-                      {row.cells.map((cellTime, colIdx) => {
-                        const isCurrentCell = cellTime !== null && Math.abs(cellTime - currentTime) < 2
-                        return (
-                          <td
-                            key={colIdx}
-                            className={`p-3 text-sm ${
-                              isCurrentCell ? 'bg-yellow-200 font-semibold' : 'text-black'
-                            }`}
-                          >
-                            {cellTime !== null ? formatTime(cellTime) : ''}
-                          </td>
-                        )
-                      })}
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
+            {/* Simple two columns with times in vertical list */}
+            <div className="flex gap-4 mt-4">
+              {activeColumns.map((col, colIdx) => (
+                <div key={colIdx} className="flex-1">
+                  <div className="space-y-1">
+                    {col.times.map((time, timeIdx) => {
+                      const isCurrent = Math.abs(time - currentTime) < 2
+                      return (
+                        <div
+                          key={timeIdx}
+                          className={`p-2 text-sm ${
+                            isCurrent ? 'bg-yellow-200 font-semibold' : 'text-black'
+                          }`}
+                        >
+                          {formatTime(time)}
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
