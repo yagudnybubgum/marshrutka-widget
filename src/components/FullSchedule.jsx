@@ -248,7 +248,7 @@ const FullSchedule = ({ onBack }) => {
     <div className="h-[100dvh] bg-base-200 flex flex-col relative">
       {/* Header */}
       <div 
-        className={`absolute top-0 left-0 right-0 z-20 bg-base-200 px-4 pt-6 pb-2 transition-transform duration-300 ${
+        className={`absolute top-0 left-0 right-0 z-20 bg-base-200 px-4 pt-6 pb-0 transition-transform duration-300 ${
           headerVisible ? 'translate-y-0' : '-translate-y-full'
         }`}
       >
