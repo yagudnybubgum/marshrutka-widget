@@ -37,7 +37,7 @@ function App() {
             Маршрутка 533
           </h1>
           {schedule && (
-            <div className="badge badge-lg font-normal bg-white text-black rounded-full flex-shrink-0 whitespace-nowrap">
+            <div className="text-base font-normal text-black whitespace-nowrap">
               {formatDate(currentDateTime)}
             </div>
           )}

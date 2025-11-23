@@ -248,7 +248,7 @@ const FullSchedule = ({ onBack }) => {
     <div className="h-[100dvh] bg-base-200 flex flex-col relative">
       {/* Header */}
       <div 
-        className={`absolute top-0 left-0 right-0 z-20 bg-base-200 px-4 pt-6 pb-4 transition-transform duration-300 ${
+        className={`absolute top-0 left-0 right-0 z-20 bg-base-200 px-4 pt-6 pb-2 transition-transform duration-300 ${
           headerVisible ? 'translate-y-0' : '-translate-y-full'
         }`}
       >
@@ -279,28 +279,28 @@ const FullSchedule = ({ onBack }) => {
           }`}>
             {/* Tabs and Table Header - combined sticky */}
             <div className="sticky top-0 bg-base-200 z-20">
-              <div className="flex gap-2 mb-0">
+              <nav aria-label="Tabs" className="flex space-x-4 mb-4 pt-2 sm:justify-center">
                 <button
                   onClick={() => setActiveTab('weekday')}
-                  className={`flex-1 py-3 px-4 text-sm font-normal transition-colors ${
+                  className={`flex-1 sm:flex-none rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                     activeTab === 'weekday'
-                      ? 'bg-white text-black'
-                      : 'bg-transparent text-black/70 hover:text-black'
+                      ? 'bg-gray-200 text-gray-800'
+                      : 'text-gray-600 hover:text-gray-800'
                   }`}
                 >
                   Будние дни
                 </button>
                 <button
                   onClick={() => setActiveTab('weekend')}
-                  className={`flex-1 py-3 px-4 text-sm font-normal transition-colors ${
+                  className={`flex-1 sm:flex-none rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                     activeTab === 'weekend'
-                      ? 'bg-white text-black'
-                      : 'bg-transparent text-black/70 hover:text-black'
+                      ? 'bg-gray-200 text-gray-800'
+                      : 'text-gray-600 hover:text-gray-800'
                   }`}
                 >
                   Выходные дни
                 </button>
-              </div>
+              </nav>
               
               {/* Table header */}
               <div className="flex border-b border-black/20">
