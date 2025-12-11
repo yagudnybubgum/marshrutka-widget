@@ -9,9 +9,31 @@ const FullSchedule = ({ onBack }) => {
   const [headerVisible, setHeaderVisible] = useState(true)
   const lastScrollTopRef = useRef(0)
   
+  // Праздничные дни (используется расписание выходного дня)
+  const holidays = [
+    // 2025
+    '2025-12-31',
+    // 2026
+    '2026-01-01', '2026-01-02', '2026-01-05', '2026-01-06', '2026-01-07', '2026-01-08', '2026-01-09',
+    '2026-02-23',
+    '2026-03-09',
+    '2026-05-01', '2026-05-11',
+    '2026-06-12',
+    '2026-11-04',
+    '2026-12-31',
+  ]
+  
   // Определяем активный таб (будние или выходные)
-  const isWeekend = now.getDay() === 0 || now.getDay() === 6
-  const [activeTab, setActiveTab] = useState(isWeekend ? 'weekend' : 'weekday')
+  const checkIsWeekend = () => {
+    const dayOfWeek = now.getDay()
+    const year = now.getFullYear()
+    const month = String(now.getMonth() + 1).padStart(2, '0')
+    const day = String(now.getDate()).padStart(2, '0')
+    const dateString = `${year}-${month}-${day}`
+    return dayOfWeek === 0 || dayOfWeek === 6 || holidays.includes(dateString)
+  }
+  
+  const [activeTab, setActiveTab] = useState(checkIsWeekend() ? 'weekend' : 'weekday')
 
   useEffect(() => {
     const interval = setInterval(() => {
