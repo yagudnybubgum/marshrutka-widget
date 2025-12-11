@@ -7,6 +7,20 @@ function App() {
   const [currentDateTime, setCurrentDateTime] = useState(new Date())
   const [showFullSchedule, setShowFullSchedule] = useState(false)
 
+  // Праздничные дни (используется расписание выходного дня)
+  const holidays = [
+    // 2025
+    '2025-12-31',
+    // 2026
+    '2026-01-01', '2026-01-02', '2026-01-05', '2026-01-06', '2026-01-07', '2026-01-08', '2026-01-09',
+    '2026-02-23',
+    '2026-03-09',
+    '2026-05-01', '2026-05-11',
+    '2026-06-12',
+    '2026-11-04',
+    '2026-12-31',
+  ]
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentDateTime(new Date())
@@ -14,6 +28,15 @@ function App() {
 
     return () => clearInterval(interval)
   }, [])
+
+  const isWeekendOrHoliday = (date) => {
+    const dayOfWeek = date.getDay()
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    const dateString = `${year}-${month}-${day}`
+    return dayOfWeek === 0 || dayOfWeek === 6 || holidays.includes(dateString)
+  }
 
   const formatDate = (date) => {
     const months = [
@@ -37,7 +60,9 @@ function App() {
             Маршрутка 533
           </h1>
           {schedule && (
-            <div className="text-base font-normal text-black whitespace-nowrap">
+            <div className={`text-base font-normal whitespace-nowrap ${
+              isWeekendOrHoliday(currentDateTime) ? 'text-red-600' : 'text-black'
+            }`}>
               {formatDate(currentDateTime)}
             </div>
           )}
