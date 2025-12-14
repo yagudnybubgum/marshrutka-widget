@@ -9,31 +9,9 @@ const FullSchedule = ({ onBack }) => {
   const [headerVisible, setHeaderVisible] = useState(true)
   const lastScrollTopRef = useRef(0)
   
-  // Праздничные дни (используется расписание выходного дня)
-  const holidays = [
-    // 2025
-    '2025-12-31',
-    // 2026
-    '2026-01-01', '2026-01-02', '2026-01-05', '2026-01-06', '2026-01-07', '2026-01-08', '2026-01-09',
-    '2026-02-23',
-    '2026-03-09',
-    '2026-05-01', '2026-05-11',
-    '2026-06-12',
-    '2026-11-04',
-    '2026-12-31',
-  ]
-  
   // Определяем активный таб (будние или выходные)
-  const checkIsWeekend = () => {
-    const dayOfWeek = now.getDay()
-    const year = now.getFullYear()
-    const month = String(now.getMonth() + 1).padStart(2, '0')
-    const day = String(now.getDate()).padStart(2, '0')
-    const dateString = `${year}-${month}-${day}`
-    return dayOfWeek === 0 || dayOfWeek === 6 || holidays.includes(dateString)
-  }
-  
-  const [activeTab, setActiveTab] = useState(checkIsWeekend() ? 'weekend' : 'weekday')
+  const isWeekend = now.getDay() === 0 || now.getDay() === 6
+  const [activeTab, setActiveTab] = useState(isWeekend ? 'weekend' : 'weekday')
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -81,10 +59,14 @@ const FullSchedule = ({ onBack }) => {
 
   const loadScheduleFile = async () => {
     try {
+      // Определяем base path из Vite env или из текущего location
       const getBasePath = () => {
-        if (import.meta.env.BASE_URL && import.meta.env.BASE_URL !== '/') {
-          return import.meta.env.BASE_URL
+        // Используем BASE_URL из Vite (всегда правильный)
+        const viteBase = import.meta.env.BASE_URL
+        if (viteBase && viteBase !== '/') {
+          return viteBase
         }
+        // Fallback: определяем из window.location
         const path = window.location.pathname
         if (path.includes('/marshrutka-widget/')) {
           return '/marshrutka-widget/'
@@ -232,6 +214,31 @@ const FullSchedule = ({ onBack }) => {
     return scheduleData.columns.filter(col => col.period === targetPeriod)
   }, [scheduleData, activeTab])
 
+  // Получаем все уникальные времена для активного таба
+  const allTimes = useMemo(() => {
+    if (activeColumns.length === 0) return []
+    const timesSet = new Set()
+    activeColumns.forEach(col => {
+      col.times.forEach(time => timesSet.add(time))
+    })
+    return Array.from(timesSet).sort((a, b) => a - b)
+  }, [activeColumns])
+
+  // Создаём массив строк для таблицы, где каждая строка соответствует времени
+  const tableRows = useMemo(() => {
+    if (activeColumns.length === 0 || allTimes.length === 0) return []
+    
+    return allTimes.map(time => {
+      const row = {
+        time,
+        cells: activeColumns.map(col => {
+          const hasTime = col.times.includes(time)
+          return hasTime ? time : null
+        })
+      }
+      return row
+    })
+  }, [activeColumns, allTimes])
 
   const currentTime = getCurrentTimeInMinutes()
 
@@ -270,7 +277,7 @@ const FullSchedule = ({ onBack }) => {
     <div className="h-[100dvh] bg-base-200 flex flex-col relative">
       {/* Header */}
       <div 
-        className={`absolute top-0 left-0 right-0 z-20 bg-base-200 px-4 pt-6 pb-0 transition-transform duration-300 ${
+        className={`absolute top-0 left-0 right-0 z-20 bg-base-200 px-4 pt-6 pb-4 transition-transform duration-300 ${
           headerVisible ? 'translate-y-0' : '-translate-y-full'
         }`}
       >
@@ -301,28 +308,28 @@ const FullSchedule = ({ onBack }) => {
           }`}>
             {/* Tabs and Table Header - combined sticky */}
             <div className="sticky top-0 bg-base-200 z-20">
-              <nav aria-label="Tabs" className="flex space-x-4 mb-4 pt-2 sm:justify-center">
+              <div className="flex gap-2 mb-0">
                 <button
                   onClick={() => setActiveTab('weekday')}
-                  className={`flex-1 sm:flex-none rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                  className={`flex-1 py-3 px-4 text-sm font-normal transition-colors ${
                     activeTab === 'weekday'
-                      ? 'bg-gray-200 text-gray-800'
-                      : 'text-gray-600 hover:text-gray-800'
+                      ? 'bg-white text-black'
+                      : 'bg-transparent text-black/70 hover:text-black'
                   }`}
                 >
                   Будние дни
                 </button>
                 <button
                   onClick={() => setActiveTab('weekend')}
-                  className={`flex-1 sm:flex-none rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                  className={`flex-1 py-3 px-4 text-sm font-normal transition-colors ${
                     activeTab === 'weekend'
-                      ? 'bg-gray-200 text-gray-800'
-                      : 'text-gray-600 hover:text-gray-800'
+                      ? 'bg-white text-black'
+                      : 'bg-transparent text-black/70 hover:text-black'
                   }`}
                 >
                   Выходные дни
                 </button>
-              </nav>
+              </div>
               
               {/* Table header */}
               <div className="flex border-b border-black/20">
@@ -337,28 +344,47 @@ const FullSchedule = ({ onBack }) => {
               </div>
             </div>
 
-            {/* Simple two columns with times in vertical list */}
-            <div className="flex gap-4 mt-4">
-              {activeColumns.map((col, colIdx) => (
-                <div key={colIdx} className="flex-1">
-                  <div className="space-y-1">
-                    {col.times.map((time, timeIdx) => {
-                      const isCurrent = Math.abs(time - currentTime) < 2
-                      return (
-                        <div
-                          key={timeIdx}
-                          className={`p-2 text-sm ${
-                            isCurrent ? 'bg-yellow-200 font-semibold' : 'text-black'
-                          }`}
-                        >
-                          {formatTime(time)}
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-              ))}
-            </div>
+            {/* Table with 2 columns */}
+            <table className="w-full border-collapse">
+              <thead className="sr-only">
+                {/* Скрытый thead для семантики */}
+                <tr>
+                  {activeColumns.map((col, idx) => (
+                    <th key={idx}>
+                      {col.name}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {tableRows.map((row, rowIdx) => {
+                  const isCurrent = Math.abs(row.time - currentTime) < 2
+                  return (
+                    <tr 
+                      key={rowIdx} 
+                      className={`border-b border-black/10 ${
+                        isCurrent ? 'bg-yellow-100' : ''
+                      }`}
+                      style={{ height: '48px' }}
+                    >
+                      {row.cells.map((cellTime, colIdx) => {
+                        const isCurrentCell = cellTime !== null && Math.abs(cellTime - currentTime) < 2
+                        return (
+                          <td
+                            key={colIdx}
+                            className={`p-3 text-sm ${
+                              isCurrentCell ? 'bg-yellow-200 font-semibold' : 'text-black'
+                            }`}
+                          >
+                            {cellTime !== null ? formatTime(cellTime) : ''}
+                          </td>
+                        )
+                      })}
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

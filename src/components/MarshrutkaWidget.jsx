@@ -13,15 +13,15 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
 
   const loadScheduleFile = async () => {
     try {
-      // Определяем base path из текущего location или из Vite env
+      // Определяем base path из Vite env или из текущего location
       const getBasePath = () => {
-        // Если есть BASE_URL из Vite, используем его
-        if (import.meta.env.BASE_URL && import.meta.env.BASE_URL !== '/') {
-          return import.meta.env.BASE_URL
+        // Используем BASE_URL из Vite (всегда правильный)
+        const viteBase = import.meta.env.BASE_URL
+        if (viteBase && viteBase !== '/') {
+          return viteBase
         }
-        // Иначе определяем из window.location
+        // Fallback: определяем из window.location
         const path = window.location.pathname
-        // Если путь содержит /marshrutka-widget/, используем его как base
         if (path.includes('/marshrutka-widget/')) {
           return '/marshrutka-widget/'
         }
@@ -59,31 +59,12 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
     }
   }
 
-  // Праздничные дни (используется расписание выходного дня)
-  const holidays = [
-    // 2025
-    '2025-12-31',
-    // 2026
-    '2026-01-01', '2026-01-02', '2026-01-05', '2026-01-06', '2026-01-07', '2026-01-08', '2026-01-09',
-    '2026-02-23',
-    '2026-03-09',
-    '2026-05-01', '2026-05-11',
-    '2026-06-12',
-    '2026-11-04',
-    '2026-12-31',
-  ]
-
   const processScheduleData = (data) => {
     if (data.length < 3) return null
 
     const today = new Date()
-    const year = today.getFullYear()
-    const month = String(today.getMonth() + 1).padStart(2, '0')
-    const day = String(today.getDate()).padStart(2, '0')
-    const dateString = `${year}-${month}-${day}`
-    
     const dayOfWeek = today.getDay()
-    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6 || holidays.includes(dateString)
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6
 
     const periodRow = data[0] || []
     const directionRow = data[1] || []
@@ -288,7 +269,7 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
       {schedule && !loading && (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="card bg-base-100 rounded-2xl">
+            <div className="card bg-base-100 rounded-none">
               <div className="card-body gap-4 p-4">
                 {nextTrip1 ? (
                   <div className="space-y-4">
@@ -301,7 +282,7 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
                         </p>
                       </div>
                       <div className="text-right self-start">
-                        <p className="font-normal text-black" style={{ fontSize: '40px', lineHeight: '40px' }}>
+                        <p className="font-normal text-black" style={{ fontSize: '40px' }}>
                           {formatTime(nextTrip1.time)}
                         </p>
                       </div>
@@ -332,7 +313,7 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
             </div>
 
             {schedule.direction2.length > 0 && (
-              <div className="card bg-base-100 rounded-2xl">
+              <div className="card bg-base-100 rounded-none">
                 <div className="card-body gap-4 p-4">
                   {nextTrip2 ? (
                     <div className="space-y-4">
@@ -347,7 +328,7 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
                         </p>
                         </div>
                         <div className="text-right self-start">
-                          <p className="font-normal text-black" style={{ fontSize: '40px', lineHeight: '40px' }}>
+                          <p className="font-normal text-black" style={{ fontSize: '40px' }}>
                             {formatTime(nextTrip2.time)}
                           </p>
                         </div>
