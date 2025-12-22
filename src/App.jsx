@@ -65,7 +65,7 @@ function App() {
       </div>
       <footer className="max-w-5xl mx-auto w-full py-2 sm:mt-8 sm:pb-4 flex-shrink-0">
         <a 
-          href="mailto:sotskiidenis@gmail.com"
+          href="mailto:onlineyanino@gmail.com"
           className="text-xs text-black/70 text-center hover:text-black transition-colors block"
         >
           Связаться с разработчиком
