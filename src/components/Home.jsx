@@ -1,13 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import MarshrutkaWidget from './MarshrutkaWidget'
-import FullSchedule from './FullSchedule'
 
 function Home() {
   const [routeNumber, setRouteNumber] = useState('533')
   const [schedule, setSchedule] = useState(null)
   const [currentDateTime, setCurrentDateTime] = useState(new Date())
-  const [showFullSchedule, setShowFullSchedule] = useState(false)
   const [headerVisible, setHeaderVisible] = useState(true)
   const scrollContainerRef = useRef(null)
   const lastScrollTopRef = useRef(0)
@@ -71,14 +69,10 @@ function Home() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  if (showFullSchedule) {
-    return <FullSchedule routeNumber={routeNumber} onBack={() => setShowFullSchedule(false)} />
-  }
-
   // #region agent log
   useEffect(() => {
     const container = scrollContainerRef.current;
-    fetch('http://127.0.0.1:7244/ingest/d1583780-0508-4307-9920-67e4adfcc8a5',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Home.jsx:75',message:'Home component render',data:{routeNumber,scheduleExists:!!schedule,showFullSchedule,headerVisible,containerHeight:container?.offsetHeight,scrollY:window.scrollY},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'A'})}).catch(()=>{});
+    fetch('http://127.0.0.1:7244/ingest/d1583780-0508-4307-9920-67e4adfcc8a5',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Home.jsx:75',message:'Home component render',data:{routeNumber,scheduleExists:!!schedule,headerVisible,containerHeight:container?.offsetHeight,scrollY:window.scrollY},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'A'})}).catch(()=>{});
   });
   // #endregion
   return (
@@ -142,12 +136,12 @@ function Home() {
           <MarshrutkaWidget key={routeNumber} routeNumber={routeNumber} onScheduleChange={setSchedule} />
           {schedule && (
             <div className="mt-6 flex justify-center">
-              <button
-                onClick={() => setShowFullSchedule(true)}
+              <Link
+                to={routeNumber === '533' ? '/full533' : '/full429'}
                 className="text-base font-normal text-black/70 hover:text-black transition-colors"
               >
                 Полное расписание
-              </button>
+              </Link>
             </div>
           )}
           <Link
