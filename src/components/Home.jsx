@@ -84,7 +84,7 @@ function Home() {
           }`}
         >
           <h1 className="text-xl font-normal text-black">
-            Онлайн Расписание
+            Расписание
           </h1>
           {schedule && (
             <div className="flex flex-col items-end text-xs font-normal text-gray-800 flex-shrink-0">
