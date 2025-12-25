@@ -82,7 +82,7 @@ function Home() {
   });
   // #endregion
   return (
-    <div className="min-h-[100dvh] bg-base-200 pt-5 pb-2 px-4 sm:py-10">
+    <div className="min-h-[100dvh] bg-base-200 pt-5 pb-8 px-4 sm:py-10">
       <div className="max-w-5xl mx-auto space-y-6 sm:space-y-8 w-full">
         <div 
           className={`flex justify-between items-center gap-2 transition-opacity duration-300 ${
@@ -164,7 +164,7 @@ function Home() {
               </svg>
             </div>
           </Link>
-          <footer className="mt-8 pb-4">
+          <footer className="mt-8 pb-8">
             <div className="flex flex-col items-center gap-2">
               <a 
                 href="mailto:onlineyanino@gmail.com"
