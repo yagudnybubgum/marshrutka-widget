@@ -100,8 +100,8 @@ function Home() {
           )}
         </div>
 
-        <div className="bg-base-200 pb-1 px-4 sm:px-10 pt-1">
-          <div className="flex gap-2">
+        <div className="bg-base-200 pb-1 sm:px-10 pt-1 w-fit">
+          <div className="flex gap-2 justify-start">
             <button
               onClick={() => {
                 // #region agent log
