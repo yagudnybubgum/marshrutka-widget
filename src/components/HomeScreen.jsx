@@ -18,10 +18,10 @@ const HomeScreen = () => {
 
         <div className="mb-8">
           <h1 className="text-2xl sm:text-3xl font-normal text-black mb-2">
-            Как добавить ярлык сайта на&nbsp;домашний экран телефона
+            Добавляем ярлык сайта на&nbsp;домашний экран телефона
           </h1>
           <p className="text-base text-black/70">
-            чтобы расписание было всегда под рукой
+            Расписание всегда будет под рукой
           </p>
         </div>
 

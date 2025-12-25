@@ -100,7 +100,7 @@ function Home() {
           )}
         </div>
 
-        <div className="sticky top-0 bg-base-200 z-10 pb-1 -mx-4 px-4 sm:-mx-10 sm:px-10 pt-1 -mt-2">
+        <div className="bg-base-200 pb-1 px-4 sm:px-10 pt-1">
           <div className="flex gap-2">
             <button
               onClick={() => {
@@ -109,7 +109,7 @@ function Home() {
                 // #endregion
                 setRouteNumber('533')
               }}
-              className={`px-4 py-2 text-sm font-normal rounded-full transition-colors border ${
+              className={`px-5 py-2 text-base font-normal rounded-full transition-colors border ${
                 routeNumber === '533'
                   ? 'bg-white text-black border-transparent'
                   : 'bg-transparent text-black/70 hover:text-black border-black/20'
@@ -124,7 +124,7 @@ function Home() {
                 // #endregion
                 setRouteNumber('429')
               }}
-              className={`px-4 py-2 text-sm font-normal rounded-full transition-colors relative border ${
+              className={`px-5 py-2 text-base font-normal rounded-full transition-colors relative border ${
                 routeNumber === '429'
                   ? 'bg-white text-black border-transparent'
                   : 'bg-transparent text-black/70 hover:text-black border-black/20'
