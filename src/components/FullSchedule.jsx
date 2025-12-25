@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
 import * as XLSX from 'xlsx'
 
-const FullSchedule = ({ onBack }) => {
+const FullSchedule = ({ routeNumber = '533', onBack }) => {
   const [scheduleData, setScheduleData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -22,7 +22,7 @@ const FullSchedule = ({ onBack }) => {
 
   useEffect(() => {
     loadScheduleFile()
-  }, [])
+  }, [routeNumber])
 
   // Обработчик скролла для скрытия/показа хедера
   useEffect(() => {
@@ -75,7 +75,7 @@ const FullSchedule = ({ onBack }) => {
       }
       
       const basePath = getBasePath()
-      const filePath = `${basePath}schedule.xlsx`.replace(/\/\//g, '/')
+      const filePath = `${basePath}schedule-${routeNumber}.xlsx`.replace(/\/\//g, '/')
       
       const response = await fetch(filePath)
       if (!response.ok) {
@@ -99,22 +99,48 @@ const FullSchedule = ({ onBack }) => {
   }
 
   const processScheduleData = (data) => {
-    if (data.length < 3) return null
+    if (data.length < 2) return null
 
-    const periodRow = data[0] || []
-    const directionRow = data[1] || []
-    const bodyRows = data.slice(2)
-
-    const columnMeta = periodRow.map((cell, idx) => {
+    const firstRow = data[0] || []
+    const secondRow = data[1] || []
+    
+    // Проверяем, есть ли в первой строке указание на период (будние/выходные)
+    const hasPeriodInfo = firstRow.some(cell => {
       const value = cell ? cell.toString().toLowerCase() : ''
-      if (value.includes('будн')) return { idx, type: 'weekday' }
-      if (value.includes('выходн')) return { idx, type: 'weekend' }
-      return { idx, type: null }
+      return value.includes('будн') || value.includes('выходн')
     })
+
+    let periodRow, directionRow, bodyRows
+
+    if (hasPeriodInfo) {
+      // Формат с периодом (как в 533): строка 1 = период, строка 2 = направления, строка 3+ = время
+      periodRow = firstRow
+      directionRow = secondRow
+      bodyRows = data.slice(2)
+    } else {
+      // Формат без периода (как в 429): строка 1 = направления, строка 2+ = время
+      periodRow = []
+      directionRow = firstRow
+      bodyRows = data.slice(1)
+    }
+
+    const columnMeta = hasPeriodInfo 
+      ? periodRow.map((cell, idx) => {
+          const value = cell ? cell.toString().toLowerCase() : ''
+          if (value.includes('будн')) return { idx, type: 'weekday' }
+          if (value.includes('выходн')) return { idx, type: 'weekend' }
+          return { idx, type: null }
+        })
+      : directionRow.map((cell, idx) => {
+          // Если нет информации о периоде, все колонки считаем будними
+          return { idx, type: 'weekday' }
+        })
 
     const formatDirectionName = (name) => {
       if (!name) return name
       const nameStr = name.toString().trim()
+      
+      // Обработка для маршрута 533 (Янино - Ладожская)
       if (nameStr.includes('Янино') && nameStr.includes('Ладожская')) {
         if (/Янино.*[=_]?[=>].*Ладожская/i.test(nameStr)) {
           return 'Из Янино'
@@ -123,6 +149,15 @@ const FullSchedule = ({ onBack }) => {
           return 'С Ладожской'
         }
       }
+      
+      // Обработка для маршрута 429 (Разметелево - Ладожская)
+      if (nameStr.includes('Разметелево')) {
+        return 'Из Разметелево'
+      }
+      if (nameStr.includes('Ладожская')) {
+        return 'С Ладожской'
+      }
+      
       return name
     }
 
@@ -166,33 +201,46 @@ const FullSchedule = ({ onBack }) => {
     const buildColumns = () => {
       const columns = []
       
-      // Будние дни
-      const weekdayCols = columnMeta.filter(col => col.type === 'weekday')
-      weekdayCols.forEach(col => {
-        columns.push({
-          period: 'Будние дни',
-          name: formatDirectionName(directionRow[col.idx] || ''),
-          times: extractTimesForColumn(col.idx),
-          colIdx: col.idx
+      if (hasPeriodInfo) {
+        // Будние дни
+        const weekdayCols = columnMeta.filter(col => col.type === 'weekday')
+        weekdayCols.forEach(col => {
+          columns.push({
+            period: 'Будние дни',
+            name: formatDirectionName(directionRow[col.idx] || ''),
+            times: extractTimesForColumn(col.idx),
+            colIdx: col.idx
+          })
         })
-      })
-      
-      // Выходные дни
-      const weekendCols = columnMeta.filter(col => col.type === 'weekend')
-      weekendCols.forEach(col => {
-        columns.push({
-          period: 'Выходные дни',
-          name: formatDirectionName(directionRow[col.idx] || ''),
-          times: extractTimesForColumn(col.idx),
-          colIdx: col.idx
+        
+        // Выходные дни
+        const weekendCols = columnMeta.filter(col => col.type === 'weekend')
+        weekendCols.forEach(col => {
+          columns.push({
+            period: 'Выходные дни',
+            name: formatDirectionName(directionRow[col.idx] || ''),
+            times: extractTimesForColumn(col.idx),
+            colIdx: col.idx
+          })
         })
-      })
+      } else {
+        // Формат без периода - все колонки считаем будними
+        columnMeta.forEach(col => {
+          columns.push({
+            period: 'Будние дни',
+            name: formatDirectionName(directionRow[col.idx] || ''),
+            times: extractTimesForColumn(col.idx),
+            colIdx: col.idx
+          })
+        })
+      }
       
       return columns.filter(col => col.times.length > 0)
     }
 
     return {
-      columns: buildColumns()
+      columns: buildColumns(),
+      hasPeriodInfo
     }
   }
 
@@ -209,6 +257,11 @@ const FullSchedule = ({ onBack }) => {
   // Фильтруем колонки по активному табу
   const activeColumns = useMemo(() => {
     if (!scheduleData) return []
+    
+    // Если нет информации о периоде, показываем все колонки (они все будние)
+    if (!scheduleData.hasPeriodInfo) {
+      return scheduleData.columns
+    }
     
     const targetPeriod = activeTab === 'weekday' ? 'Будние дни' : 'Выходные дни'
     return scheduleData.columns.filter(col => col.period === targetPeriod)
@@ -292,7 +345,7 @@ const FullSchedule = ({ onBack }) => {
             назад
           </button>
           <h1 className="text-xl font-normal text-black flex-1 text-center">
-            Маршрутка 533
+            Маршрутка {routeNumber}
           </h1>
           <div className="w-16"></div> {/* Spacer для центрирования */}
         </div>
@@ -308,28 +361,30 @@ const FullSchedule = ({ onBack }) => {
           }`}>
             {/* Tabs and Table Header - combined sticky */}
             <div className="sticky top-0 bg-base-200 z-20">
-              <div className="flex gap-2 mb-0">
-                <button
-                  onClick={() => setActiveTab('weekday')}
-                  className={`flex-1 py-3 px-4 text-sm font-normal transition-colors ${
-                    activeTab === 'weekday'
-                      ? 'bg-white text-black'
-                      : 'bg-transparent text-black/70 hover:text-black'
-                  }`}
-                >
-                  Будние дни
-                </button>
-                <button
-                  onClick={() => setActiveTab('weekend')}
-                  className={`flex-1 py-3 px-4 text-sm font-normal transition-colors ${
-                    activeTab === 'weekend'
-                      ? 'bg-white text-black'
-                      : 'bg-transparent text-black/70 hover:text-black'
-                  }`}
-                >
-                  Выходные дни
-                </button>
-              </div>
+              {scheduleData?.hasPeriodInfo && (
+                <div className="flex gap-2 mb-0">
+                  <button
+                    onClick={() => setActiveTab('weekday')}
+                    className={`flex-1 py-3 px-4 text-sm font-normal transition-colors ${
+                      activeTab === 'weekday'
+                        ? 'bg-white text-black'
+                        : 'bg-transparent text-black/70 hover:text-black'
+                    }`}
+                  >
+                    Будние дни
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('weekend')}
+                    className={`flex-1 py-3 px-4 text-sm font-normal transition-colors ${
+                      activeTab === 'weekend'
+                        ? 'bg-white text-black'
+                        : 'bg-transparent text-black/70 hover:text-black'
+                    }`}
+                  >
+                    Выходные дни
+                  </button>
+                </div>
+              )}
               
               {/* Table header */}
               <div className="flex border-b border-black/20">

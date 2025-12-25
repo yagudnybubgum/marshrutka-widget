@@ -1,15 +1,22 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import * as XLSX from 'xlsx'
 
-const MarshrutkaWidget = ({ onScheduleChange }) => {
+const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
   const [schedule, setSchedule] = useState(null)
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  // Автоматическая загрузка файла при старте
+  // Автоматическая загрузка файла при старте или изменении маршрута
   useEffect(() => {
+    // #region agent log
+    fetch('http://127.0.0.1:7244/ingest/d1583780-0508-4307-9920-67e4adfcc8a5',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'MarshrutkaWidget.jsx:10',message:'routeNumber changed in widget, resetting state',data:{routeNumber,prevSchedule:schedule,prevLoading:loading},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
+    // Сбрасываем состояние при смене маршрута
+    setSchedule(null)
+    setError(null)
+    setLoading(true)
     loadScheduleFile()
-  }, [])
+  }, [routeNumber])
 
   const loadScheduleFile = async () => {
     try {
@@ -29,7 +36,7 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
       }
       
       const basePath = getBasePath()
-      const filePath = `${basePath}schedule.xlsx`.replace(/\/\//g, '/') // Убираем двойные слэши
+      const filePath = `${basePath}schedule-${routeNumber}.xlsx`.replace(/\/\//g, '/') // Убираем двойные слэши
       console.log('Загрузка файла по пути:', filePath, 'BASE_URL:', import.meta.env.BASE_URL, 'location.pathname:', window.location.pathname)
       
       const response = await fetch(filePath)
@@ -45,41 +52,88 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
       const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: null })
       
       // Отладка: выводим первые строки файла
-      console.log('Excel файл загружен. Первые 10 строк:', jsonData.slice(0, 10))
+      console.log(`Excel файл для маршрута ${routeNumber} загружен. Первые 10 строк:`, jsonData.slice(0, 10))
       
       const processedSchedule = processScheduleData(jsonData)
-      console.log('Обработанное расписание:', processedSchedule)
+      console.log(`Обработанное расписание для маршрута ${routeNumber}:`, processedSchedule)
+      
+      if (!processedSchedule) {
+        console.warn(`Не удалось обработать данные для маршрута ${routeNumber}. Проверьте формат файла.`)
+        setError(`Не удалось обработать данные расписания для маршрута ${routeNumber}. Проверьте формат файла.`)
+        setLoading(false)
+        return
+      }
+      
+      // #region agent log
+      fetch('http://127.0.0.1:7244/ingest/d1583780-0508-4307-9920-67e4adfcc8a5',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'MarshrutkaWidget.jsx:64',message:'Schedule loaded, updating state',data:{routeNumber,hasSchedule:!!processedSchedule,scrollY:window.scrollY},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+      // #endregion
       setSchedule(processedSchedule)
       onScheduleChange?.(processedSchedule)
       setLoading(false)
     } catch (err) {
       console.error('Ошибка загрузки файла:', err)
-      setError('Не удалось загрузить файл расписания. Проверьте, что файл schedule.xlsx находится в папке public.')
+      setError(`Не удалось загрузить файл расписания для маршрута ${routeNumber}. Проверьте, что файл schedule-${routeNumber}.xlsx находится в папке public.`)
       setLoading(false)
     }
   }
 
   const processScheduleData = (data) => {
-    if (data.length < 3) return null
+    if (data.length < 2) {
+      console.warn('Недостаточно строк в данных:', data.length)
+      return null
+    }
 
     const today = new Date()
     const dayOfWeek = today.getDay()
     const isWeekend = dayOfWeek === 0 || dayOfWeek === 6
 
-    const periodRow = data[0] || []
-    const directionRow = data[1] || []
-    const bodyRows = data.slice(2)
-
-    const columnMeta = periodRow.map((cell, idx) => {
+    const firstRow = data[0] || []
+    const secondRow = data[1] || []
+    
+    // Проверяем, есть ли в первой строке указание на период (будние/выходные)
+    const hasPeriodInfo = firstRow.some(cell => {
       const value = cell ? cell.toString().toLowerCase() : ''
-      if (value.includes('будн')) return { idx, type: 'weekday' }
-      if (value.includes('выходн')) return { idx, type: 'weekend' }
-      return { idx, type: null }
+      return value.includes('будн') || value.includes('выходн')
     })
+
+    let periodRow, directionRow, bodyRows
+
+    if (hasPeriodInfo) {
+      // Формат с периодом (как в 533): строка 1 = период, строка 2 = направления, строка 3+ = время
+      periodRow = firstRow
+      directionRow = secondRow
+      bodyRows = data.slice(2)
+    } else {
+      // Формат без периода (как в 429): строка 1 = направления, строка 2+ = время
+      periodRow = []
+      directionRow = firstRow
+      bodyRows = data.slice(1)
+    }
+
+    console.log('Первая строка (период):', periodRow)
+    console.log('Строка направлений:', directionRow)
+    console.log('Количество строк с данными:', bodyRows.length)
+    console.log('Есть информация о периоде:', hasPeriodInfo)
+
+    const columnMeta = hasPeriodInfo 
+      ? periodRow.map((cell, idx) => {
+          const value = cell ? cell.toString().toLowerCase() : ''
+          if (value.includes('будн')) return { idx, type: 'weekday' }
+          if (value.includes('выходн')) return { idx, type: 'weekend' }
+          return { idx, type: null }
+        })
+      : directionRow.map((cell, idx) => {
+          // Если нет информации о периоде, все колонки считаем будними
+          return { idx, type: 'weekday' }
+        })
+    
+    console.log('Метаданные колонок:', columnMeta)
 
     const formatDirectionName = (name) => {
       if (!name) return name
       const nameStr = name.toString().trim()
+      
+      // Обработка для маршрута 533 (Янино - Ладожская)
       if (nameStr.includes('Янино') && nameStr.includes('Ладожская')) {
         if (/Янино.*[=_]?[=>].*Ладожская/i.test(nameStr)) {
           return 'Из Янино'
@@ -88,6 +142,15 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
           return 'С Ладожской'
         }
       }
+      
+      // Обработка для маршрута 429 (Разметелево - Ладожская)
+      if (nameStr.includes('Разметелево')) {
+        return 'Из Разметелево'
+      }
+      if (nameStr.includes('Ладожская')) {
+        return 'С Ладожской'
+      }
+      
       return name
     }
 
@@ -109,13 +172,26 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
     const weekdayDirections = buildDirections('weekday')
     const weekendDirections = buildDirections('weekend')
 
+    console.log('Направления будних дней:', weekdayDirections)
+    console.log('Направления выходных дней:', weekendDirections)
+
     const activeDirections = (() => {
+      // Если формат без периода, используем будние направления для всех дней
+      if (!hasPeriodInfo) {
+        return weekdayDirections.length ? weekdayDirections : []
+      }
+      // Если формат с периодом, выбираем по типу дня
       if (isWeekend && weekendDirections.length) return weekendDirections
       if (!isWeekend && weekdayDirections.length) return weekdayDirections
       return weekdayDirections.length ? weekdayDirections : weekendDirections
     })()
 
-    if (!activeDirections.length) return null
+    console.log('Активные направления:', activeDirections)
+
+    if (!activeDirections.length) {
+      console.warn('Нет активных направлений для обработки')
+      return null
+    }
 
     const primary = activeDirections[0]
     const secondary = activeDirections.length > 1 ? activeDirections[1] : null
@@ -251,8 +327,14 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
   const previousTrip1 = windowDir1.previousTrip
   const previousTrip2 = windowDir2.previousTrip
 
+  // #region agent log
+  const widgetRef = useRef(null);
+  useEffect(() => {
+    fetch('http://127.0.0.1:7244/ingest/d1583780-0508-4307-9920-67e4adfcc8a5',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'MarshrutkaWidget.jsx:324',message:'MarshrutkaWidget render',data:{routeNumber,loading,hasSchedule:!!schedule,hasError:!!error,widgetHeight:widgetRef.current?.offsetHeight,scrollY:window.scrollY},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'C'})}).catch(()=>{});
+  });
+  // #endregion
   return (
-    <div className="w-full space-y-5">
+    <div ref={widgetRef} className="w-full space-y-5 min-h-[400px]">
       {loading && (
         <div className="flex flex-col items-center gap-3 py-10 text-black/70">
           <span className="loading loading-spinner loading-lg text-black" />
@@ -269,7 +351,7 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
       {schedule && !loading && (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="card bg-base-100 rounded-none">
+            <div className="card bg-base-100 rounded-xl">
               <div className="card-body gap-4 p-4">
                 {nextTrip1 ? (
                   <div className="space-y-4">
@@ -313,7 +395,7 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
             </div>
 
             {schedule.direction2.length > 0 && (
-              <div className="card bg-base-100 rounded-none">
+              <div className="card bg-base-100 rounded-xl">
                 <div className="card-body gap-4 p-4">
                   {nextTrip2 ? (
                     <div className="space-y-4">
@@ -368,7 +450,7 @@ const MarshrutkaWidget = ({ onScheduleChange }) => {
             <div className="max-w-md space-y-2">
               <h2 className="text-2xl font-normal text-black">добавьте расписание</h2>
               <p className="text-black/70">
-                поместите файл `schedule.xlsx` в папку `public`, и мы автоматически подтянем данные.
+                поместите файл <code>schedule-{routeNumber}.xlsx</code> в папку <code>public</code>, и мы автоматически подтянем данные.
               </p>
             </div>
           </div>
