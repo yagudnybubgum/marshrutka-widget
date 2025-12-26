@@ -84,7 +84,7 @@ function Home() {
           }`}
         >
           <h1 className="text-xl font-normal text-black">
-            Расписание
+            Расписание маршруток Янино-1
           </h1>
           {schedule && (
             <div className="flex flex-col items-end text-xs font-normal text-gray-800 flex-shrink-0">
