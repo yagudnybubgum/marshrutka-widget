@@ -440,6 +440,21 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
                 })}
               </tbody>
             </table>
+            
+            {/* Footer with source link */}
+            <div className="mt-8 pb-8 flex justify-center">
+              <div className="flex flex-col items-center gap-2">
+                <p className="text-xs text-black/70">Источник расписания</p>
+                <a 
+                  href="https://vk.com/doc546677069_685452050?hash=DNg9ALCXkg2QX3cQxTPS3fy3eG1D449zfQ9zZtxAuvk"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-black/70 hover:text-black transition-colors"
+                >
+                  https://vk.com/doc546677069_685452050
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>

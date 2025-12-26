@@ -103,10 +103,10 @@ function Home() {
                 // #endregion
                 setRouteNumber('533')
               }}
-              className={`px-5 py-2 text-base font-normal rounded-full transition-colors border ${
+              className={`px-5 py-2 text-base font-normal rounded-full transition-colors ${
                 routeNumber === '533'
-                  ? 'bg-white text-black border-transparent'
-                  : 'bg-transparent text-black/70 hover:text-black border-black/20'
+                  ? 'bg-blue-100 text-blue-900'
+                  : 'bg-gray-100 text-black/70 hover:text-black'
               }`}
             >
               533
@@ -118,10 +118,10 @@ function Home() {
                 // #endregion
                 setRouteNumber('429')
               }}
-              className={`px-5 py-2 text-base font-normal rounded-full transition-colors relative border ${
+              className={`px-5 py-2 text-base font-normal rounded-full transition-colors relative ${
                 routeNumber === '429'
-                  ? 'bg-white text-black border-transparent'
-                  : 'bg-transparent text-black/70 hover:text-black border-black/20'
+                  ? 'bg-blue-100 text-blue-900'
+                  : 'bg-gray-100 text-black/70 hover:text-black'
               }`}
             >
               429
@@ -160,12 +160,12 @@ function Home() {
           </Link>
           <footer className="mt-8 pb-8">
             <div className="flex flex-col items-center gap-2">
-              <a 
-                href="mailto:onlineyanino@gmail.com"
+              <Link 
+                to="/about"
                 className="text-xs text-black/70 text-center hover:text-black transition-colors"
               >
-                Связаться с разработчиком
-              </a>
+                О проекте
+              </Link>
               <Link 
                 to="/privacy-policy"
                 className="text-xs text-black/70 text-center hover:text-black transition-colors"

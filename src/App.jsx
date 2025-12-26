@@ -4,6 +4,7 @@ import PrivacyPolicy from './components/PrivacyPolicy'
 import HomeScreen from './components/HomeScreen'
 import FullSchedule533 from './components/FullSchedule533'
 import FullSchedule429 from './components/FullSchedule429'
+import About from './components/About'
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Route path="/homescreen" element={<HomeScreen />} />
       <Route path="/full533" element={<FullSchedule533 />} />
       <Route path="/full429" element={<FullSchedule429 />} />
+      <Route path="/about" element={<About />} />
     </Routes>
   )
 }
