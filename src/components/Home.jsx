@@ -117,8 +117,8 @@ function Home() {
               </svg>
             </div>
           </Link>
-          <footer className="mt-8 pb-8">
-            <div className="flex flex-col items-center gap-2">
+          <footer className="mt-14 pb-0">
+            <div className="flex flex-col items-center gap-4 mt-5">
               <Link 
                 to="/about"
                 className="text-xs text-black/70 text-center hover:text-black transition-colors"
