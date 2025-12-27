@@ -6,9 +6,7 @@ function Home() {
   const [routeNumber, setRouteNumber] = useState('533')
   const [schedule, setSchedule] = useState(null)
   const [currentDateTime, setCurrentDateTime] = useState(new Date())
-  const [headerVisible, setHeaderVisible] = useState(true)
   const scrollContainerRef = useRef(null)
-  const lastScrollTopRef = useRef(0)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -35,72 +33,36 @@ function Home() {
 
   // Сбрасываем расписание при смене маршрута
   useEffect(() => {
-    // #region agent log
-    fetch('http://127.0.0.1:7244/ingest/d1583780-0508-4307-9920-67e4adfcc8a5',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Home.jsx:39',message:'routeNumber changed, resetting schedule',data:{routeNumber,prevSchedule:schedule},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-    // #endregion
     setSchedule(null)
   }, [routeNumber])
 
-  // Обработчик скролла для скрытия/показа заголовка
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollTop = window.scrollY || document.documentElement.scrollTop
-      const lastScrollTop = lastScrollTopRef.current
-      
-      // Если в самом верху - всегда показываем
-      if (currentScrollTop <= 0) {
-        setHeaderVisible(true)
-        lastScrollTopRef.current = 0
-        return
-      }
-      
-      // Если прокрутили вниз больше чем на 50px - скрываем
-      // Если прокрутили вверх - показываем
-      if (currentScrollTop > lastScrollTop && currentScrollTop > 50) {
-        setHeaderVisible(false)
-      } else if (currentScrollTop < lastScrollTop) {
-        setHeaderVisible(true)
-      }
-      
-      lastScrollTopRef.current = currentScrollTop
-    }
 
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  // #region agent log
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    fetch('http://127.0.0.1:7244/ingest/d1583780-0508-4307-9920-67e4adfcc8a5',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Home.jsx:75',message:'Home component render',data:{routeNumber,scheduleExists:!!schedule,headerVisible,containerHeight:container?.offsetHeight,scrollY:window.scrollY},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'A'})}).catch(()=>{});
-  });
-  // #endregion
   return (
     <div className="min-h-[100dvh] bg-base-200 pt-5 pb-8 px-4 sm:py-10">
-      <div className="max-w-5xl mx-auto space-y-6 sm:space-y-8 w-full">
-        <div 
-          className={`flex justify-between items-center gap-2 transition-opacity duration-300 ${
-            headerVisible ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'
-          }`}
-        >
-          <h1 className="text-xl font-normal text-black">
-            Расписание маршруток Янино-1
-          </h1>
-          {schedule && (
-            <div className="flex flex-col items-end text-xs font-normal text-gray-800 flex-shrink-0">
-              <span>{formatDate(currentDateTime)}</span>
-              <span>{getDayType(currentDateTime)}</span>
-            </div>
-          )}
+      <div className="max-w-5xl mx-auto space-y-3 sm:space-y-8 w-full">
+        <div className="flex-shrink-0">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+            <h1 className="text-xl font-normal text-black">
+              Расписание маршруток Янино-1
+            </h1>
+            {schedule && (
+              <>
+                <span className="text-xs font-normal text-gray-800 sm:hidden">
+                  {formatDate(currentDateTime)}, {getDayType(currentDateTime).toLowerCase()}
+                </span>
+                <div className="hidden sm:flex sm:flex-col sm:items-end text-xs font-normal text-gray-800 flex-shrink-0">
+                  <span>{formatDate(currentDateTime)}</span>
+                  <span>{getDayType(currentDateTime)}</span>
+                </div>
+              </>
+            )}
+          </div>
         </div>
 
         <div className="bg-base-200 pb-1 sm:px-10 pt-1 w-fit">
           <div className="flex gap-2 justify-start">
             <button
               onClick={() => {
-                // #region agent log
-                fetch('http://127.0.0.1:7244/ingest/d1583780-0508-4307-9920-67e4adfcc8a5',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Home.jsx:97',message:'Tab button clicked',data:{newRoute:'533',currentRoute:routeNumber,scrollY:window.scrollY,contentHeight:document.querySelector('[data-cursor-element-id="cursor-el-14"]')?.offsetHeight},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
-                // #endregion
                 setRouteNumber('533')
               }}
               className={`px-5 py-2 text-base font-normal rounded-full transition-colors ${
@@ -113,9 +75,6 @@ function Home() {
             </button>
             <button
               onClick={() => {
-                // #region agent log
-                fetch('http://127.0.0.1:7244/ingest/d1583780-0508-4307-9920-67e4adfcc8a5',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Home.jsx:107',message:'Tab button clicked',data:{newRoute:'429',currentRoute:routeNumber,scrollY:window.scrollY,contentHeight:document.querySelector('[data-cursor-element-id="cursor-el-14"]')?.offsetHeight},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
-                // #endregion
                 setRouteNumber('429')
               }}
               className={`px-5 py-2 text-base font-normal rounded-full transition-colors relative ${
@@ -132,7 +91,7 @@ function Home() {
           </div>
         </div>
 
-        <div ref={scrollContainerRef} className="mt-4">
+        <div ref={scrollContainerRef} className="mt-3">
           <MarshrutkaWidget key={routeNumber} routeNumber={routeNumber} onScheduleChange={setSchedule} />
           {schedule && (
             <div className="mt-6 flex justify-center">
