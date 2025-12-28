@@ -294,7 +294,7 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
   const formatTime = (minutes) => {
     const hours = Math.floor(minutes / 60) % 24
     const mins = minutes % 60
-    return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`
+    return `${hours}:${mins.toString().padStart(2, '0')}`
   }
 
   const formatTimeUntil = (minutes) => {

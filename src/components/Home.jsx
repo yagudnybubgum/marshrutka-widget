@@ -39,27 +39,21 @@ function Home() {
 
   return (
     <div className="min-h-[100dvh] bg-base-200 pt-5 pb-8 px-4 sm:py-10">
-      <div className="max-w-5xl mx-auto space-y-3 sm:space-y-8 w-full">
+      <div className="max-w-5xl mx-auto space-y-3 sm:space-y-4 w-full">
         <div className="flex-shrink-0">
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+          <div className="flex flex-col gap-2">
             <h1 className="text-xl font-normal text-black">
               Расписание маршруток Янино-1
             </h1>
             {schedule && (
-              <>
-                <span className="text-xs font-normal text-gray-800 sm:hidden">
-                  {formatDate(currentDateTime)}, {getDayType(currentDateTime).toLowerCase()}
-                </span>
-                <div className="hidden sm:flex sm:flex-col sm:items-end text-xs font-normal text-gray-800 flex-shrink-0">
-                  <span>{formatDate(currentDateTime)}</span>
-                  <span>{getDayType(currentDateTime)}</span>
-                </div>
-              </>
+              <span className="text-sm font-normal text-gray-800">
+                {formatDate(currentDateTime)}, {getDayType(currentDateTime).toLowerCase()}
+              </span>
             )}
           </div>
         </div>
 
-        <div className="bg-base-200 pb-1 sm:px-10 pt-1 w-fit">
+        <div className="bg-base-200 pb-1 pt-1 w-fit">
           <div className="flex gap-2 justify-start">
             <button
               onClick={() => {
