@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import MarshrutkaWidget from './MarshrutkaWidget'
+import { getDayType as getDayTypeUtil } from '../utils/holidays'
 
 function Home() {
   const [routeNumber, setRouteNumber] = useState('533')
@@ -27,8 +28,7 @@ function Home() {
   }
 
   const getDayType = (date) => {
-    const dayOfWeek = date.getDay()
-    return dayOfWeek === 0 || dayOfWeek === 6 ? 'Выходной' : 'Будний'
+    return getDayTypeUtil(date)
   }
 
   // Сбрасываем расписание при смене маршрута

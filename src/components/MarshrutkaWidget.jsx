@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
 import * as XLSX from 'xlsx'
+import { isWeekendOrHoliday } from '../utils/holidays'
 
 const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
   const [schedule, setSchedule] = useState(null)
@@ -84,8 +85,7 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
     }
 
     const today = new Date()
-    const dayOfWeek = today.getDay()
-    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6
+    const isWeekend = isWeekendOrHoliday(today)
 
     const firstRow = data[0] || []
     const secondRow = data[1] || []

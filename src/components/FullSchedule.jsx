@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
 import * as XLSX from 'xlsx'
+import { isWeekendOrHoliday } from '../utils/holidays'
 
 const FullSchedule = ({ routeNumber = '533', onBack }) => {
   const [scheduleData, setScheduleData] = useState(null)
@@ -10,7 +11,7 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
   const lastScrollTopRef = useRef(0)
   
   // Определяем активный таб (будние или выходные)
-  const isWeekend = now.getDay() === 0 || now.getDay() === 6
+  const isWeekend = isWeekendOrHoliday(now)
   const [activeTab, setActiveTab] = useState(isWeekend ? 'weekend' : 'weekday')
 
   useEffect(() => {
