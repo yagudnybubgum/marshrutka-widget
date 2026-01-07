@@ -4,6 +4,7 @@ import PrivacyPolicy from './components/PrivacyPolicy'
 import HomeScreen from './components/HomeScreen'
 import FullSchedule533 from './components/FullSchedule533'
 import FullSchedule429 from './components/FullSchedule429'
+import FullSchedule664 from './components/FullSchedule664'
 import About from './components/About'
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
       <Route path="/homescreen" element={<HomeScreen />} />
       <Route path="/full533" element={<FullSchedule533 />} />
       <Route path="/full429" element={<FullSchedule429 />} />
+      <Route path="/full664" element={<FullSchedule664 />} />
       <Route path="/about" element={<About />} />
     </Routes>
   )

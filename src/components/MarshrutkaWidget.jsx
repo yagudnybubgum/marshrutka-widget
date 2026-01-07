@@ -151,6 +151,14 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
         return 'С Ладожской'
       }
       
+      // Обработка для маршрута 664 (Янино - МЕГА Дыбенко)
+      if (nameStr.includes('МЕГА') || nameStr.includes('Дыбенко')) {
+        return 'От "МЕГА Дыбенко"'
+      }
+      if (nameStr.includes('Янино') && !nameStr.includes('Ладожская')) {
+        return 'Из Янино'
+      }
+      
       return name
     }
 

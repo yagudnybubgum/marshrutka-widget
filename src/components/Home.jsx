@@ -71,13 +71,25 @@ function Home() {
               onClick={() => {
                 setRouteNumber('429')
               }}
-              className={`px-5 py-2 text-base font-normal rounded-full transition-colors relative ${
+              className={`px-5 py-2 text-base font-normal rounded-full transition-colors ${
                 routeNumber === '429'
                   ? 'bg-blue-100 text-blue-900'
                   : 'bg-gray-100 text-black/70 hover:text-black'
               }`}
             >
               429
+            </button>
+            <button
+              onClick={() => {
+                setRouteNumber('664')
+              }}
+              className={`px-5 py-2 text-base font-normal rounded-full transition-colors relative ${
+                routeNumber === '664'
+                  ? 'bg-blue-100 text-blue-900'
+                  : 'bg-gray-100 text-black/70 hover:text-black'
+              }`}
+            >
+              664
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-full leading-none">
                 new
               </span>
@@ -90,7 +102,7 @@ function Home() {
           {schedule && (
             <div className="mt-6 flex justify-center">
               <Link
-                to={routeNumber === '533' ? '/full533' : '/full429'}
+                to={routeNumber === '533' ? '/full533' : routeNumber === '429' ? '/full429' : '/full664'}
                 className="text-base font-normal text-black/70 hover:text-black transition-colors"
               >
                 Полное расписание
