@@ -45,11 +45,9 @@ function Home() {
             <h1 className="text-xl font-normal text-black">
               Расписание маршруток Янино-1
             </h1>
-            {schedule && (
-              <span className="text-sm font-normal text-gray-800">
-                {formatDate(currentDateTime)}, {getDayType(currentDateTime).toLowerCase()}
-              </span>
-            )}
+            <span className="text-sm font-normal text-gray-800">
+              {formatDate(currentDateTime)}, {getDayType(currentDateTime).toLowerCase()}
+            </span>
           </div>
         </div>
 
