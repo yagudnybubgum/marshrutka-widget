@@ -379,11 +379,6 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
                     </div>
                     <div className="divider my-0"></div>
                       <div className="space-y-2">
-                        {previousTrip1 && (
-                          <p className="text-sm text-black/80">
-                            {`Предыдущая в ${formatTime(previousTrip1.time)}${previousTrip1.isTomorrow ? ' (завтра)' : ''}`}
-                          </p>
-                        )}
                         {followingTrips1.length > 0 && (
                           <p className="text-sm text-black/80">
                           {`Следующие в ${followingTrips1
@@ -392,6 +387,11 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
                             .join(', ')}`}
                         </p>
                       )}
+                        {previousTrip1 && (
+                          <p className="text-sm text-black/80">
+                            {`Предыдущая в ${formatTime(previousTrip1.time)}${previousTrip1.isTomorrow ? ' (завтра)' : ''}`}
+                          </p>
+                        )}
                       </div>
                   </div>
                 ) : (
@@ -425,17 +425,17 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
                       </div>
                       <div className="divider my-0"></div>
                       <div className="space-y-2">
-                        {previousTrip2 && (
-                          <p className="text-sm text-black/80">
-                            {`Предыдущая в ${formatTime(previousTrip2.time)}${previousTrip2.isTomorrow ? ' (завтра)' : ''}`}
-                          </p>
-                        )}
                         {followingTrips2.length > 0 && (
                           <p className="text-sm text-black/80">
                             {`Следующие в ${followingTrips2
                               .slice(0, 3)
                               .map(t => `${formatTime(t.time)}${t.isTomorrow ? ' (завтра)' : ''}`)
                               .join(', ')}`}
+                          </p>
+                        )}
+                        {previousTrip2 && (
+                          <p className="text-sm text-black/80">
+                            {`Предыдущая в ${formatTime(previousTrip2.time)}${previousTrip2.isTomorrow ? ' (завтра)' : ''}`}
                           </p>
                         )}
                       </div>
