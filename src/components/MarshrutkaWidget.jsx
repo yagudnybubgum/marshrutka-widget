@@ -6,6 +6,7 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
   const [schedule, setSchedule] = useState(null)
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [showLoadingIndicator, setShowLoadingIndicator] = useState(false)
 
   // Автоматическая загрузка файла при старте или изменении маршрута
   useEffect(() => {
@@ -16,8 +17,25 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
     setSchedule(null)
     setError(null)
     setLoading(true)
+    setShowLoadingIndicator(false)
     loadScheduleFile()
   }, [routeNumber])
+
+  // Показываем индикатор загрузки только после 3 секунд
+  useEffect(() => {
+    if (!loading) {
+      setShowLoadingIndicator(false)
+      return
+    }
+
+    const timer = setTimeout(() => {
+      if (loading) {
+        setShowLoadingIndicator(true)
+      }
+    }, 3000) // 3 секунды задержки
+
+    return () => clearTimeout(timer)
+  }, [loading])
 
   const loadScheduleFile = async () => {
     try {
@@ -343,7 +361,7 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
   // #endregion
   return (
     <div ref={widgetRef} className="w-full space-y-5 min-h-[400px]">
-      {loading && (
+      {loading && showLoadingIndicator && (
         <div className="flex flex-col items-center gap-3 py-10 text-black/70">
           <span className="loading loading-spinner loading-lg text-black" />
           <p className="text-sm sm:text-base font-normal text-black">загружаем расписание…</p>
