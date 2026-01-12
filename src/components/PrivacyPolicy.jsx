@@ -6,9 +6,12 @@ function PrivacyPolicy() {
       <div className="max-w-4xl mx-auto">
         <Link 
           to="/"
-          className="text-xs text-black/70 hover:text-black transition-colors inline-block mb-6"
+          className="text-black hover:text-black/70 transition-colors flex items-center gap-1 text-sm font-normal mb-6"
         >
-          ← Назад
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+          </svg>
+          назад
         </Link>
         
         <div className="bg-white rounded-lg p-6 sm:p-8 space-y-6 text-black">
