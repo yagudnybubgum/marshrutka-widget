@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom'
+import Footer from './Footer'
 
 function PrivacyPolicy() {
   return (
-    <div className="min-h-[100dvh] bg-base-200 py-6 px-4 sm:py-10">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-[100dvh] bg-base-200 py-6 px-4 sm:py-10 flex flex-col">
+      <div className="max-w-4xl mx-auto w-full flex-1 flex flex-col">
         <Link 
           to="/"
           className="text-black hover:text-black/70 transition-colors flex items-center gap-1 text-sm font-normal mb-6"
@@ -98,6 +99,8 @@ function PrivacyPolicy() {
             </div>
           </section>
         </div>
+        
+        <Footer className="mt-auto" />
       </div>
     </div>
   )

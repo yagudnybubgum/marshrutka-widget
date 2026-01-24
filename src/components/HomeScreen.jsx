@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import Footer from './Footer'
 
 const HomeScreen = () => {
   return (
@@ -49,16 +50,9 @@ const HomeScreen = () => {
           </a>
         </div>
       </div>
-      <footer className="max-w-5xl mx-auto w-full py-2 sm:mt-8 sm:pb-4 flex-shrink-0">
-        <div className="flex flex-col items-center gap-2">
-          <Link 
-            to="/privacy-policy"
-            className="text-xs text-black/70 text-center hover:text-black transition-colors"
-          >
-            Политика конфиденциальности
-          </Link>
-        </div>
-      </footer>
+      <div className="max-w-5xl mx-auto w-full flex-shrink-0 mt-auto">
+        <Footer />
+      </div>
     </div>
   )
 }

@@ -155,6 +155,17 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
       if (nameStr.includes('Разметелево')) {
         return 'Из Разметелево'
       }
+      
+      // Обработка для маршрута 430А (Ёксолово - Ладожская)
+      if (nameStr.includes('Ёксолово') || nameStr.includes('Ексолово')) {
+        return 'Из Ёксолово'
+      }
+      
+      // Обработка для маршрута 453 (Дубровка - Ладожская)
+      if (nameStr.includes('Дубровка')) {
+        return 'Из Дубровки'
+      }
+      
       if (nameStr.includes('Ладожская')) {
         return 'С Ладожской'
       }

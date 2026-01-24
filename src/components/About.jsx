@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom'
+import Footer from './Footer'
 
 function About() {
   return (
-    <div className="min-h-[100dvh] bg-base-200 py-6 px-4 sm:py-10">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-[100dvh] bg-base-200 py-6 px-4 sm:py-10 flex flex-col">
+      <div className="max-w-4xl mx-auto w-full flex-1 flex flex-col">
         <Link 
           to="/"
           className="text-black hover:text-black/70 transition-colors flex items-center gap-1 text-sm font-normal mb-6"
@@ -41,16 +42,7 @@ function About() {
           </div>
         </div>
         
-        <footer className="mt-6 pb-4">
-          <div className="flex flex-col items-center gap-2">
-            <Link 
-              to="/privacy-policy"
-              className="text-xs text-black/70 text-center hover:text-black transition-colors"
-            >
-              Политика конфиденциальности
-            </Link>
-          </div>
-        </footer>
+        <Footer className="mt-auto" />
       </div>
     </div>
   )

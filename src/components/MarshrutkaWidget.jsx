@@ -165,6 +165,17 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
       if (nameStr.includes('Разметелево')) {
         return 'Из Разметелево'
       }
+      
+      // Обработка для маршрута 430А (Ёксолово - Ладожская)
+      if (nameStr.includes('Ёксолово') || nameStr.includes('Ексолово')) {
+        return 'Из Ёксолово'
+      }
+      
+      // Обработка для маршрута 453 (Дубровка - Ладожская)
+      if (nameStr.includes('Дубровка')) {
+        return 'Из Дубровки'
+      }
+      
       if (nameStr.includes('Ладожская')) {
         return 'С Ладожской'
       }
@@ -360,7 +371,7 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
   });
   // #endregion
   return (
-    <div ref={widgetRef} className="w-full space-y-5 min-h-[400px]">
+    <div ref={widgetRef} className="w-full space-y-5">
       {loading && showLoadingIndicator && (
         <div className="flex flex-col items-center gap-3 py-10 text-black/70">
           <span className="loading loading-spinner loading-lg text-black" />
@@ -395,7 +406,6 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
                         </p>
                       </div>
                     </div>
-                    <div className="divider my-0"></div>
                       <div className="space-y-2">
                         {followingTrips1.length > 0 && (
                           <p className="text-sm text-black/80">
@@ -441,7 +451,6 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
                           </p>
                         </div>
                       </div>
-                      <div className="divider my-0"></div>
                       <div className="space-y-2">
                         {followingTrips2.length > 0 && (
                           <p className="text-sm text-black/80">

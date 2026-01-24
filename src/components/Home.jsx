@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import MarshrutkaWidget from './MarshrutkaWidget'
+import Footer from './Footer'
 import { getDayType as getDayTypeUtil } from '../utils/holidays'
 
 function Home() {
@@ -38,8 +39,8 @@ function Home() {
 
 
   return (
-    <div className="min-h-[100dvh] bg-base-200 pt-5 pb-8 px-4 sm:py-10">
-      <div className="max-w-5xl mx-auto space-y-3 sm:space-y-4 w-full">
+    <div className="min-h-[100dvh] bg-base-200 pt-5 pb-8 px-4 sm:py-10 flex flex-col">
+      <div className="max-w-5xl mx-auto space-y-3 sm:space-y-4 w-full flex-1 flex flex-col">
         <div className="flex-shrink-0">
           <div className="flex flex-col gap-2">
             <h1 className="text-xl font-normal text-black">
@@ -51,13 +52,11 @@ function Home() {
           </div>
         </div>
 
-        <div className="bg-base-200 pb-1 pt-1 w-fit">
-          <div className="flex gap-2 justify-start">
+        <div className="bg-base-200 -mx-4 px-4 overflow-x-auto scrollbar-hide">
+          <div className="flex gap-2 pt-3 pb-1">
             <button
-              onClick={() => {
-                setRouteNumber('533')
-              }}
-              className={`px-5 py-2 text-base font-normal rounded-full transition-colors ${
+              onClick={() => setRouteNumber('533')}
+              className={`flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors ${
                 routeNumber === '533'
                   ? 'bg-blue-100 text-blue-900'
                   : 'bg-gray-100 text-black/70 hover:text-black'
@@ -66,10 +65,8 @@ function Home() {
               533
             </button>
             <button
-              onClick={() => {
-                setRouteNumber('429')
-              }}
-              className={`px-5 py-2 text-base font-normal rounded-full transition-colors ${
+              onClick={() => setRouteNumber('429')}
+              className={`flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors ${
                 routeNumber === '429'
                   ? 'bg-blue-100 text-blue-900'
                   : 'bg-gray-100 text-black/70 hover:text-black'
@@ -78,16 +75,37 @@ function Home() {
               429
             </button>
             <button
-              onClick={() => {
-                setRouteNumber('664')
-              }}
-              className={`px-5 py-2 text-base font-normal rounded-full transition-colors relative ${
+              onClick={() => setRouteNumber('664')}
+              className={`flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors ${
                 routeNumber === '664'
                   ? 'bg-blue-100 text-blue-900'
                   : 'bg-gray-100 text-black/70 hover:text-black'
               }`}
             >
               664
+            </button>
+            <button
+              onClick={() => setRouteNumber('430A')}
+              className={`flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors relative ${
+                routeNumber === '430A'
+                  ? 'bg-blue-100 text-blue-900'
+                  : 'bg-gray-100 text-black/70 hover:text-black'
+              }`}
+            >
+              430А
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-full leading-none">
+                new
+              </span>
+            </button>
+            <button
+              onClick={() => setRouteNumber('453')}
+              className={`flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors relative ${
+                routeNumber === '453'
+                  ? 'bg-blue-100 text-blue-900'
+                  : 'bg-gray-100 text-black/70 hover:text-black'
+              }`}
+            >
+              453
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-full leading-none">
                 new
               </span>
@@ -95,12 +113,12 @@ function Home() {
           </div>
         </div>
 
-        <div ref={scrollContainerRef} className="mt-3">
+        <div ref={scrollContainerRef} className="mt-3 flex-1">
           <MarshrutkaWidget key={routeNumber} routeNumber={routeNumber} onScheduleChange={setSchedule} />
           {schedule && (
             <div className="mt-6 flex justify-center">
               <Link
-                to={routeNumber === '533' ? '/full533' : routeNumber === '429' ? '/full429' : '/full664'}
+                to={`/full${routeNumber}`}
                 className="text-base font-normal text-black/70 hover:text-black transition-colors"
               >
                 Полное расписание
@@ -121,23 +139,8 @@ function Home() {
               </svg>
             </div>
           </Link>
-          <footer className="mt-14 pb-0">
-            <div className="flex flex-col items-center gap-4 mt-5">
-              <Link 
-                to="/about"
-                className="text-xs text-black/70 text-center hover:text-black transition-colors"
-              >
-                О проекте
-              </Link>
-              <Link 
-                to="/privacy-policy"
-                className="text-xs text-black/70 text-center hover:text-black transition-colors"
-              >
-                Политика конфиденциальности
-              </Link>
-            </div>
-          </footer>
         </div>
+        <Footer className="mt-auto" />
       </div>
     </div>
   )
