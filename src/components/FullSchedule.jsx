@@ -35,11 +35,20 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
     const handleScroll = () => {
       const currentScrollTop = scrollContainer.scrollTop
       const lastScrollTop = lastScrollTopRef.current
+      const scrollHeight = scrollContainer.scrollHeight
+      const clientHeight = scrollContainer.clientHeight
       
       // Если в самом верху - всегда показываем
       if (currentScrollTop <= 0) {
         setHeaderVisible(true)
         lastScrollTopRef.current = 0
+        return
+      }
+      
+      // Если близко к низу - не меняем состояние хедера (предотвращает прыжки)
+      const distanceFromBottom = scrollHeight - currentScrollTop - clientHeight
+      if (distanceFromBottom < 50) {
+        lastScrollTopRef.current = currentScrollTop
         return
       }
       
@@ -365,12 +374,10 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
 
       {/* Content */}
       <div className="flex-1 min-h-0 overflow-hidden">
-        <div className={`h-full max-w-7xl mx-auto transition-all duration-300 ${
+        <div className={`h-full max-w-7xl mx-auto ${
           headerVisible ? 'pt-20' : 'pt-0'
         }`}>
-          <div className={`h-full overflow-y-auto schedule-scroll-container pb-4 transition-all duration-300 ${
-            headerVisible ? 'px-4' : 'px-4'
-          }`}>
+          <div className="h-full overflow-y-auto schedule-scroll-container pb-4 px-4">
             {/* Tabs and Table Header - combined sticky */}
             <div className="sticky top-0 bg-base-200 z-20">
               {scheduleData?.hasPeriodInfo && (
