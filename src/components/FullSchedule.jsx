@@ -381,23 +381,23 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
             {/* Tabs and Table Header - combined sticky */}
             <div className="sticky top-0 bg-base-200 z-20">
               {scheduleData?.hasPeriodInfo && (
-                <div className="flex gap-2 mb-0">
+                <div className="flex gap-2 mb-4 pt-1">
                   <button
                     onClick={() => setActiveTab('weekday')}
-                    className={`flex-1 py-3 px-4 text-sm font-normal transition-colors ${
+                    className={`flex-1 px-5 py-2 text-base font-normal rounded-full transition-colors ${
                       activeTab === 'weekday'
-                        ? 'bg-white text-black'
-                        : 'bg-transparent text-black/70 hover:text-black'
+                        ? 'bg-blue-100 text-blue-900'
+                        : 'text-black/70 hover:text-black'
                     }`}
                   >
                     Будние дни
                   </button>
                   <button
                     onClick={() => setActiveTab('weekend')}
-                    className={`flex-1 py-3 px-4 text-sm font-normal transition-colors ${
+                    className={`flex-1 px-5 py-2 text-base font-normal rounded-full transition-colors ${
                       activeTab === 'weekend'
-                        ? 'bg-white text-black'
-                        : 'bg-transparent text-black/70 hover:text-black'
+                        ? 'bg-blue-100 text-blue-900'
+                        : 'text-black/70 hover:text-black'
                     }`}
                   >
                     Выходные дни
@@ -405,12 +405,12 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
                 </div>
               )}
               
-              {/* Table header */}
-              <div className="flex border-b border-black/20">
+              {/* Column headers */}
+              <div className="flex">
                 {activeColumns.map((col, idx) => (
                   <div
                     key={idx}
-                    className="flex-1 text-left px-3 py-3 text-sm font-normal text-black/70"
+                    className="flex-1 text-left px-3 py-3 text-sm font-normal text-black/70 border-b border-black/20"
                   >
                     {col.name}
                   </div>
@@ -418,47 +418,26 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
               </div>
             </div>
 
-            {/* Table with 2 columns */}
-            <table className="w-full border-collapse">
-              <thead className="sr-only">
-                {/* Скрытый thead для семантики */}
-                <tr>
-                  {activeColumns.map((col, idx) => (
-                    <th key={idx}>
-                      {col.name}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {tableRows.map((row, rowIdx) => {
-                  const isCurrent = Math.abs(row.time - currentTime) < 2
-                  return (
-                    <tr 
-                      key={rowIdx} 
-                      className={`border-b border-black/10 ${
-                        isCurrent ? 'bg-yellow-100' : ''
-                      }`}
-                      style={{ height: '48px' }}
-                    >
-                      {row.cells.map((cellTime, colIdx) => {
-                        const isCurrentCell = cellTime !== null && Math.abs(cellTime - currentTime) < 2
-                        return (
-                          <td
-                            key={colIdx}
-                            className={`p-3 text-sm ${
-                              isCurrentCell ? 'bg-yellow-200 font-semibold' : 'text-black'
-                            }`}
-                          >
-                            {cellTime !== null ? formatTime(cellTime) : ''}
-                          </td>
-                        )
-                      })}
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
+            {/* Two independent columns */}
+            <div className="flex">
+              {activeColumns.map((col, colIdx) => (
+                <div key={colIdx} className="flex-1">
+                  {col.times.map((time, timeIdx) => {
+                    const isCurrentTime = Math.abs(time - currentTime) < 2
+                    return (
+                      <div
+                        key={timeIdx}
+                        className={`px-3 py-3 text-sm border-b border-black/10 ${
+                          isCurrentTime ? 'bg-yellow-200 font-semibold' : 'text-black'
+                        }`}
+                      >
+                        {formatTime(time)}
+                      </div>
+                    )
+                  })}
+                </div>
+              ))}
+            </div>
             
             {/* Footer with source link */}
             <div className="mt-8 pb-8 flex justify-center">
