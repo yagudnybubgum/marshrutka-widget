@@ -304,11 +304,11 @@ const FromLadozhskaya = () => {
 
   return (
     <div className="w-full">
-      <div className="space-y-2">
+      <div className="divide-y divide-gray-100">
             {upcomingDepartures.map((dep, index) => (
               <div 
                 key={`${dep.routeId}-${dep.time}-${index}`}
-                className="flex items-center justify-between p-3 rounded-lg bg-white"
+                className="flex items-center justify-between py-4"
               >
                 <div className="flex items-center gap-3">
                   <span className={`px-2.5 py-1 rounded-full text-sm font-medium ${getRouteColor(dep.routeId)}`}>
