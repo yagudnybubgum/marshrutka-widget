@@ -324,7 +324,7 @@ const FromLadozhskaya = () => {
                 className="flex items-center justify-between py-4"
               >
                 <div className="flex items-center gap-3">
-                  <span className={`px-2.5 py-1 rounded-full text-sm font-medium ${getRouteColor(dep.routeId)}`}>
+                  <span className={`px-5 py-2 rounded-full text-sm font-medium ${getRouteColor(dep.routeId)}`}>
                     {dep.routeName}
                   </span>
                   <div className="flex flex-col">
