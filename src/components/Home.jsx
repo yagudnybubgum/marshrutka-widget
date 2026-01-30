@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import MarshrutkaWidget from './MarshrutkaWidget'
+import FromLadozhskaya from './FromLadozhskaya'
 import Footer from './Footer'
 import { getDayType as getDayTypeUtil } from '../utils/holidays'
 
 function Home() {
+  const [activeTab, setActiveTab] = useState('533') // '533' | '429' | '664' | '430A' | '453' | 'ladozhskaya'
   const [routeNumber, setRouteNumber] = useState('533')
   const [schedule, setSchedule] = useState(null)
   const [currentDateTime, setCurrentDateTime] = useState(new Date())
@@ -52,12 +54,12 @@ function Home() {
           </div>
         </div>
 
-        <div className="bg-base-200 -mx-4 px-4 overflow-x-auto scrollbar-hide">
-          <div className="flex gap-2 pt-3 pb-1">
+        <div className="bg-base-200">
+          <div className="flex flex-wrap gap-2 pt-3 pb-1">
             <button
-              onClick={() => setRouteNumber('533')}
+              onClick={() => { setActiveTab('533'); setRouteNumber('533') }}
               className={`flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors ${
-                routeNumber === '533'
+                activeTab === '533'
                   ? 'bg-blue-100 text-blue-900'
                   : 'bg-gray-100 text-black/70 hover:text-black'
               }`}
@@ -65,9 +67,9 @@ function Home() {
               533
             </button>
             <button
-              onClick={() => setRouteNumber('429')}
+              onClick={() => { setActiveTab('429'); setRouteNumber('429') }}
               className={`flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors ${
-                routeNumber === '429'
+                activeTab === '429'
                   ? 'bg-blue-100 text-blue-900'
                   : 'bg-gray-100 text-black/70 hover:text-black'
               }`}
@@ -75,9 +77,9 @@ function Home() {
               429
             </button>
             <button
-              onClick={() => setRouteNumber('664')}
+              onClick={() => { setActiveTab('664'); setRouteNumber('664') }}
               className={`flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors ${
-                routeNumber === '664'
+                activeTab === '664'
                   ? 'bg-blue-100 text-blue-900'
                   : 'bg-gray-100 text-black/70 hover:text-black'
               }`}
@@ -85,27 +87,34 @@ function Home() {
               664
             </button>
             <button
-              onClick={() => setRouteNumber('430A')}
-              className={`flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors relative ${
-                routeNumber === '430A'
+              onClick={() => { setActiveTab('430A'); setRouteNumber('430A') }}
+              className={`flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors ${
+                activeTab === '430A'
                   ? 'bg-blue-100 text-blue-900'
                   : 'bg-gray-100 text-black/70 hover:text-black'
               }`}
             >
               430А
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-full leading-none">
-                new
-              </span>
             </button>
             <button
-              onClick={() => setRouteNumber('453')}
-              className={`flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors relative ${
-                routeNumber === '453'
+              onClick={() => { setActiveTab('453'); setRouteNumber('453') }}
+              className={`flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors ${
+                activeTab === '453'
                   ? 'bg-blue-100 text-blue-900'
                   : 'bg-gray-100 text-black/70 hover:text-black'
               }`}
             >
               453
+            </button>
+            <button
+              onClick={() => setActiveTab('ladozhskaya')}
+              className={`flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors relative ${
+                activeTab === 'ladozhskaya'
+                  ? 'bg-blue-100 text-blue-900'
+                  : 'bg-gray-100 text-black/70 hover:text-black'
+              }`}
+            >
+              С Ладожской
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-full leading-none">
                 new
               </span>
@@ -114,16 +123,22 @@ function Home() {
         </div>
 
         <div ref={scrollContainerRef} className="mt-3 flex-1">
-          <MarshrutkaWidget key={routeNumber} routeNumber={routeNumber} onScheduleChange={setSchedule} />
-          {schedule && (
-            <div className="mt-6 flex justify-center">
-              <Link
-                to={`/full${routeNumber}`}
-                className="text-base font-normal text-black/70 hover:text-black transition-colors"
-              >
-                Полное расписание
-              </Link>
-            </div>
+          {activeTab !== 'ladozhskaya' ? (
+            <>
+              <MarshrutkaWidget key={routeNumber} routeNumber={routeNumber} onScheduleChange={setSchedule} />
+              {schedule && (
+                <div className="mt-6 flex justify-center">
+                  <Link
+                    to={`/full${routeNumber}`}
+                    className="text-base font-normal text-black/70 hover:text-black transition-colors"
+                  >
+                    Полное расписание
+                  </Link>
+                </div>
+              )}
+            </>
+          ) : (
+            <FromLadozhskaya />
           )}
           <Link
             to="/homescreen"
