@@ -15,6 +15,7 @@ const FromLadozhskaya = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [now, setNow] = useState(new Date())
+  const [visibleCount, setVisibleCount] = useState(12)
 
   // Обновляем время каждую секунду
   useEffect(() => {
@@ -249,8 +250,20 @@ const FromLadozhskaya = () => {
       .sort((a, b) => a.minutesUntil - b.minutesUntil)
   }, [allDepartures, currentTime])
 
-  // Берем ближайшие 10-15 отправлений
-  const upcomingDepartures = sortedDepartures.slice(0, 12)
+  // Фильтруем только сегодняшние отправления
+  const todayDepartures = useMemo(() => {
+    return sortedDepartures.filter(dep => !dep.isTomorrow)
+  }, [sortedDepartures])
+
+  // Берем видимое количество отправлений
+  const upcomingDepartures = todayDepartures.slice(0, visibleCount)
+  
+  // Есть ли ещё отправления для показа
+  const hasMore = todayDepartures.length > visibleCount
+  
+  const handleShowMore = () => {
+    setVisibleCount(prev => prev + 12)
+  }
 
   const formatTime = (minutes) => {
     const hours = Math.floor(minutes / 60) % 24
@@ -324,7 +337,6 @@ const FromLadozhskaya = () => {
                 <div className="flex items-center gap-3">
                   <span className="text-sm text-black/60">
                     {formatTimeUntil(dep.minutesUntil)}
-                    {dep.isTomorrow ? ' (завтра)' : ''}
                   </span>
                   <span className="text-xl font-normal text-black/80">
                     {formatTime(dep.time)}
@@ -333,6 +345,23 @@ const FromLadozhskaya = () => {
               </div>
             ))}
       </div>
+      
+      {hasMore && (
+        <div className="mt-4 flex justify-center">
+          <button
+            onClick={handleShowMore}
+            className="px-5 py-2 text-base font-normal text-black/70 hover:text-black transition-colors"
+          >
+            Показать ещё
+          </button>
+        </div>
+      )}
+      
+      {!hasMore && todayDepartures.length > 0 && (
+        <div className="mt-4 text-center text-sm text-black/50">
+          Больше рейсов сегодня нет
+        </div>
+      )}
     </div>
   )
 }
