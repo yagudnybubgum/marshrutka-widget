@@ -47,14 +47,9 @@ npm run dev
 1. Убедитесь, что в настройках репозитория включен GitHub Pages:
    - Settings → Pages → Source: "GitHub Actions"
 
-2. Если имя репозитория отличается от `marshrutka-widget`, обновите `base` в `vite.config.js`:
-   ```js
-   base: process.env.GITHUB_PAGES === 'true' ? '/ваше-имя-репозитория/' : '/',
-   ```
+2. Закоммитьте и запушьте изменения в ветку `main` или `master`
 
-3. Закоммитьте и запушьте изменения в ветку `main` или `master`
+3. GitHub Actions автоматически соберет и задеплоит проект
 
-4. GitHub Actions автоматически соберет и задеплоит проект
-
-Сайт будет доступен по адресу: `https://ваш-username.github.io/marshrutka-widget/`
+Сайт использует кастомный домен `yanino.online` (см. `public/CNAME`).
 
