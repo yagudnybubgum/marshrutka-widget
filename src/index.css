@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Google Sans font faces */
 @font-face {
   font-family: 'Google Sans';
   src: url('/fonts/google-sans/GoogleSans-Regular.ttf') format('truetype');
@@ -13,57 +12,9 @@
 
 @font-face {
   font-family: 'Google Sans';
-  src: url('/fonts/google-sans/GoogleSans-Italic.ttf') format('truetype');
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Google Sans';
   src: url('/fonts/google-sans/GoogleSans-Medium.ttf') format('truetype');
   font-weight: 500;
   font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Google Sans';
-  src: url('/fonts/google-sans/GoogleSans-MediumItalic.ttf') format('truetype');
-  font-weight: 500;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Google Sans';
-  src: url('/fonts/google-sans/GoogleSans-SemiBold.ttf') format('truetype');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Google Sans';
-  src: url('/fonts/google-sans/GoogleSans-SemiBoldItalic.ttf') format('truetype');
-  font-weight: 600;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Google Sans';
-  src: url('/fonts/google-sans/GoogleSans-Bold.ttf') format('truetype');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Google Sans';
-  src: url('/fonts/google-sans/GoogleSans-BoldItalic.ttf') format('truetype');
-  font-weight: 700;
-  font-style: italic;
   font-display: swap;
 }
 
@@ -86,7 +37,6 @@ html, body {
   overflow-x: hidden;
 }
 
-/* Hide scrollbar for horizontal scroll */
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -95,4 +45,3 @@ html, body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
-

@@ -1,35 +1,62 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
-import * as XLSX from 'xlsx'
+import { useNow } from '../context/TimeContext'
 import { isWeekendOrHoliday } from '../utils/holidays'
+import { loadScheduleRaw } from '../utils/schedule/loadSchedule'
+import { processScheduleForFull } from '../utils/schedule/processSchedule'
+import { formatTime, getCurrentTimeInMinutes } from '../utils/schedule/formatTime'
 
 const FullSchedule = ({ routeNumber = '533', onBack }) => {
   const [scheduleData, setScheduleData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [now, setNow] = useState(new Date())
   const [headerVisible, setHeaderVisible] = useState(true)
   const lastScrollTopRef = useRef(0)
-  
-  // Определяем активный таб (будние или выходные)
+  const scrollContainerRef = useRef(null)
+  const now = useNow()
+
   const isWeekend = isWeekendOrHoliday(now)
   const [activeTab, setActiveTab] = useState(isWeekend ? 'weekend' : 'weekday')
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setNow(new Date())
-    }, 1000)
-    return () => clearInterval(interval)
-  }, [])
+    setActiveTab(isWeekend ? 'weekend' : 'weekday')
+  }, [isWeekend])
 
   useEffect(() => {
-    loadScheduleFile()
+    let cancelled = false
+
+    const load = async () => {
+      setLoading(true)
+      setError(null)
+
+      try {
+        const rawData = await loadScheduleRaw(routeNumber)
+        if (cancelled) return
+
+        const processedData = processScheduleForFull(rawData)
+        if (!processedData) {
+          throw new Error('Не удалось обработать данные расписания')
+        }
+
+        setScheduleData(processedData)
+        setLoading(false)
+      } catch {
+        if (cancelled) return
+        setError('Не удалось загрузить файл расписания.')
+        setLoading(false)
+      }
+    }
+
+    load()
+
+    return () => {
+      cancelled = true
+    }
   }, [routeNumber])
 
-  // Обработчик скролла для скрытия/показа хедера
   useEffect(() => {
     if (!scheduleData) return
-    
-    const scrollContainer = document.querySelector('.schedule-scroll-container')
+
+    const scrollContainer = scrollContainerRef.current
     if (!scrollContainer) return
 
     const handleScroll = () => {
@@ -37,29 +64,25 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
       const lastScrollTop = lastScrollTopRef.current
       const scrollHeight = scrollContainer.scrollHeight
       const clientHeight = scrollContainer.clientHeight
-      
-      // Если в самом верху - всегда показываем
+
       if (currentScrollTop <= 0) {
         setHeaderVisible(true)
         lastScrollTopRef.current = 0
         return
       }
-      
-      // Если близко к низу - не меняем состояние хедера (предотвращает прыжки)
+
       const distanceFromBottom = scrollHeight - currentScrollTop - clientHeight
       if (distanceFromBottom < 50) {
         lastScrollTopRef.current = currentScrollTop
         return
       }
-      
-      // Если прокрутили вниз больше чем на 50px - скрываем
-      // Если прокрутили вверх - показываем
+
       if (currentScrollTop > lastScrollTop && currentScrollTop > 50) {
         setHeaderVisible(false)
       } else if (currentScrollTop < lastScrollTop) {
         setHeaderVisible(true)
       }
-      
+
       lastScrollTopRef.current = currentScrollTop
     }
 
@@ -67,254 +90,18 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
     return () => scrollContainer.removeEventListener('scroll', handleScroll)
   }, [scheduleData])
 
-  const loadScheduleFile = async () => {
-    try {
-      // Определяем base path из Vite env или из текущего location
-      const getBasePath = () => {
-        // Используем BASE_URL из Vite (всегда правильный)
-        const viteBase = import.meta.env.BASE_URL
-        if (viteBase && viteBase !== '/') {
-          return viteBase
-        }
-        // Fallback: определяем из window.location
-        const path = window.location.pathname
-        if (path.includes('/marshrutka-widget/')) {
-          return '/marshrutka-widget/'
-        }
-        return '/'
-      }
-      
-      const basePath = getBasePath()
-      const filePath = `${basePath}schedule-${routeNumber}.xlsx`.replace(/\/\//g, '/')
-      
-      const response = await fetch(filePath)
-      if (!response.ok) {
-        throw new Error(`Файл расписания не найден (${response.status})`)
-      }
-      const arrayBuffer = await response.arrayBuffer()
-      const data = new Uint8Array(arrayBuffer)
-      const workbook = XLSX.read(data, { type: 'array' })
-      
-      const firstSheet = workbook.Sheets[workbook.SheetNames[0]]
-      const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: null })
-      
-      const processedData = processScheduleData(jsonData)
-      setScheduleData(processedData)
-      setLoading(false)
-    } catch (err) {
-      console.error('Ошибка загрузки файла:', err)
-      setError('Не удалось загрузить файл расписания.')
-      setLoading(false)
-    }
-  }
-
-  const processScheduleData = (data) => {
-    if (data.length < 2) return null
-
-    const firstRow = data[0] || []
-    const secondRow = data[1] || []
-    
-    // Проверяем, есть ли в первой строке указание на период (будние/выходные)
-    const hasPeriodInfo = firstRow.some(cell => {
-      const value = cell ? cell.toString().toLowerCase() : ''
-      return value.includes('будн') || value.includes('выходн')
-    })
-
-    let periodRow, directionRow, bodyRows
-
-    if (hasPeriodInfo) {
-      // Формат с периодом (как в 533): строка 1 = период, строка 2 = направления, строка 3+ = время
-      periodRow = firstRow
-      directionRow = secondRow
-      bodyRows = data.slice(2)
-    } else {
-      // Формат без периода (как в 429): строка 1 = направления, строка 2+ = время
-      periodRow = []
-      directionRow = firstRow
-      bodyRows = data.slice(1)
-    }
-
-    const columnMeta = hasPeriodInfo 
-      ? periodRow.map((cell, idx) => {
-          const value = cell ? cell.toString().toLowerCase() : ''
-          if (value.includes('будн')) return { idx, type: 'weekday' }
-          if (value.includes('выходн')) return { idx, type: 'weekend' }
-          return { idx, type: null }
-        })
-      : directionRow.map((cell, idx) => {
-          // Если нет информации о периоде, все колонки считаем будними
-          return { idx, type: 'weekday' }
-        })
-
-    const formatDirectionName = (name) => {
-      if (!name) return name
-      const nameStr = name.toString().trim()
-      
-      // Обработка для маршрута 533 (Янино - Ладожская)
-      if (nameStr.includes('Янино') && nameStr.includes('Ладожская')) {
-        if (/Янино.*[=_]?[=>].*Ладожская/i.test(nameStr)) {
-          return 'Из Янино'
-        }
-        if (/Ладожская.*[=_]?[=>].*Янино/i.test(nameStr)) {
-          return 'С Ладожской'
-        }
-      }
-      
-      // Обработка для маршрута 429 (Разметелево - Ладожская)
-      if (nameStr.includes('Разметелево')) {
-        return 'Из Разметелево'
-      }
-      
-      // Обработка для маршрута 430А (Ёксолово - Ладожская)
-      if (nameStr.includes('Ёксолово') || nameStr.includes('Ексолово')) {
-        return 'Из Ёксолово'
-      }
-      
-      // Обработка для маршрута 453 (Дубровка - Ладожская)
-      if (nameStr.includes('Дубровка')) {
-        return 'Из Дубровки'
-      }
-      
-      if (nameStr.includes('Ладожская')) {
-        return 'С Ладожской'
-      }
-      
-      return name
-    }
-
-    const parseTime = (value) => {
-      if (value === null || value === undefined || value === '') return null
-      
-      if (typeof value === 'number') {
-        if (value >= 0 && value < 1) {
-          const totalMinutes = Math.round(value * 24 * 60)
-          const hours = Math.floor(totalMinutes / 60)
-          const minutes = totalMinutes % 60
-          return hours * 60 + minutes
-        }
-        if (value >= 0 && value < 1440 && value % 1 === 0) {
-          return value
-        }
-        if (value >= 0 && value < 24) {
-          return Math.floor(value) * 60
-        }
-      }
-      
-      const str = value.toString().trim()
-      const timeMatch = str.match(/(\d{1,2})[:.](\d{2})/)
-      if (timeMatch) {
-        const hours = parseInt(timeMatch[1], 10)
-        const minutes = parseInt(timeMatch[2], 10)
-        if (hours >= 0 && hours < 24 && minutes >= 0 && minutes < 60) {
-          return hours * 60 + minutes
-        }
-      }
-      
-      return null
-    }
-
-    const extractTimesForColumn = (colIdx) =>
-      bodyRows
-        .map(row => parseTime(row ? row[colIdx] : null))
-        .filter(time => time !== null)
-        .sort((a, b) => a - b)
-
-    const buildColumns = () => {
-      const columns = []
-      
-      if (hasPeriodInfo) {
-        // Будние дни
-        const weekdayCols = columnMeta.filter(col => col.type === 'weekday')
-        weekdayCols.forEach(col => {
-          columns.push({
-            period: 'Будние дни',
-            name: formatDirectionName(directionRow[col.idx] || ''),
-            times: extractTimesForColumn(col.idx),
-            colIdx: col.idx
-          })
-        })
-        
-        // Выходные дни
-        const weekendCols = columnMeta.filter(col => col.type === 'weekend')
-        weekendCols.forEach(col => {
-          columns.push({
-            period: 'Выходные дни',
-            name: formatDirectionName(directionRow[col.idx] || ''),
-            times: extractTimesForColumn(col.idx),
-            colIdx: col.idx
-          })
-        })
-      } else {
-        // Формат без периода - все колонки считаем будними
-        columnMeta.forEach(col => {
-          columns.push({
-            period: 'Будние дни',
-            name: formatDirectionName(directionRow[col.idx] || ''),
-            times: extractTimesForColumn(col.idx),
-            colIdx: col.idx
-          })
-        })
-      }
-      
-      return columns.filter(col => col.times.length > 0)
-    }
-
-    return {
-      columns: buildColumns(),
-      hasPeriodInfo
-    }
-  }
-
-  const formatTime = (minutes) => {
-    const hours = Math.floor(minutes / 60) % 24
-    const mins = minutes % 60
-    return `${hours}:${mins.toString().padStart(2, '0')}`
-  }
-
-  const getCurrentTimeInMinutes = () => {
-    return now.getHours() * 60 + now.getMinutes()
-  }
-
-  // Фильтруем колонки по активному табу
   const activeColumns = useMemo(() => {
     if (!scheduleData) return []
-    
-    // Если нет информации о периоде, показываем все колонки (они все будние)
+
     if (!scheduleData.hasPeriodInfo) {
       return scheduleData.columns
     }
-    
+
     const targetPeriod = activeTab === 'weekday' ? 'Будние дни' : 'Выходные дни'
-    return scheduleData.columns.filter(col => col.period === targetPeriod)
+    return scheduleData.columns.filter((col) => col.period === targetPeriod)
   }, [scheduleData, activeTab])
 
-  // Получаем все уникальные времена для активного таба
-  const allTimes = useMemo(() => {
-    if (activeColumns.length === 0) return []
-    const timesSet = new Set()
-    activeColumns.forEach(col => {
-      col.times.forEach(time => timesSet.add(time))
-    })
-    return Array.from(timesSet).sort((a, b) => a - b)
-  }, [activeColumns])
-
-  // Создаём массив строк для таблицы, где каждая строка соответствует времени
-  const tableRows = useMemo(() => {
-    if (activeColumns.length === 0 || allTimes.length === 0) return []
-    
-    return allTimes.map(time => {
-      const row = {
-        time,
-        cells: activeColumns.map(col => {
-          const hasTime = col.times.includes(time)
-          return hasTime ? time : null
-        })
-      }
-      return row
-    })
-  }, [activeColumns, allTimes])
-
-  const currentTime = getCurrentTimeInMinutes()
+  const currentTime = getCurrentTimeInMinutes(now)
 
   if (loading) {
     return (
@@ -349,8 +136,7 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
 
   return (
     <div className="h-[100dvh] bg-base-200 flex flex-col relative">
-      {/* Header */}
-      <div 
+      <div
         className={`absolute top-0 left-0 right-0 z-20 bg-base-200 px-4 pt-6 pb-4 transition-transform duration-300 ${
           headerVisible ? 'translate-y-0' : '-translate-y-full'
         }`}
@@ -368,17 +154,13 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
           <h1 className="text-xl font-normal text-black flex-1 text-center">
             Маршрутка {routeNumber}
           </h1>
-          <div className="w-16"></div> {/* Spacer для центрирования */}
+          <div className="w-16" />
         </div>
       </div>
 
-      {/* Content */}
       <div className="flex-1 min-h-0 overflow-hidden">
-        <div className={`h-full max-w-7xl mx-auto ${
-          headerVisible ? 'pt-20' : 'pt-0'
-        }`}>
-          <div className="h-full overflow-y-auto schedule-scroll-container pb-4 px-4">
-            {/* Tabs and Table Header - combined sticky */}
+        <div className={`h-full max-w-7xl mx-auto ${headerVisible ? 'pt-20' : 'pt-0'}`}>
+          <div ref={scrollContainerRef} className="h-full overflow-y-auto pb-4 px-4">
             <div className="sticky top-0 bg-base-200 z-20">
               {scheduleData?.hasPeriodInfo && (
                 <div className="flex gap-2 mb-4 pt-1">
@@ -404,8 +186,7 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
                   </button>
                 </div>
               )}
-              
-              {/* Column headers */}
+
               <div className="flex">
                 {activeColumns.map((col, idx) => (
                   <div
@@ -418,7 +199,6 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
               </div>
             </div>
 
-            {/* Two independent columns */}
             <div className="flex">
               {activeColumns.map((col, colIdx) => (
                 <div key={colIdx} className="flex-1">
@@ -438,12 +218,11 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
                 </div>
               ))}
             </div>
-            
-            {/* Footer with source link */}
+
             <div className="mt-8 pb-8 flex justify-center">
               <div className="flex flex-col items-center gap-2">
                 <p className="text-xs text-black/70">Источник расписания</p>
-                <a 
+                <a
                   href="https://vk.com/doc546677069_685452050?hash=DNg9ALCXkg2QX3cQxTPS3fy3eG1D449zfQ9zZtxAuvk"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -461,4 +240,3 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
 }
 
 export default FullSchedule
-

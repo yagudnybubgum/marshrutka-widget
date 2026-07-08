@@ -1,44 +1,32 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import MarshrutkaWidget from './MarshrutkaWidget'
 import FromLadozhskaya from './FromLadozhskaya'
 import Footer from './Footer'
+import { ROUTES } from '../config/routes'
+import { useNow } from '../context/TimeContext'
 import { getDayType as getDayTypeUtil } from '../utils/holidays'
 
 function Home() {
-  const [activeTab, setActiveTab] = useState('533') // '533' | '429' | '664' | '430A' | '453' | 'ladozhskaya'
-  const [routeNumber, setRouteNumber] = useState('533')
+  const [activeTab, setActiveTab] = useState('533')
   const [schedule, setSchedule] = useState(null)
-  const [currentDateTime, setCurrentDateTime] = useState(new Date())
-  const scrollContainerRef = useRef(null)
+  const now = useNow()
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentDateTime(new Date())
-    }, 1000)
-
-    return () => clearInterval(interval)
-  }, [])
+  const routeNumber = activeTab !== 'ladozhskaya' ? activeTab : null
 
   const formatDate = (date) => {
     const months = [
       'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
-      'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
+      'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря',
     ]
     const day = date.getDate()
     const month = months[date.getMonth()]
     return `${day} ${month}`
   }
 
-  const getDayType = (date) => {
-    return getDayTypeUtil(date)
-  }
-
-  // Сбрасываем расписание при смене маршрута
   useEffect(() => {
     setSchedule(null)
   }, [routeNumber])
-
 
   return (
     <div className="min-h-[100dvh] bg-base-200 pt-5 pb-8 px-4 sm:py-10 flex flex-col">
@@ -49,63 +37,26 @@ function Home() {
               Расписание маршруток Янино-1
             </h1>
             <span className="text-sm font-normal text-gray-800">
-              {formatDate(currentDateTime)}, {getDayType(currentDateTime).toLowerCase()}
+              {formatDate(now)}, {getDayTypeUtil(now).toLowerCase()}
             </span>
           </div>
         </div>
 
         <div className="bg-base-200">
           <div className="flex flex-wrap gap-2 pt-3 pb-1">
-            <button
-              onClick={() => { setActiveTab('533'); setRouteNumber('533') }}
-              className={`flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors ${
-                activeTab === '533'
-                  ? 'bg-blue-100 text-blue-900'
-                  : 'bg-gray-100 text-black/70 hover:text-black'
-              }`}
-            >
-              533
-            </button>
-            <button
-              onClick={() => { setActiveTab('429'); setRouteNumber('429') }}
-              className={`flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors ${
-                activeTab === '429'
-                  ? 'bg-blue-100 text-blue-900'
-                  : 'bg-gray-100 text-black/70 hover:text-black'
-              }`}
-            >
-              429
-            </button>
-            <button
-              onClick={() => { setActiveTab('664'); setRouteNumber('664') }}
-              className={`flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors ${
-                activeTab === '664'
-                  ? 'bg-blue-100 text-blue-900'
-                  : 'bg-gray-100 text-black/70 hover:text-black'
-              }`}
-            >
-              664
-            </button>
-            <button
-              onClick={() => { setActiveTab('430A'); setRouteNumber('430A') }}
-              className={`flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors ${
-                activeTab === '430A'
-                  ? 'bg-blue-100 text-blue-900'
-                  : 'bg-gray-100 text-black/70 hover:text-black'
-              }`}
-            >
-              430А
-            </button>
-            <button
-              onClick={() => { setActiveTab('453'); setRouteNumber('453') }}
-              className={`flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors ${
-                activeTab === '453'
-                  ? 'bg-blue-100 text-blue-900'
-                  : 'bg-gray-100 text-black/70 hover:text-black'
-              }`}
-            >
-              453
-            </button>
+            {ROUTES.map((route) => (
+              <button
+                key={route.id}
+                onClick={() => setActiveTab(route.id)}
+                className={`flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors ${
+                  activeTab === route.id
+                    ? 'bg-blue-100 text-blue-900'
+                    : 'bg-gray-100 text-black/70 hover:text-black'
+                }`}
+              >
+                {route.name}
+              </button>
+            ))}
             <button
               onClick={() => setActiveTab('ladozhskaya')}
               className={`flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors relative ${
@@ -122,14 +73,14 @@ function Home() {
           </div>
         </div>
 
-        <div ref={scrollContainerRef} className="mt-3 flex-1">
+        <div className="mt-3 flex-1">
           {activeTab !== 'ladozhskaya' ? (
             <>
               <MarshrutkaWidget key={routeNumber} routeNumber={routeNumber} onScheduleChange={setSchedule} />
               {schedule && (
                 <div className="mt-6 flex justify-center">
                   <Link
-                    to={`/full${routeNumber}`}
+                    to={`/full/${routeNumber}`}
                     className="text-base font-normal text-black/70 hover:text-black transition-colors"
                   >
                     Полное расписание
@@ -138,7 +89,7 @@ function Home() {
               )}
             </>
           ) : (
-            <FromLadozhskaya />
+            <FromLadozhskaya active />
           )}
           <Link
             to="/homescreen"
@@ -162,6 +113,3 @@ function Home() {
 }
 
 export default Home
-
-
-
