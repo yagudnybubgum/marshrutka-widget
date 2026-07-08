@@ -27,6 +27,7 @@ html, body {
   padding: 0;
   overflow-x: hidden;
   width: 100%;
+  background-color: var(--color-base-200);
   font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   overscroll-behavior-y: none;
   -webkit-overflow-scrolling: touch;
