@@ -9,7 +9,7 @@ const LadozhskayaStopNotice = () => (
   <div className="space-y-0.5">
     <p className="text-sm font-medium text-amber-900">Остановка переехала</p>
     <p className="text-sm text-amber-900 [text-wrap:pretty]">
-      Садимся не справа от перехода, а слева, у остановки с табличкой 533
+      Садимся не справа от&nbsp;перехода, а слева, у&nbsp;остановки с&nbsp;табличкой 533
     </p>
   </div>
 )
