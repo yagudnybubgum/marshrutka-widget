@@ -34,7 +34,7 @@ function Home() {
         <div className="flex-shrink-0">
           <div className="flex flex-col gap-2">
             <h1 className="text-xl font-normal text-black">
-              Расписание маршруток Янино-1
+              Маршрутки Янино-1
             </h1>
             <span className="text-sm font-normal text-gray-800">
               {formatDate(now)}, {getDayTypeUtil(now).toLowerCase()}
@@ -59,16 +59,13 @@ function Home() {
             ))}
             <button
               onClick={() => setActiveTab('ladozhskaya')}
-              className={`flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors relative ${
+              className={`flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors ${
                 activeTab === 'ladozhskaya'
                   ? 'bg-blue-100 text-blue-900'
                   : 'bg-gray-100 text-black/70 hover:text-black'
               }`}
             >
               С Ладожской
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-full leading-none">
-                new
-              </span>
             </button>
           </div>
         </div>

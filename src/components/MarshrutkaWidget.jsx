@@ -32,7 +32,9 @@ const DirectionCard = ({
               <div className="space-y-2">
                 <h3 className="text-xl font-normal text-black">{directionName}</h3>
                 <p className="text-sm text-black/70">
-                  {`через ${formatTimeUntil(nextTrip.minutesUntil)}`}
+                  {nextTrip.minutesUntil === 0
+                    ? 'сейчас'
+                    : `через ${formatTimeUntil(nextTrip.minutesUntil)}`}
                   {nextTrip.isTomorrow ? ' (завтра)' : ''}
                 </p>
               </div>
@@ -53,7 +55,7 @@ const DirectionCard = ({
               )}
               {previousTrip && (
                 <p className="text-sm text-black/80">
-                  {`Предыдущая в ${formatTime(previousTrip.time)}${previousTrip.isTomorrow ? ' (завтра)' : ''}`}
+                  {`Предыдущая ушла ${formatTimeUntil(-previousTrip.minutesUntil)} назад`}
                 </p>
               )}
             </div>
