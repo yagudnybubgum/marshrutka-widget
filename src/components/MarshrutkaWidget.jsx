@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
+import { Link } from 'react-router-dom'
 import { useNow } from '../context/TimeContext'
 import { loadScheduleRaw } from '../utils/schedule/loadSchedule'
 import { processScheduleForWidget } from '../utils/schedule/processSchedule'
@@ -23,8 +24,15 @@ const DirectionCard = ({
 }) => {
   const showStopNotice = routeNumber === '533' && directionName === 'С Ладожской'
 
+  const scheduleTo = nextTrip
+    ? `/full/${routeNumber}?dir=${encodeURIComponent(directionName)}&t=${nextTrip.time}`
+    : `/full/${routeNumber}`
+
   return (
-    <div className="rounded-xl overflow-hidden bg-base-100">
+    <Link
+      to={scheduleTo}
+      className="block rounded-xl overflow-hidden bg-base-100 transition-colors hover:bg-base-100/80 active:bg-black/[0.03]"
+    >
       <div className="p-4">
         {nextTrip ? (
           <div className="space-y-4">
@@ -71,7 +79,7 @@ const DirectionCard = ({
           <LadozhskayaStopNotice />
         </div>
       )}
-    </div>
+    </Link>
   )
 }
 

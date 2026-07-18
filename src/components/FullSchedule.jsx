@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useNow } from '../context/TimeContext'
 import { isWeekendOrHoliday } from '../utils/holidays'
 import { loadScheduleRaw } from '../utils/schedule/loadSchedule'
@@ -10,9 +11,18 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [headerVisible, setHeaderVisible] = useState(true)
+  const [searchParams] = useSearchParams()
   const lastScrollTopRef = useRef(0)
   const scrollContainerRef = useRef(null)
+  const focusCellRef = useRef(null)
+  const hasScrolledToFocusRef = useRef(false)
   const now = useNow()
+
+  const focusDir = searchParams.get('dir')
+  const focusTimeParam = searchParams.get('t')
+  const focusTime = focusTimeParam !== null && focusTimeParam !== ''
+    ? Number(focusTimeParam)
+    : null
 
   const isWeekend = isWeekendOrHoliday(now)
   const [activeTab, setActiveTab] = useState(isWeekend ? 'weekend' : 'weekday')
@@ -20,6 +30,10 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
   useEffect(() => {
     setActiveTab(isWeekend ? 'weekend' : 'weekday')
   }, [isWeekend])
+
+  useEffect(() => {
+    hasScrolledToFocusRef.current = false
+  }, [routeNumber, focusDir, focusTime])
 
   useEffect(() => {
     let cancelled = false
@@ -102,6 +116,60 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
   }, [scheduleData, activeTab])
 
   const currentTime = getCurrentTimeInMinutes(now)
+
+  const nearestTimeIdxByCol = useMemo(() => {
+    return activeColumns.map((col) => {
+      const nextIdx = col.times.findIndex((t) => t >= currentTime)
+      return nextIdx === -1 ? 0 : nextIdx
+    })
+  }, [activeColumns, currentTime])
+
+  const focusedSlot = useMemo(() => {
+    if (!focusDir || focusTime === null || Number.isNaN(focusTime)) return null
+
+    const colIdx = activeColumns.findIndex((col) => col.name === focusDir)
+    if (colIdx === -1) return null
+
+    const timeIdx = activeColumns[colIdx].times.findIndex((time) => time === focusTime)
+    if (timeIdx === -1) return null
+
+    return { colIdx, timeIdx }
+  }, [activeColumns, focusDir, focusTime])
+
+  useEffect(() => {
+    if (!focusedSlot || loading || hasScrolledToFocusRef.current) return
+
+    let cancelled = false
+
+    const tryScroll = () => {
+      const el = focusCellRef.current
+      const container = scrollContainerRef.current
+      if (!el || !container) return false
+
+      const elRect = el.getBoundingClientRect()
+      const containerRect = container.getBoundingClientRect()
+      const offset = elRect.top - containerRect.top + container.scrollTop
+      container.scrollTo({
+        top: Math.max(0, offset - container.clientHeight / 3),
+        behavior: 'smooth',
+      })
+      hasScrolledToFocusRef.current = true
+      return true
+    }
+
+    const frame = requestAnimationFrame(() => {
+      if (cancelled) return
+      if (tryScroll()) return
+      requestAnimationFrame(() => {
+        if (!cancelled) tryScroll()
+      })
+    })
+
+    return () => {
+      cancelled = true
+      cancelAnimationFrame(frame)
+    }
+  }, [focusedSlot, loading, activeColumns])
 
   if (loading) {
     return (
@@ -203,12 +271,18 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
               {activeColumns.map((col, colIdx) => (
                 <div key={colIdx} className="flex-1">
                   {col.times.map((time, timeIdx) => {
-                    const isCurrentTime = Math.abs(time - currentTime) < 2
+                    const isFocused =
+                      focusedSlot?.colIdx === colIdx && focusedSlot?.timeIdx === timeIdx
+                    const isNearestUpcoming =
+                      !focusedSlot && nearestTimeIdxByCol[colIdx] === timeIdx
+                    const isHighlighted = isFocused || isNearestUpcoming
+
                     return (
                       <div
                         key={timeIdx}
+                        ref={isFocused ? focusCellRef : undefined}
                         className={`px-3 py-3 text-sm border-b border-black/10 ${
-                          isCurrentTime ? 'bg-yellow-200 font-semibold' : 'text-black'
+                          isHighlighted ? 'bg-yellow-200 font-semibold' : 'text-black'
                         }`}
                       >
                         {formatTime(time)}

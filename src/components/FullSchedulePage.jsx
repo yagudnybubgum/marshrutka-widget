@@ -10,7 +10,12 @@ const FullSchedulePage = () => {
     return <Navigate to="/" replace />
   }
 
-  return <FullSchedule routeNumber={routeId} onBack={() => navigate('/')} />
+  return (
+    <FullSchedule
+      routeNumber={routeId}
+      onBack={() => navigate(routeId === '533' ? '/' : `/?tab=${encodeURIComponent(routeId)}`)}
+    />
+  )
 }
 
 export default FullSchedulePage

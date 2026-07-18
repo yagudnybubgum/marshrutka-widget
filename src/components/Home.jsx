@@ -1,18 +1,34 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import MarshrutkaWidget from './MarshrutkaWidget'
 import FromLadozhskaya from './FromLadozhskaya'
 import Footer from './Footer'
-import { ROUTES } from '../config/routes'
+import { ROUTES, isValidRouteId } from '../config/routes'
 import { useNow } from '../context/TimeContext'
 import { getDayType as getDayTypeUtil } from '../utils/holidays'
 
+const DEFAULT_TAB = '533'
+
+function isValidTab(tab) {
+  return tab === 'ladozhskaya' || isValidRouteId(tab)
+}
+
 function Home() {
-  const [activeTab, setActiveTab] = useState('533')
+  const [searchParams, setSearchParams] = useSearchParams()
   const [schedule, setSchedule] = useState(null)
   const now = useNow()
 
+  const tabFromUrl = searchParams.get('tab')
+  const activeTab = isValidTab(tabFromUrl) ? tabFromUrl : DEFAULT_TAB
   const routeNumber = activeTab !== 'ladozhskaya' ? activeTab : null
+
+  const setActiveTab = (tab) => {
+    if (tab === DEFAULT_TAB) {
+      setSearchParams({}, { replace: true })
+      return
+    }
+    setSearchParams({ tab }, { replace: true })
+  }
 
   const formatDate = (date) => {
     const months = [
