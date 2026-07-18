@@ -12,6 +12,10 @@ RUN npm ci
 # Копируем исходный код
 COPY . .
 
+# Ключ Яндекс.Карт (build-arg / Coolify env)
+ARG VITE_YANDEX_MAPS_KEY
+ENV VITE_YANDEX_MAPS_KEY=$VITE_YANDEX_MAPS_KEY
+
 # Собираем приложение
 RUN npm run build
 

@@ -40,7 +40,12 @@ jobs:
       
       - name: Build
         run: npm run build
-      
+        env:
+          VITE_YANDEX_MAPS_KEY: ${{ secrets.VITE_YANDEX_MAPS_KEY }}
+
+      - name: SPA fallback for GitHub Pages
+        run: cp dist/index.html dist/404.html
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
       
