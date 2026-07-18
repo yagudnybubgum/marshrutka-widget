@@ -4,6 +4,7 @@ import MarshrutkaWidget from './MarshrutkaWidget'
 import FromLadozhskaya from './FromLadozhskaya'
 import Footer from './Footer'
 import { ROUTES, isValidRouteId } from '../config/routes'
+import { hasRouteGeo } from '../utils/routesGeo'
 import { useNow } from '../context/TimeContext'
 import { getDayType as getDayTypeUtil } from '../utils/holidays'
 
@@ -91,13 +92,21 @@ function Home() {
             <>
               <MarshrutkaWidget key={routeNumber} routeNumber={routeNumber} onScheduleChange={setSchedule} />
               {schedule && (
-                <div className="mt-6 flex justify-center">
+                <div className="mt-6 flex flex-wrap justify-center items-center gap-x-6 gap-y-3">
                   <Link
                     to={`/full/${routeNumber}`}
                     className="text-base font-normal text-black/70 hover:text-black transition-colors"
                   >
                     Полное расписание
                   </Link>
+                  {hasRouteGeo(routeNumber) && (
+                    <Link
+                      to={`/map/${routeNumber}`}
+                      className="text-base font-normal text-black/70 hover:text-black transition-colors"
+                    >
+                      Карта маршрута
+                    </Link>
+                  )}
                 </div>
               )}
             </>
