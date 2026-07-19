@@ -46,3 +46,41 @@ html, body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+:root {
+  --ease-expo-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes chip-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chip-enter,
+.card-enter {
+  opacity: 0;
+  animation: chip-enter 520ms var(--ease-expo-out) forwards;
+}
+
+.chip-enter {
+  animation-delay: calc(180ms + var(--chip-i, 0) * 80ms);
+}
+
+.card-enter {
+  animation-delay: calc(60ms + var(--card-i, 0) * 80ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chip-enter,
+  .card-enter {
+    opacity: 1;
+    animation: none;
+    transform: none;
+  }
+}

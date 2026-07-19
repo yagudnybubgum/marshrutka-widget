@@ -21,6 +21,7 @@ const DirectionCard = ({
   followingTrips,
   previousTrip,
   routeNumber,
+  cardIndex = 0,
 }) => {
   const showStopNotice = routeNumber === '533' && directionName === 'С Ладожской'
 
@@ -31,7 +32,8 @@ const DirectionCard = ({
   return (
     <Link
       to={scheduleTo}
-      className="block rounded-xl overflow-hidden bg-base-100 transition-colors hover:bg-base-100/80 active:bg-black/[0.03]"
+      style={cardIndex != null ? { '--card-i': cardIndex } : undefined}
+      className="card-enter block rounded-xl overflow-hidden bg-base-100 transition-colors hover:bg-base-100/80 active:bg-black/[0.03]"
     >
       <div className="p-4">
         {nextTrip ? (
@@ -176,6 +178,7 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
             followingTrips={windowDir1.followingTrips}
             previousTrip={windowDir1.previousTrip}
             routeNumber={routeNumber}
+            cardIndex={0}
           />
 
           {schedule.direction2.length > 0 && (
@@ -185,6 +188,7 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
               followingTrips={windowDir2.followingTrips}
               previousTrip={windowDir2.previousTrip}
               routeNumber={routeNumber}
+              cardIndex={1}
             />
           )}
         </div>

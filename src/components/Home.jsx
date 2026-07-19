@@ -61,11 +61,12 @@ function Home() {
 
         <div className="bg-base-200">
           <div className="flex flex-wrap gap-2 pt-3 pb-1">
-            {ROUTES.map((route) => (
+            {ROUTES.map((route, i) => (
               <button
                 key={route.id}
                 onClick={() => setActiveTab(route.id)}
-                className={`flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors ${
+                style={{ '--chip-i': i }}
+                className={`chip-enter flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors ${
                   activeTab === route.id
                     ? 'bg-blue-100 text-blue-900'
                     : 'bg-gray-100 text-black/70 hover:text-black'
@@ -76,7 +77,8 @@ function Home() {
             ))}
             <button
               onClick={() => setActiveTab('ladozhskaya')}
-              className={`flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors ${
+              style={{ '--chip-i': ROUTES.length }}
+              className={`chip-enter flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors ${
                 activeTab === 'ladozhskaya'
                   ? 'bg-blue-100 text-blue-900'
                   : 'bg-gray-100 text-black/70 hover:text-black'
