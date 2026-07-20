@@ -136,7 +136,7 @@ const FromLadozhskaya = ({ active = false }) => {
               </span>
               <div className="flex flex-col">
                 <span className="inline-flex items-center gap-1 text-sm text-black/70">
-                  <ArrowRightIcon className="text-[14px]" />
+                  <ArrowRightIcon className="h-3.5 w-3.5" />
                   {dep.destination}
                 </span>
               </div>
