@@ -3,6 +3,7 @@ import { Link, Navigate, useParams } from 'react-router-dom'
 import { getRoute, isValidRouteId } from '../config/routes'
 import { getRouteGeo } from '../utils/routesGeo'
 import RouteMap from './RouteMap'
+import { ChevronLeftIcon } from './icons'
 
 const RouteMapPage = () => {
   const { routeId } = useParams()
@@ -32,9 +33,7 @@ const RouteMapPage = () => {
             to={routeId === '533' ? '/' : `/?tab=${encodeURIComponent(routeId)}`}
             className="text-black hover:text-black/70 transition-colors flex items-center gap-1 text-sm mb-6"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-            </svg>
+            <ChevronLeftIcon />
             назад
           </Link>
           <p className="text-sm text-black/70">Карта для маршрута {routeId} пока не добавлена.</p>
@@ -50,9 +49,7 @@ const RouteMapPage = () => {
           to={routeId === '533' ? '/' : `/?tab=${encodeURIComponent(routeId)}`}
           className="text-black hover:text-black/70 transition-colors flex items-center gap-1 text-sm mb-3"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-          </svg>
+          <ChevronLeftIcon />
           назад
         </Link>
 

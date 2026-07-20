@@ -4,6 +4,7 @@ import { ROUTES_FROM_LADOZHSKAYA, getRouteColor } from '../config/routes'
 import { loadSchedulesRaw } from '../utils/schedule/loadSchedule'
 import { extractLadozhskayaDepartures } from '../utils/schedule/processSchedule'
 import { formatTime, formatTimeUntil, getCurrentTimeInMinutes } from '../utils/schedule/formatTime'
+import { ArrowRightIcon } from './icons'
 
 const FromLadozhskaya = ({ active = false }) => {
   const [rawSchedules, setRawSchedules] = useState([])
@@ -134,7 +135,10 @@ const FromLadozhskaya = ({ active = false }) => {
                 {dep.routeName}
               </span>
               <div className="flex flex-col">
-                <span className="text-sm text-black/70">→ {dep.destination}</span>
+                <span className="inline-flex items-center gap-1 text-sm text-black/70">
+                  <ArrowRightIcon className="h-3.5 w-3.5" />
+                  {dep.destination}
+                </span>
               </div>
             </div>
 

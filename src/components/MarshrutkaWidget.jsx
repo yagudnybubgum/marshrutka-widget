@@ -5,14 +5,35 @@ import { loadScheduleRaw } from '../utils/schedule/loadSchedule'
 import { processScheduleForWidget } from '../utils/schedule/processSchedule'
 import { formatTime, formatTimeUntil, getCurrentTimeInMinutes } from '../utils/schedule/formatTime'
 import { getScheduleWindow } from '../utils/schedule/getScheduleWindow'
+import { getRouteGeo } from '../utils/routesGeo'
+import StopLocationOverlay from './StopLocationOverlay'
+import { ArrowRightIcon } from './icons'
 
-const LadozhskayaStopNotice = () => (
-  <div className="space-y-0.5">
-    <p className="text-sm font-medium text-amber-900">Остановка переехала</p>
-    <p className="text-sm text-amber-900 [text-wrap:pretty]">
-      Садимся у&nbsp;дальней остановки слева от&nbsp;перехода
-    </p>
-  </div>
+const getLadozhskayaStop = (routeNumber) => {
+  const geo = getRouteGeo(routeNumber)
+  const direction = geo?.directions?.find((d) => d.id === 'from_ladozhskaya')
+  return direction?.stops?.find((s) => s.id === 'ladozhskaya') ?? null
+}
+
+const LadozhskayaStopNotice = ({ onShowMap }) => (
+  <button
+    type="button"
+    onClick={onShowMap}
+    className="w-full bg-amber-50 px-4 pb-4 pt-3 text-left transition-colors hover:bg-amber-100/80 active:bg-amber-100"
+  >
+    <div className="space-y-2">
+      <div className="space-y-0.5">
+        <p className="text-sm font-medium text-amber-900">Остановка переехала</p>
+        <p className="text-sm text-amber-900 [text-wrap:pretty]">
+          Садимся у&nbsp;дальней остановки слева от&nbsp;перехода
+        </p>
+      </div>
+      <span className="inline-flex items-center gap-1 text-sm font-medium text-amber-900">
+        Показать на карте
+        <ArrowRightIcon />
+      </span>
+    </div>
+  </button>
 )
 
 const DirectionCard = ({
@@ -23,19 +44,23 @@ const DirectionCard = ({
   routeNumber,
   cardIndex = 0,
 }) => {
+  const [mapOpen, setMapOpen] = useState(false)
   const showStopNotice = routeNumber === '533' && directionName === 'С Ладожской'
+  const stop = showStopNotice ? getLadozhskayaStop(routeNumber) : null
 
   const scheduleTo = nextTrip
     ? `/full/${routeNumber}?dir=${encodeURIComponent(directionName)}&t=${nextTrip.time}`
     : `/full/${routeNumber}`
 
   return (
-    <Link
-      to={scheduleTo}
+    <div
       style={cardIndex != null ? { '--card-i': cardIndex } : undefined}
-      className="card-enter block rounded-xl overflow-hidden bg-base-100 transition-colors hover:bg-base-100/80 active:bg-black/[0.03]"
+      className="card-enter rounded-xl overflow-hidden bg-base-100"
     >
-      <div className="p-4">
+      <Link
+        to={scheduleTo}
+        className="block p-4 transition-colors hover:bg-base-100/80 active:bg-black/[0.03]"
+      >
         {nextTrip ? (
           <div className="space-y-4">
             <div className="flex items-start justify-between gap-4">
@@ -75,13 +100,16 @@ const DirectionCard = ({
             <span className="text-black">нет данных по этому направлению.</span>
           </div>
         )}
-      </div>
+      </Link>
       {showStopNotice && nextTrip && (
-        <div className="bg-amber-50 px-4 pb-4 pt-3">
-          <LadozhskayaStopNotice />
-        </div>
+        <LadozhskayaStopNotice onShowMap={() => setMapOpen(true)} />
       )}
-    </Link>
+      <StopLocationOverlay
+        open={mapOpen}
+        onClose={() => setMapOpen(false)}
+        stop={stop}
+      />
+    </div>
   )
 }
 

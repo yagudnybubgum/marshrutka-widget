@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import Footer from './Footer'
+import { ChevronLeftIcon } from './icons'
 
 function About() {
   return (
@@ -9,9 +10,7 @@ function About() {
           to="/"
           className="text-black hover:text-black/70 transition-colors flex items-center gap-1 text-sm font-normal mb-6"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-          </svg>
+          <ChevronLeftIcon />
           назад
         </Link>
         

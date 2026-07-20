@@ -7,6 +7,7 @@ import { ROUTES, isValidRouteId } from '../config/routes'
 import { hasRouteGeo } from '../utils/routesGeo'
 import { useNow } from '../context/TimeContext'
 import { getDayType as getDayTypeUtil } from '../utils/holidays'
+import { ArrowRightIcon } from './icons'
 
 const DEFAULT_TAB = '533'
 
@@ -124,9 +125,7 @@ function Home() {
                 <span className="text-base font-normal">Расписание всегда под рукой</span>
                 <span className="text-sm opacity-90 mt-0.5">Добавьте его на главный экран</span>
               </div>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 flex-shrink-0 ml-2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-              </svg>
+              <ArrowRightIcon className="ml-2 h-5 w-5 flex-shrink-0" />
             </div>
           </Link>
         </div>
