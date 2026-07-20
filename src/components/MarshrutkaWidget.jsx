@@ -7,7 +7,7 @@ import { formatTime, formatTimeUntil, getCurrentTimeInMinutes } from '../utils/s
 import { getScheduleWindow } from '../utils/schedule/getScheduleWindow'
 import { getRouteGeo } from '../utils/routesGeo'
 import StopLocationOverlay from './StopLocationOverlay'
-import { ArrowRightIcon } from './icons'
+import { MapPinIcon } from './icons'
 
 const getLadozhskayaStop = (routeNumber) => {
   const geo = getRouteGeo(routeNumber)
@@ -30,7 +30,7 @@ const LadozhskayaStopNotice = ({ onShowMap }) => (
       </div>
       <span className="inline-flex items-center gap-1 text-sm font-medium text-amber-900">
         Показать на карте
-        <ArrowRightIcon />
+        <MapPinIcon />
       </span>
     </div>
   </button>
