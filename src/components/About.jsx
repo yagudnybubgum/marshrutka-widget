@@ -4,7 +4,7 @@ import { ChevronLeftIcon } from './icons'
 
 function About() {
   return (
-    <div className="min-h-[100dvh] bg-base-200 py-6 px-4 sm:py-10 flex flex-col">
+    <div className="min-h-[100dvh] bg-white py-6 px-4 sm:py-10 flex flex-col">
       <div className="max-w-4xl mx-auto w-full flex-1 flex flex-col">
         <Link 
           to="/"
@@ -14,7 +14,7 @@ function About() {
           назад
         </Link>
         
-        <div className="bg-white rounded-lg p-6 sm:p-8 space-y-6 text-black">
+        <div className="space-y-6 text-black">
           <h1 className="text-2xl font-normal mb-6">О проекте</h1>
           
           <div className="space-y-4 text-sm leading-relaxed">
@@ -30,7 +30,7 @@ function About() {
             </p>
           </div>
           
-          <div className="pt-6 border-t border-black/10">
+          <div className="pt-6">
             <p className="text-sm text-black/70 mb-2">Почта для связи:</p>
             <a 
               href="mailto:onlineyanino@gmail.com"

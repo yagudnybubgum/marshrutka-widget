@@ -4,7 +4,7 @@ import { ChevronLeftIcon } from './icons'
 
 function PrivacyPolicy() {
   return (
-    <div className="min-h-[100dvh] bg-base-200 py-6 px-4 sm:py-10 flex flex-col">
+    <div className="min-h-[100dvh] bg-white py-6 px-4 sm:py-10 flex flex-col">
       <div className="max-w-4xl mx-auto w-full flex-1 flex flex-col">
         <Link 
           to="/"
@@ -14,7 +14,7 @@ function PrivacyPolicy() {
           назад
         </Link>
         
-        <div className="bg-white rounded-lg p-6 sm:p-8 space-y-6 text-black">
+        <div className="space-y-6 text-black">
           <h1 className="text-2xl font-semibold mb-6">Политика конфиденциальности</h1>
           
           <p className="text-sm leading-relaxed">
