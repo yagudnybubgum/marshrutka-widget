@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom'
 import StopLocationMap from './StopLocationMap'
 import { XMarkIcon } from './icons'
 
-const StopLocationOverlay = ({ open, onClose, stop }) => {
+const StopLocationOverlay = ({ open, onClose, stop, title }) => {
   useEffect(() => {
     if (!open) return undefined
 
@@ -23,8 +23,10 @@ const StopLocationOverlay = ({ open, onClose, stop }) => {
 
   if (!open || !stop) return null
 
+  const heading = title ?? stop.name
+
   return createPortal(
-    <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label={stop.name}>
+    <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label={heading}>
       <button
         type="button"
         className="absolute inset-0 bg-black/40"
@@ -38,7 +40,7 @@ const StopLocationOverlay = ({ open, onClose, stop }) => {
             <div className="h-1 w-10 rounded-full bg-black/15" aria-hidden />
           </div>
           <div className="flex items-center justify-between gap-3 px-4 pb-3 md:px-5 md:py-4 md:pb-4">
-            <h2 className="text-lg font-medium text-black">{stop.name}</h2>
+            <h2 className="text-lg font-medium text-black">{heading}</h2>
             <button
               type="button"
               onClick={onClose}

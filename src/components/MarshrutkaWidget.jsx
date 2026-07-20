@@ -108,6 +108,7 @@ const DirectionCard = ({
         open={mapOpen}
         onClose={() => setMapOpen(false)}
         stop={stop}
+        title="Остановка на Ладожской"
       />
     </div>
   )
