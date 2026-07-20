@@ -118,7 +118,7 @@ function Home() {
           )}
           <Link
             to="/homescreen"
-            className="mt-6 block bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl p-4 hover:from-blue-600 hover:to-blue-700 transition-all shadow-md"
+            className="mt-6 block md:max-w-[360px] md:mx-auto bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl p-4 hover:from-blue-600 hover:to-blue-700 transition-all shadow-md"
           >
             <div className="flex items-center justify-between">
               <div className="flex flex-col">
