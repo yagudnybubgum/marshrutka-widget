@@ -22,8 +22,8 @@ const LadozhskayaStopNotice = ({ onShowMap }) => (
     className="w-full bg-amber-50 px-4 pb-4 pt-3 text-left transition-colors hover:bg-amber-100/80 active:bg-amber-100"
   >
     <div className="space-y-1">
-      <p className="text-base font-medium text-amber-900">Остановка переехала</p>
-      <span className="inline-flex items-center gap-1 text-sm font-medium text-amber-900">
+      <p className="text-base font-normal text-amber-900">Остановка переехала</p>
+      <span className="inline-flex items-center gap-1 text-sm font-normal text-amber-900">
         Посмотреть на карте
         <MapPinIcon />
       </span>
