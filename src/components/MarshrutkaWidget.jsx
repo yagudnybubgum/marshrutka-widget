@@ -21,15 +21,10 @@ const LadozhskayaStopNotice = ({ onShowMap }) => (
     onClick={onShowMap}
     className="w-full bg-amber-50 px-4 pb-4 pt-3 text-left transition-colors hover:bg-amber-100/80 active:bg-amber-100"
   >
-    <div className="space-y-2">
-      <div className="space-y-0.5">
-        <p className="text-sm font-medium text-amber-900">Остановка переехала</p>
-        <p className="text-sm text-amber-900 [text-wrap:pretty]">
-          Садимся у&nbsp;дальней остановки слева от&nbsp;перехода
-        </p>
-      </div>
+    <div className="space-y-1">
+      <p className="text-base font-medium text-amber-900">Остановка переехала</p>
       <span className="inline-flex items-center gap-1 text-sm font-medium text-amber-900">
-        Показать на карте
+        Посмотреть на карте
         <MapPinIcon />
       </span>
     </div>
