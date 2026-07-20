@@ -125,7 +125,7 @@ function Home() {
                 <span className="text-base font-normal">Расписание всегда под рукой</span>
                 <span className="text-sm opacity-90 mt-0.5">Добавьте его на главный экран</span>
               </div>
-              <ArrowRightIcon className="ml-2 h-5 w-5 flex-shrink-0" />
+              <ArrowRightIcon className="ml-2 text-[20px] flex-shrink-0" />
             </div>
           </Link>
         </div>
