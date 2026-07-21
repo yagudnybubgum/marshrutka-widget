@@ -50,11 +50,11 @@ function Home() {
     <div className="min-h-[100dvh] bg-base-200 pt-5 pb-8 px-4 sm:py-10 flex flex-col">
       <div className="max-w-5xl mx-auto space-y-3 sm:space-y-4 w-full flex-1 flex flex-col">
         <div className="flex-shrink-0">
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
             <h1 className="text-xl font-normal text-black">
               Маршрутки Янино-1
             </h1>
-            <span className="text-sm font-normal text-gray-800">
+            <span className="text-sm font-normal text-gray-800 sm:shrink-0">
               {formatDate(now)}, {getDayTypeUtil(now).toLowerCase()}
             </span>
           </div>
