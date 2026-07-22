@@ -58,8 +58,8 @@ function Home() {
           </span>
         </div>
 
-        <div className="bg-base-200">
-          <div className="flex flex-wrap gap-2 pb-1">
+        <div className="-mx-4 overflow-x-auto scrollbar-hide">
+          <div className="flex w-max flex-nowrap gap-2 px-4 pb-1">
             {ROUTES.map((route, i) => (
               <button
                 key={route.id}
