@@ -49,11 +49,15 @@ function Home() {
   return (
     <div className="min-h-[100dvh] bg-base-200 pt-5 pb-8 px-4 sm:py-10 flex flex-col">
       <div className="max-w-5xl mx-auto space-y-3 sm:space-y-4 w-full flex-1 flex flex-col">
-        <div className="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between md:gap-4">
+        <div className="flex flex-wrap items-baseline gap-y-1">
           <h1 className="text-xl font-normal text-black">
             Маршрутки Янино-1
           </h1>
-          <span className="text-sm font-normal text-gray-800 md:shrink-0">
+          <span
+            className="pointer-events-none h-0 basis-[60px] grow-[999]"
+            aria-hidden="true"
+          />
+          <span className="text-sm font-normal text-gray-800">
             {formatDate(now)}, {getDayTypeUtil(now).toLowerCase()}
           </span>
         </div>
