@@ -91,7 +91,7 @@ function Home() {
         <div className="mt-3 flex-1">
           {activeTab !== 'ladozhskaya' ? (
             <>
-              <MarshrutkaWidget key={routeNumber} routeNumber={routeNumber} onScheduleChange={setSchedule} />
+              <MarshrutkaWidget routeNumber={routeNumber} onScheduleChange={setSchedule} />
               {schedule && (
                 <div className="mt-6 flex flex-wrap justify-center items-center gap-x-6 gap-y-3">
                   <Link

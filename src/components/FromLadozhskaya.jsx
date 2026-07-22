@@ -99,9 +99,21 @@ const FromLadozhskaya = ({ active = false }) => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center gap-3 py-10 text-black/70">
-        <span className="loading loading-spinner loading-lg text-black" />
-        <p className="text-sm sm:text-base font-normal text-black">загружаем расписания…</p>
+      <div className="w-full" aria-busy="true" aria-label="Загрузка расписания">
+        <div className="divide-y divide-gray-100">
+          {Array.from({ length: 6 }, (_, i) => (
+            <div key={i} className="flex items-center justify-between py-4" aria-hidden>
+              <div className="flex items-center gap-3">
+                <div className="skeleton h-9 w-16 rounded-full" />
+                <div className="skeleton h-4 w-28" />
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="skeleton h-4 w-16" />
+                <div className="skeleton h-7 w-14" />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     )
   }

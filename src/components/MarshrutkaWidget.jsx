@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useNow } from '../context/TimeContext'
-import { loadScheduleRaw } from '../utils/schedule/loadSchedule'
+import { loadScheduleRaw, peekScheduleRaw } from '../utils/schedule/loadSchedule'
 import { processScheduleForWidget } from '../utils/schedule/processSchedule'
 import { formatTime, formatTimeUntil, getCurrentTimeInMinutes } from '../utils/schedule/formatTime'
 import { getScheduleWindow } from '../utils/schedule/getScheduleWindow'
@@ -31,6 +31,24 @@ const LadozhskayaStopNotice = ({ onShowMap }) => (
   </button>
 )
 
+const DirectionCardSkeleton = () => (
+  <div className="rounded-xl overflow-hidden bg-base-100 p-4" aria-hidden>
+    <div className="space-y-4">
+      <div className="flex items-start justify-between gap-4">
+        <div className="space-y-2">
+          <div className="skeleton h-7 w-28" />
+          <div className="skeleton h-4 w-24" />
+        </div>
+        <div className="skeleton h-10 w-20" />
+      </div>
+      <div className="space-y-2">
+        <div className="skeleton h-4 w-full max-w-xs" />
+        <div className="skeleton h-4 w-48" />
+      </div>
+    </div>
+  </div>
+)
+
 const DirectionCard = ({
   directionName,
   nextTrip,
@@ -38,6 +56,7 @@ const DirectionCard = ({
   previousTrip,
   routeNumber,
   cardIndex = 0,
+  animate = true,
 }) => {
   const [mapOpen, setMapOpen] = useState(false)
   const showStopNotice = routeNumber === '533' && directionName === 'С Ладожской'
@@ -50,7 +69,7 @@ const DirectionCard = ({
   return (
     <div
       style={cardIndex != null ? { '--card-i': cardIndex } : undefined}
-      className="card-enter rounded-xl overflow-hidden bg-base-100"
+      className={`${animate ? 'card-enter ' : ''}rounded-xl overflow-hidden bg-base-100`}
     >
       <Link
         to={scheduleTo}
@@ -110,30 +129,53 @@ const DirectionCard = ({
 }
 
 const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
-  const [rawData, setRawData] = useState(null)
-  const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [showLoadingIndicator, setShowLoadingIndicator] = useState(false)
+  const [state, setState] = useState(() => {
+    const cached = peekScheduleRaw(routeNumber)
+    return {
+      routeNumber,
+      rawData: cached,
+      loading: !cached,
+      error: null,
+    }
+  })
+  const [hasAnimatedIn, setHasAnimatedIn] = useState(false)
   const now = useNow()
 
-  useEffect(() => {
-    let cancelled = false
+  if (state.routeNumber !== routeNumber) {
+    const cached = peekScheduleRaw(routeNumber)
+    setState({
+      routeNumber,
+      rawData: cached,
+      loading: !cached,
+      error: null,
+    })
+  }
 
-    setRawData(null)
-    setError(null)
-    setLoading(true)
-    setShowLoadingIndicator(false)
+  const { rawData, loading, error } = state
+
+  useEffect(() => {
+    if (peekScheduleRaw(routeNumber)) return undefined
+
+    let cancelled = false
 
     const load = async () => {
       try {
         const data = await loadScheduleRaw(routeNumber)
         if (cancelled) return
-        setRawData(data)
-        setLoading(false)
+        setState({
+          routeNumber,
+          rawData: data,
+          loading: false,
+          error: null,
+        })
       } catch {
         if (cancelled) return
-        setError(`Не удалось загрузить расписание для маршрута ${routeNumber}.`)
-        setLoading(false)
+        setState({
+          routeNumber,
+          rawData: null,
+          loading: false,
+          error: `Не удалось загрузить расписание для маршрута ${routeNumber}.`,
+        })
       }
     }
 
@@ -152,21 +194,9 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
   useEffect(() => {
     if (schedule) {
       onScheduleChange?.(schedule)
+      setHasAnimatedIn(true)
     }
   }, [schedule, onScheduleChange])
-
-  useEffect(() => {
-    if (!loading) {
-      setShowLoadingIndicator(false)
-      return
-    }
-
-    const timer = setTimeout(() => {
-      setShowLoadingIndicator(true)
-    }, 3000)
-
-    return () => clearTimeout(timer)
-  }, [loading])
 
   const currentTime = useMemo(() => getCurrentTimeInMinutes(now), [now])
 
@@ -175,10 +205,10 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
 
   return (
     <div className="w-full space-y-5">
-      {loading && showLoadingIndicator && (
-        <div className="flex flex-col items-center gap-3 py-10 text-black/70">
-          <span className="loading loading-spinner loading-lg text-black" />
-          <p className="text-sm sm:text-base font-normal text-black">загружаем расписание…</p>
+      {loading && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6" aria-busy="true" aria-label="Загрузка расписания">
+          <DirectionCardSkeleton />
+          <DirectionCardSkeleton />
         </div>
       )}
 
@@ -203,6 +233,7 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
             previousTrip={windowDir1.previousTrip}
             routeNumber={routeNumber}
             cardIndex={0}
+            animate={!hasAnimatedIn}
           />
 
           {schedule.direction2.length > 0 && (
@@ -213,6 +244,7 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
               previousTrip={windowDir2.previousTrip}
               routeNumber={routeNumber}
               cardIndex={1}
+              animate={!hasAnimatedIn}
             />
           )}
         </div>

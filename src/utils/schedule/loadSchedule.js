@@ -7,6 +7,10 @@ export function clearScheduleCache() {
   cache.clear()
 }
 
+export function peekScheduleRaw(routeId) {
+  return cache.get(routeId) ?? null
+}
+
 export async function loadScheduleRaw(routeId) {
   if (cache.has(routeId)) {
     return cache.get(routeId)
