@@ -125,7 +125,7 @@ function Home() {
             <div className="flex items-center justify-between">
               <div className="flex flex-col">
                 <span className="text-base font-normal">Расписание всегда под рукой</span>
-                <span className="text-sm text-blue-900/70 mt-0.5">Добавьте его на главный экран</span>
+                <span className="text-sm mt-0.5">Добавьте его на главный экран</span>
               </div>
               <ArrowRightIcon className="ml-2 h-5 w-5 flex-shrink-0 text-blue-900/70" />
             </div>
