@@ -120,14 +120,14 @@ function Home() {
           )}
           <Link
             to="/homescreen"
-            className="mt-6 block md:max-w-[360px] md:mx-auto bg-base-100 text-black rounded-xl p-4 transition-colors hover:bg-base-100/80 active:bg-black/[0.03]"
+            className="mt-6 block md:max-w-[360px] md:mx-auto bg-blue-100 text-blue-900 rounded-xl p-4 transition-colors hover:bg-blue-200/80 active:bg-blue-200"
           >
             <div className="flex items-center justify-between">
               <div className="flex flex-col">
                 <span className="text-base font-normal">Расписание всегда под рукой</span>
-                <span className="text-sm text-black/70 mt-0.5">Добавьте его на главный экран</span>
+                <span className="text-sm text-blue-900/70 mt-0.5">Добавьте его на главный экран</span>
               </div>
-              <ArrowRightIcon className="ml-2 h-5 w-5 flex-shrink-0 text-black/70" />
+              <ArrowRightIcon className="ml-2 h-5 w-5 flex-shrink-0 text-blue-900/70" />
             </div>
           </Link>
         </div>
