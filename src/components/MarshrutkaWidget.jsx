@@ -19,7 +19,7 @@ const LadozhskayaStopNotice = ({ onShowMap }) => (
   <button
     type="button"
     onClick={onShowMap}
-    className="w-full bg-amber-400 px-4 pb-4 pt-3 text-left text-black transition-colors hover:bg-amber-500 active:bg-amber-500"
+    className="w-full rounded-t-xl bg-amber-400 px-4 pb-4 pt-3 text-left text-black transition-colors hover:bg-amber-500 active:bg-amber-500"
   >
     <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
       <p className="text-base font-normal">Остановка переехала</p>
