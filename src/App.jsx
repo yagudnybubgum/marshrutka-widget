@@ -5,6 +5,7 @@ import HomeScreen from './components/HomeScreen'
 import FullSchedulePage from './components/FullSchedulePage'
 import RouteMapPage from './components/RouteMapPage'
 import About from './components/About'
+import DesignSystem from './components/DesignSystem'
 
 const LEGACY_FULL_ROUTES = ['533', '429', '664', '430A', '453']
 
@@ -24,6 +25,7 @@ function App() {
         />
       ))}
       <Route path="/about" element={<About />} />
+      <Route path="/ds" element={<DesignSystem />} />
     </Routes>
   )
 }

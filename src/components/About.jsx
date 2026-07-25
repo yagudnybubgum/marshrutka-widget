@@ -4,17 +4,17 @@ import { ChevronLeftIcon } from './icons'
 
 function About() {
   return (
-    <div className="min-h-[100dvh] bg-white py-6 px-4 sm:py-10 flex flex-col">
+    <div className="min-h-[100dvh] bg-surface py-6 px-4 sm:py-10 flex flex-col">
       <div className="max-w-4xl mx-auto w-full flex-1 flex flex-col">
         <Link 
           to="/"
-          className="text-black hover:text-black/70 transition-colors flex items-center gap-1 text-sm font-normal mb-6"
+          className="text-ink hover:text-ink/70 transition-colors flex items-center gap-1 text-sm font-normal mb-6"
         >
           <ChevronLeftIcon />
           назад
         </Link>
         
-        <div className="space-y-6 text-black">
+        <div className="space-y-6 text-ink">
           <h1 className="text-2xl font-normal mb-6">О проекте</h1>
           
           <div className="space-y-4 text-sm leading-relaxed">
@@ -31,10 +31,10 @@ function About() {
           </div>
           
           <div className="pt-6">
-            <p className="text-sm text-black/70 mb-2">Почта для связи:</p>
+            <p className="text-sm text-ink/70 mb-2">Почта для связи:</p>
             <a 
               href="mailto:onlineyanino@gmail.com"
-              className="text-sm text-black hover:text-black/70 transition-colors"
+              className="text-sm text-ink hover:text-ink/70 transition-colors"
             >
               onlineyanino@gmail.com
             </a>

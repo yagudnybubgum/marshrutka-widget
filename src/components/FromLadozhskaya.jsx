@@ -100,7 +100,7 @@ const FromLadozhskaya = ({ active = false }) => {
   if (loading) {
     return (
       <div className="w-full" aria-busy="true" aria-label="Загрузка расписания">
-        <div className="divide-y divide-gray-100">
+        <div className="divide-y divide-ink/5">
           {Array.from({ length: 6 }, (_, i) => (
             <div key={i} className="flex items-center justify-between py-4" aria-hidden>
               <div className="flex items-center gap-3">
@@ -121,7 +121,7 @@ const FromLadozhskaya = ({ active = false }) => {
   if (error) {
     return (
       <div className="alert alert-error">
-        <span className="text-black">{error}</span>
+        <span className="text-ink">{error}</span>
       </div>
     )
   }
@@ -129,14 +129,14 @@ const FromLadozhskaya = ({ active = false }) => {
   if (upcomingDepartures.length === 0) {
     return (
       <div className="alert alert-info">
-        <span className="text-black">Нет данных о расписании с Ладожской</span>
+        <span className="text-ink">Нет данных о расписании с Ладожской</span>
       </div>
     )
   }
 
   return (
     <div className="w-full">
-      <div className="divide-y divide-gray-100">
+      <div className="divide-y divide-ink/5">
         {upcomingDepartures.map((dep, index) => (
           <div
             key={`${dep.routeId}-${dep.time}-${index}`}
@@ -147,7 +147,7 @@ const FromLadozhskaya = ({ active = false }) => {
                 {dep.routeName}
               </span>
               <div className="flex flex-col">
-                <span className="inline-flex items-center gap-1 text-sm text-black/70">
+                <span className="inline-flex items-center gap-1 text-sm text-ink/70">
                   <ArrowRightIcon className="h-3.5 w-3.5" />
                   {dep.destination}
                 </span>
@@ -155,8 +155,8 @@ const FromLadozhskaya = ({ active = false }) => {
             </div>
 
             <div className="flex items-center gap-3">
-              <span className="text-sm text-black/60">{formatTimeUntil(dep.minutesUntil)}</span>
-              <span className="text-xl font-normal text-black/80">{formatTime(dep.time)}</span>
+              <span className="text-sm text-ink/60">{formatTimeUntil(dep.minutesUntil)}</span>
+              <span className="text-xl font-normal text-ink/80">{formatTime(dep.time)}</span>
             </div>
           </div>
         ))}
@@ -166,7 +166,7 @@ const FromLadozhskaya = ({ active = false }) => {
         <div className="mt-4 flex justify-center">
           <button
             onClick={() => setVisibleCount((prev) => prev + 12)}
-            className="px-5 py-2 text-base font-normal text-black/70 hover:text-black transition-colors"
+            className="px-5 py-2 text-base font-normal text-ink/70 hover:text-ink transition-colors"
           >
             Показать ещё
           </button>
@@ -174,7 +174,7 @@ const FromLadozhskaya = ({ active = false }) => {
       )}
 
       {!hasMore && todayDepartures.length > 0 && (
-        <div className="mt-4 text-center text-sm text-black/50">Больше рейсов сегодня нет</div>
+        <div className="mt-4 text-center text-sm text-ink/50">Больше рейсов сегодня нет</div>
       )}
     </div>
   )

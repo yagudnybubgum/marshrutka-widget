@@ -47,17 +47,17 @@ function Home() {
   }, [routeNumber])
 
   return (
-    <div className="min-h-[100dvh] bg-base-200 pt-5 pb-8 px-4 sm:py-10 flex flex-col">
+    <div className="min-h-[100dvh] bg-surface-muted pt-5 pb-8 px-4 sm:py-10 flex flex-col">
       <div className="max-w-5xl mx-auto space-y-3 sm:space-y-4 w-full flex-1 flex flex-col">
         <div className="flex flex-wrap items-baseline gap-y-1">
-          <h1 className="text-xl font-normal text-black">
+          <h1 className="text-xl font-normal text-ink">
             Маршрутки Янино-1
           </h1>
           <span
             className="pointer-events-none h-0 basis-[60px] grow-[999]"
             aria-hidden="true"
           />
-          <span className="text-sm font-normal text-gray-800">
+          <span className="text-sm font-normal text-ink">
             {formatDate(now)}, {getDayTypeUtil(now).toLowerCase()}
           </span>
         </div>
@@ -71,8 +71,8 @@ function Home() {
                 style={{ '--chip-i': i }}
                 className={`chip-enter flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors ${
                   activeTab === route.id
-                    ? 'bg-blue-100 text-blue-900'
-                    : 'bg-gray-100 text-black/70 hover:text-black'
+                    ? 'bg-chip-active text-chip-active-ink'
+                    : 'bg-chip text-ink/70 hover:text-ink'
                 }`}
               >
                 {route.name}
@@ -83,8 +83,8 @@ function Home() {
               style={{ '--chip-i': ROUTES.length }}
               className={`chip-enter flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors ${
                 activeTab === 'ladozhskaya'
-                  ? 'bg-blue-100 text-blue-900'
-                  : 'bg-gray-100 text-black/70 hover:text-black'
+                  ? 'bg-chip-active text-chip-active-ink'
+                  : 'bg-chip text-ink/70 hover:text-ink'
               }`}
             >
               С Ладожской
@@ -100,14 +100,14 @@ function Home() {
                 <div className="mt-6 flex flex-wrap justify-center items-center gap-x-6 gap-y-3">
                   <Link
                     to={`/full/${routeNumber}`}
-                    className="text-base font-normal text-black/70 hover:text-black transition-colors"
+                    className="text-base font-normal text-ink/70 hover:text-ink transition-colors"
                   >
                     Полное расписание
                   </Link>
                   {hasRouteGeo(routeNumber) && (
                     <Link
                       to={`/map/${routeNumber}`}
-                      className="text-base font-normal text-black/70 hover:text-black transition-colors"
+                      className="text-base font-normal text-ink/70 hover:text-ink transition-colors"
                     >
                       Карта маршрута
                     </Link>
@@ -120,14 +120,14 @@ function Home() {
           )}
           <Link
             to="/homescreen"
-            className="mt-6 block md:max-w-[360px] md:mx-auto bg-blue-100 text-blue-900 rounded-xl p-4 transition-colors hover:bg-blue-200/80 active:bg-blue-200"
+            className="mt-6 block md:max-w-[360px] md:mx-auto bg-chip-active text-chip-active-ink rounded-xl p-4 transition-colors hover:bg-chip-active-hover active:bg-chip-active-hover"
           >
             <div className="flex items-center justify-between">
               <div className="flex flex-col">
                 <span className="text-base font-normal">Расписание всегда под рукой</span>
                 <span className="text-sm mt-0.5">Добавьте его на главный экран</span>
               </div>
-              <ArrowRightIcon className="ml-2 h-5 w-5 flex-shrink-0 text-blue-900/70" />
+              <ArrowRightIcon className="ml-2 h-5 w-5 flex-shrink-0 text-chip-active-ink/70" />
             </div>
           </Link>
         </div>

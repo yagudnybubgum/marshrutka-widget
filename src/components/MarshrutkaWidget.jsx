@@ -19,7 +19,7 @@ const LadozhskayaStopNotice = ({ onShowMap }) => (
   <button
     type="button"
     onClick={onShowMap}
-    className="w-full rounded-t-xl bg-amber-400 px-4 pb-4 pt-3 text-left text-black transition-colors hover:bg-amber-500 active:bg-amber-500"
+    className="w-full rounded-t-xl bg-alert px-4 pb-4 pt-3 text-left text-ink transition-colors hover:bg-alert-hover active:bg-alert-hover"
   >
     <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
       <p className="text-base font-normal">Остановка переехала</p>
@@ -32,7 +32,7 @@ const LadozhskayaStopNotice = ({ onShowMap }) => (
 )
 
 const DirectionCardSkeleton = () => (
-  <div className="rounded-xl overflow-hidden bg-base-100 p-4" aria-hidden>
+  <div className="rounded-xl overflow-hidden bg-surface p-4" aria-hidden>
     <div className="space-y-4">
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-2">
@@ -69,18 +69,18 @@ const DirectionCard = ({
   return (
     <div
       style={cardIndex != null ? { '--card-i': cardIndex } : undefined}
-      className={`${animate ? 'card-enter ' : ''}rounded-xl overflow-hidden bg-base-100`}
+      className={`${animate ? 'card-enter ' : ''}rounded-xl overflow-hidden bg-surface`}
     >
       <Link
         to={scheduleTo}
-        className="block p-4 transition-colors hover:bg-base-100/80 active:bg-black/[0.03]"
+        className="block p-4 transition-colors hover:bg-ink/5 active:bg-ink/[0.03]"
       >
         {nextTrip ? (
           <div className="space-y-4">
             <div className="flex items-start justify-between gap-4">
               <div className="space-y-2">
-                <h3 className="text-xl font-normal text-black">{directionName}</h3>
-                <p className="text-sm text-black/70">
+                <h3 className="text-xl font-normal text-ink">{directionName}</h3>
+                <p className="text-sm text-ink/70">
                   {nextTrip.minutesUntil === 0
                     ? 'сейчас'
                     : `через ${formatTimeUntil(nextTrip.minutesUntil)}`}
@@ -88,14 +88,14 @@ const DirectionCard = ({
                 </p>
               </div>
               <div className="text-right self-start">
-                <p className="font-normal text-black" style={{ fontSize: '40px' }}>
+                <p className="font-normal text-ink" style={{ fontSize: '40px' }}>
                   {formatTime(nextTrip.time)}
                 </p>
               </div>
             </div>
             <div className="space-y-2">
               {followingTrips.length > 0 && (
-                <p className="text-sm text-black/80">
+                <p className="text-sm text-ink/80">
                   {`Следующие в ${followingTrips
                     .slice(0, 3)
                     .map((t) => `${formatTime(t.time)}${t.isTomorrow ? ' (завтра)' : ''}`)
@@ -103,7 +103,7 @@ const DirectionCard = ({
                 </p>
               )}
               {previousTrip && (
-                <p className="text-sm text-black/80">
+                <p className="text-sm text-ink/80">
                   {`Предыдущая ушла ${formatTimeUntil(-previousTrip.minutesUntil)} назад`}
                 </p>
               )}
@@ -111,7 +111,7 @@ const DirectionCard = ({
           </div>
         ) : (
           <div className="alert alert-info">
-            <span className="text-black">нет данных по этому направлению.</span>
+            <span className="text-ink">нет данных по этому направлению.</span>
           </div>
         )}
       </Link>
@@ -214,13 +214,13 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
 
       {error && (
         <div className="alert alert-error">
-          <span className="text-black">{error}</span>
+          <span className="text-ink">{error}</span>
         </div>
       )}
 
       {!loading && rawData && !schedule && !error && (
         <div className="alert alert-error">
-          <span className="text-black">Не удалось обработать данные расписания для маршрута {routeNumber}.</span>
+          <span className="text-ink">Не удалось обработать данные расписания для маршрута {routeNumber}.</span>
         </div>
       )}
 

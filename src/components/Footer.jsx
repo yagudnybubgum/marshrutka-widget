@@ -6,13 +6,13 @@ function Footer({ className = '' }) {
       <div className="flex flex-col items-center gap-4">
         <Link 
           to="/about"
-          className="text-xs text-black/70 text-center hover:text-black transition-colors"
+          className="text-xs text-ink/70 text-center hover:text-ink transition-colors"
         >
           О проекте
         </Link>
         <Link 
           to="/privacy-policy"
-          className="text-xs text-black/70 text-center hover:text-black transition-colors"
+          className="text-xs text-ink/70 text-center hover:text-ink transition-colors"
         >
           Политика конфиденциальности
         </Link>

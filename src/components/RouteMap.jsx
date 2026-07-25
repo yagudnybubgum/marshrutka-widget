@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { loadYmaps, getYandexMapsKey } from '../utils/loadYmaps'
 
-const LINE_COLOR = '#2563eb'
+function getMapLineColor() {
+  return getComputedStyle(document.documentElement).getPropertyValue('--map-line').trim() || '#2563eb'
+}
 
 /** OSRM → [lat, lng][] вдоль дорог. При fail — прямые отрезки. */
 async function fetchRoadCoords(stops) {
@@ -36,7 +38,7 @@ function drawRoute(ymaps, map, collection, stops, lineCoords) {
 
   if (lineCoords?.length >= 2) {
     collection.add(new ymaps.Polyline(lineCoords, {}, {
-      strokeColor: LINE_COLOR,
+      strokeColor: getMapLineColor(),
       strokeWidth: 4,
       strokeOpacity: 0.9,
       strokeStyle: 'solid',
@@ -147,7 +149,7 @@ const RouteMap = ({ stops }) => {
 
   if (error) {
     return (
-      <div className="h-full w-full min-h-[320px] flex items-center justify-center px-4 text-sm text-black/60 text-center">
+      <div className="h-full w-full min-h-[320px] flex items-center justify-center px-4 text-sm text-ink/60 text-center">
         {error}
       </div>
     )

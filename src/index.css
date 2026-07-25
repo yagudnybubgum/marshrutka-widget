@@ -27,7 +27,7 @@ html, body {
   padding: 0;
   overflow-x: hidden;
   width: 100%;
-  background-color: var(--color-base-200);
+  background-color: var(--surface-muted);
   font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   overscroll-behavior-y: none;
   -webkit-overflow-scrolling: touch;
@@ -47,8 +47,40 @@ html, body {
   display: none;
 }
 
-:root {
+:root,
+[data-theme="light"] {
   --ease-expo-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Surface */
+  --surface: #ffffff;
+  --surface-muted: #fafafa;
+
+  /* Ink — channels for text-ink/70, bg-ink/40, … */
+  --ink: 0 0 0;
+
+  /* Chip / accent (hover = #bfdbfe in TW; soft ink = /70) */
+  --chip: #f3f4f6;
+  --chip-active: #dbeafe;
+  --chip-active-ink: 30 58 138; /* #1e3a8a */
+
+  /* Feedback */
+  --alert: #fbbf24;
+  --alert-hover: #f59e0b;
+  --highlight: #fef08a;
+  --stroke: #d1d5db;
+  --map-line: #2563eb;
+
+  /* Routes (blue/gray bg = chip tokens) */
+  --route-blue: var(--chip-active);
+  --route-blue-ink: #1e40af;
+  --route-green: #dcfce7;
+  --route-green-ink: #166534;
+  --route-gray: var(--chip);
+  --route-gray-ink: #1f2937;
+  --route-purple: #f3e8ff;
+  --route-purple-ink: #6b21a8;
+  --route-orange: #ffedd5;
+  --route-orange-ink: #9a3412;
 }
 
 @keyframes chip-enter {
