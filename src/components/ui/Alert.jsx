@@ -6,7 +6,7 @@ export function Alert({ children, className = '', variant = 'danger', ...rest })
 
   return (
     <div
-      className={`rounded-xl px-4 py-3 ${tone} ${className}`.trim()}
+      className={`rounded-lg px-4 py-3 ${tone} ${className}`.trim()}
       role="alert"
       {...rest}
     >

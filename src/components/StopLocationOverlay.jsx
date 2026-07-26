@@ -35,7 +35,7 @@ const StopLocationOverlay = ({ open, onClose, stop, title }) => {
       />
 
       <div className="absolute inset-x-0 bottom-0 md:inset-0 md:flex md:items-center md:justify-center md:p-6 md:pointer-events-none">
-        <div className="pointer-events-auto overflow-hidden rounded-t-2xl bg-surface shadow-xl stop-sheet-enter md:w-full md:max-w-lg md:rounded-2xl stop-modal-enter-md">
+        <div className="pointer-events-auto overflow-hidden rounded-t-3xl bg-surface shadow-xl stop-sheet-enter md:w-full md:max-w-lg md:rounded-3xl stop-modal-enter-md">
           <div className="flex flex-col items-center pt-3 pb-2 md:hidden">
             <div className="h-1 w-10 rounded-full bg-ink/20" aria-hidden />
           </div>
@@ -44,7 +44,7 @@ const StopLocationOverlay = ({ open, onClose, stop, title }) => {
             <button
               type="button"
               onClick={onClose}
-              className="hover-darken hidden md:inline-flex shrink-0 rounded-lg p-1.5 text-ink/70"
+              className="hover-darken hidden md:inline-flex shrink-0 rounded-md p-1.5 text-ink/70"
               aria-label={copy.a11y.close}
             >
               <XMarkIcon />

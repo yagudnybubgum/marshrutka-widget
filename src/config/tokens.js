@@ -1,11 +1,12 @@
 /**
- * Color system map for /ds.
+ * Design system map for /ds.
  *
  * 1. CSS vars in src/index.css (:root)  ← values
  * 2. tailwind.config.js                 ← var → utilities (+ opacity on ink/accent-ink)
  * 3. Components use TW classes
  * 4. routes.js color key → ROUTE_COLORS
- * 5. .hover-darken — затемнение фона на --hover-darken (10%)
+ * 5. .hover-darken — затемнение фона на --hover-darken
+ * 6. Radius: --radius-* → rounded-{sm|md|lg|xl|2xl|3xl|full}
  */
 
 /** Raw CSS vars from index.css. Keep in sync with :root. */
@@ -13,8 +14,8 @@ export const CSS_PALETTE = [
   {
     id: 'surface',
     label: 'Surface',
-    note: 'Три уровня одного холодного ряда (OKLCH H=258).',
-    vars: ['--surface', '--surface-muted', '--surface-sunken'],
+    note: 'Холодный ряд H≈258. chip — между muted и sunken (idle чипы).',
+    vars: ['--surface', '--surface-muted', '--surface-chip', '--surface-sunken'],
   },
   {
     id: 'ink',
@@ -70,14 +71,99 @@ export const CSS_PALETTE = [
   },
 ]
 
+/** Radius scale for /ds previews. Roles guide which utility to pick. */
+export const RADIUS_SCALE = [
+  { name: 'sm', css: '--radius-sm', tw: 'rounded-sm', rem: '0.25rem', px: '4', role: 'micro' },
+  { name: 'md', css: '--radius-md', tw: 'rounded-md', rem: '0.5rem', px: '8', role: 'control' },
+  { name: 'lg', css: '--radius-lg', tw: 'rounded-lg', rem: '0.75rem', px: '12', role: 'panel' },
+  { name: 'xl', css: '--radius-xl', tw: 'rounded-xl', rem: '1rem', px: '16', role: 'reserved' },
+  { name: '2xl', css: '--radius-2xl', tw: 'rounded-2xl', rem: '1.25rem', px: '20', role: 'reserved' },
+  { name: '3xl', css: '--radius-3xl', tw: 'rounded-3xl', rem: '1.5rem', px: '24', role: 'card' },
+  { name: 'full', css: '--radius-full', tw: 'rounded-full', rem: '9999px', px: '∞', role: 'pill' },
+]
+
+/**
+ * Current production usage. Keep in sync when migrating components.
+ * `variants` = directional / aliases that resolve to the same token.
+ */
+export const RADIUS_USAGE = [
+  {
+    name: 'sm',
+    tw: ['rounded-sm', 'rounded'],
+    used: false,
+    notes: 'DEFAULT `rounded` = sm. Сейчас только на /ds (color picker, micro swatch).',
+    places: ['DesignSystem (color input, ink example chip)'],
+  },
+  {
+    name: 'md',
+    tw: ['rounded-md'],
+    used: true,
+    notes: 'Контролы и «квадратные» поверхности поменьше.',
+    places: [
+      'RouteMapPage — контейнер карты',
+      'StopLocationOverlay — кнопка закрыть',
+      'index.css .skeleton — border-radius: var(--radius-md)',
+      'DesignSystem — мелкие превью',
+    ],
+  },
+  {
+    name: 'lg',
+    tw: ['rounded-lg'],
+    used: true,
+    notes: 'Alert / EmptyState / DS-панели.',
+    places: [
+      'ui/Alert, EmptyState',
+      'DesignSystem — панели секций',
+    ],
+  },
+  {
+    name: 'xl',
+    tw: ['rounded-xl'],
+    used: false,
+    notes: 'Запас. В продукте пока не используется.',
+    places: [],
+  },
+  {
+    name: '2xl',
+    tw: ['rounded-2xl'],
+    used: false,
+    notes: 'Запас. В продукте пока не используется.',
+    places: [],
+  },
+  {
+    name: '3xl',
+    tw: ['rounded-3xl', 'rounded-t-3xl', 'md:rounded-3xl'],
+    used: true,
+    notes: 'DirectionCard + PromoCard + sheet/modal.',
+    places: [
+      'MarshrutkaWidget DirectionCard (+ skeleton, stop notice rounded-t-3xl)',
+      'ui/PromoCard — home CTA + homescreen platform cards',
+      'StopLocationOverlay — bottom sheet (rounded-t-3xl) + desktop modal (md:rounded-3xl)',
+    ],
+  },
+  {
+    name: 'full',
+    tw: ['rounded-full'],
+    used: true,
+    notes: 'Pills / badges.',
+    places: [
+      'ui/Chip, ui/RouteBadge',
+      'FromLadozhskaya — skeleton badge',
+      'StopLocationOverlay — drag handle',
+      'DesignSystem — chip / route previews',
+    ],
+  },
+]
+
 export const TOKEN_GROUPS = [
   {
     id: 'surface',
     label: 'Surface',
-    description: 'Фоны страниц, карточек и нейтральных чипов',
+    description: 'Фоны страниц, чипов и нейтральных панелей',
     tokens: [
       { name: 'surface', css: '--surface', tw: 'bg-surface', role: 'bg' },
       { name: 'surface-muted', css: '--surface-muted', tw: 'bg-surface-muted', role: 'bg' },
+      { name: 'surface-chip', css: '--surface-chip', tw: 'bg-surface-chip', role: 'bg' },
       { name: 'surface-sunken', css: '--surface-sunken', tw: 'bg-surface-sunken', role: 'bg' },
     ],
   },

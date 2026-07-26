@@ -63,7 +63,7 @@ const RouteMapPage = () => {
       </div>
 
       <div className="flex-1 px-4 pb-4 max-w-4xl mx-auto w-full min-h-0">
-        <div className="bg-surface rounded-lg overflow-hidden h-[min(70dvh,640px)] border border-ink/5">
+        <div className="bg-surface rounded-md overflow-hidden h-[min(70dvh,640px)] border border-ink/5">
           <RouteMap stops={direction.stops} />
         </div>
         <p className="text-xs text-ink/70 mt-2 px-0.5">

@@ -18,7 +18,7 @@ export function PromoCard({
   ...rest
 }) {
   const chrome = variants[variant] ?? variants.accent
-  const classes = `block rounded-xl cursor-pointer ${chrome} ${className}`.trim()
+  const classes = `block rounded-3xl cursor-pointer ${chrome} ${className}`.trim()
 
   const body = (
     <div className="flex items-center justify-between">

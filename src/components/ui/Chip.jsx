@@ -14,7 +14,7 @@ export function Chip({
   const idle =
     variant === 'ghost'
       ? 'text-ink/70 hover:text-ink'
-      : 'bg-surface-sunken text-ink/70 hover:text-ink'
+      : 'bg-surface-chip text-ink/70 hover:text-ink'
   const state = active ? 'bg-accent-soft text-accent-ink' : idle
 
   return (

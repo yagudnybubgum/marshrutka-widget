@@ -21,7 +21,7 @@ const LadozhskayaStopNotice = ({ onShowMap }) => (
   <button
     type="button"
     onClick={onShowMap}
-    className="hover-darken w-full rounded-t-xl bg-alert px-4 pb-4 pt-3 text-left text-alert-ink"
+    className="hover-darken w-full rounded-t-3xl bg-alert px-4 pb-4 pt-3 text-left text-alert-ink"
   >
     <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
       <p className="text-base font-normal">{copy.widget.stopMoved}</p>
@@ -34,7 +34,7 @@ const LadozhskayaStopNotice = ({ onShowMap }) => (
 )
 
 const DirectionCardSkeleton = () => (
-  <div className="rounded-xl overflow-hidden bg-surface p-4" aria-hidden>
+  <div className="rounded-3xl overflow-hidden bg-surface p-4" aria-hidden>
     <div className="space-y-4">
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-2">
@@ -71,7 +71,7 @@ const DirectionCard = ({
   return (
     <div
       style={cardIndex != null ? { '--card-i': cardIndex } : undefined}
-      className={`${animate ? 'card-enter ' : ''}rounded-xl overflow-hidden bg-surface`}
+      className={`${animate ? 'card-enter ' : ''}rounded-3xl overflow-hidden bg-surface`}
     >
       <Link
         to={scheduleTo}

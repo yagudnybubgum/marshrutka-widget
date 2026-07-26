@@ -4,6 +4,8 @@ import {
   CSS_PALETTE,
   TOKEN_GROUPS,
   ROUTE_COLORS,
+  RADIUS_SCALE,
+  RADIUS_USAGE,
   getRouteColorClasses,
 } from '../config/tokens'
 import { copy, COPY_GROUPS, flattenCopyBranch } from '../config/copy'
@@ -57,7 +59,7 @@ function Swatch({ token, revision = 0 }) {
   return (
     <div className="flex items-stretch gap-3">
       <div
-        className={`h-14 w-14 shrink-0 rounded-xl border border-ink/10 ${previewClass} flex items-center justify-center text-sm font-medium`}
+        className={`h-14 w-14 shrink-0 rounded-lg border border-ink/10 ${previewClass} flex items-center justify-center text-sm font-medium`}
       >
         {token.role === 'fg' ? 'Aa' : null}
       </div>
@@ -86,7 +88,7 @@ function CssVarSwatch({ cssVar, revision = 0 }) {
   return (
     <div className="flex flex-col gap-1.5 min-w-0">
       <div
-        className="h-12 w-full rounded-lg border border-ink/10"
+        className="h-12 w-full rounded-md border border-ink/10"
         style={{ backgroundColor: color }}
         title={label}
       />
@@ -106,7 +108,7 @@ function HowItWorks() {
         </p>
       </div>
 
-      <ol className="rounded-xl bg-surface border border-ink/10 divide-y divide-ink/5 text-sm">
+      <ol className="rounded-lg bg-surface border border-ink/10 divide-y divide-ink/5 text-sm">
         <li className="p-4 space-y-1">
           <p className="font-medium text-ink">1. CSS vars — <code className="font-mono text-ink/70">src/index.css</code></p>
           <p className="text-ink/70">
@@ -134,8 +136,156 @@ function HowItWorks() {
             <code className="text-ink">getRouteColor()</code> → TW classes.
           </p>
         </li>
+        <li className="p-4 space-y-1">
+          <p className="font-medium text-ink">5. Radius</p>
+          <p className="text-ink/70">
+            <code className="text-ink">--radius-*</code> →{' '}
+            <code className="text-ink">rounded-lg</code> (card),{' '}
+            <code className="text-ink">rounded-md</code> (control),{' '}
+            <code className="text-ink">rounded-full</code> (pill).
+          </p>
+        </li>
       </ol>
     </section>
+  )
+}
+
+function RadiusSection({ revision = 0 }) {
+  return (
+    <section className="space-y-6">
+      <div>
+        <h2 className="text-lg font-medium text-ink">1b · Radius</h2>
+        <p className="text-sm text-ink/70 mt-1">
+          Значения в <code className="text-ink">:root</code> (
+          <code className="text-ink">--radius-*</code>) → Tailwind{' '}
+          <code className="text-ink">borderRadius</code> → классы{' '}
+          <code className="text-ink">rounded-*</code>. Роли: md control, lg panel, 3xl card/sheet;
+          xl/2xl — запас.
+        </p>
+      </div>
+
+      <div className="rounded-lg bg-surface p-4 border border-ink/10 space-y-3 text-sm text-ink/70">
+        <p className="font-medium text-ink">Как выбирать</p>
+        <ul className="list-disc list-inside space-y-1">
+          <li>
+            <code className="text-ink">rounded-md</code> — контролы, карта, мелкие кнопки
+          </li>
+          <li>
+            <code className="text-ink">rounded-lg</code> — панели / Alert / EmptyState
+          </li>
+          <li>
+            <code className="text-ink">rounded-3xl</code> — DirectionCard, PromoCard, sheet
+          </li>
+          <li>
+            <code className="text-ink">rounded-full</code> — Chip, RouteBadge
+          </li>
+          <li>
+            <code className="text-ink">rounded-xl</code> / <code className="text-ink">rounded-2xl</code> — reserved, пока не юзать
+          </li>
+        </ul>
+      </div>
+
+      <div className="rounded-lg bg-surface p-4 border border-ink/10 space-y-4">
+        <p className="text-sm font-medium text-ink">Scale</p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+          {RADIUS_SCALE.map((r) => (
+            <RadiusSwatch key={r.name} token={r} revision={revision} />
+          ))}
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        <div>
+          <p className="text-sm font-medium text-ink">Usage in project</p>
+          <p className="text-xs text-ink/50 mt-0.5">
+            Карта из <code className="text-ink">RADIUS_USAGE</code> в{' '}
+            <code className="text-ink">tokens.js</code> — обновляй при миграциях.
+          </p>
+        </div>
+        <div className="rounded-lg bg-surface border border-ink/10 overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead>
+              <tr className="text-ink/70 border-b border-ink/10">
+                <th className="py-2 px-4 font-medium">token</th>
+                <th className="py-2 px-4 font-medium">classes</th>
+                <th className="py-2 px-4 font-medium">status</th>
+                <th className="py-2 px-4 font-medium">where</th>
+              </tr>
+            </thead>
+            <tbody>
+              {RADIUS_USAGE.map((row) => {
+                const scale = RADIUS_SCALE.find((r) => r.name === row.name)
+                return (
+                  <tr key={row.name} className="border-b border-ink/5 align-top">
+                    <td className="py-2.5 px-4 whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`h-6 w-6 shrink-0 border border-ink/15 bg-accent-soft ${scale?.tw ?? ''}`}
+                          aria-hidden
+                        />
+                        <div>
+                          <p className="font-mono text-xs text-ink">{row.name}</p>
+                          <p className="font-mono text-[11px] text-ink/50">
+                            {scale?.rem} · {scale?.role}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="py-2.5 px-4 font-mono text-xs text-ink/70">
+                      {row.tw.join(', ')}
+                    </td>
+                    <td className="py-2.5 px-4">
+                      {row.used ? (
+                        <span className="text-xs text-accent-ink">in use</span>
+                      ) : (
+                        <span className="text-xs text-ink/40">unused</span>
+                      )}
+                    </td>
+                    <td className="py-2.5 px-4 text-ink/80">
+                      <p className="text-xs text-ink/50 mb-1">{row.notes}</p>
+                      {row.places.length > 0 ? (
+                        <ul className="space-y-0.5 text-xs">
+                          {row.places.map((p) => (
+                            <li key={p}>· {p}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-xs text-ink/40">—</p>
+                      )}
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function RadiusSwatch({ token, revision = 0 }) {
+  const [value, setValue] = useState('')
+
+  useEffect(() => {
+    setValue(readCssVar(token.css))
+  }, [token.css, revision])
+
+  return (
+    <div className="flex flex-col gap-2 min-w-0">
+      <div
+        className={`h-16 w-full border border-ink/15 bg-accent-soft ${token.tw}`}
+        title={value || token.rem}
+      />
+      <div className="min-w-0 space-y-0.5">
+        <p className="text-sm font-medium text-ink font-mono truncate">{token.tw}</p>
+        <p className="text-xs font-mono text-ink/70 truncate">{token.css}</p>
+        <p className="text-[11px] font-mono text-ink/50 truncate">
+          {value || token.rem}
+          {token.px ? ` (${token.px}px)` : ''} · {token.role}
+        </p>
+      </div>
+    </div>
   )
 }
 
@@ -150,7 +300,7 @@ function CssPaletteSection({ revision }) {
         </p>
       </div>
 
-      <div className="space-y-6 rounded-xl bg-surface p-4 border border-ink/10">
+      <div className="space-y-6 rounded-lg bg-surface p-4 border border-ink/10">
         {CSS_PALETTE.map((group) => (
           <div key={group.id} className="space-y-3">
             <div>
@@ -167,7 +317,7 @@ function CssPaletteSection({ revision }) {
                 {group.examples.map((ex) => (
                   <span
                     key={ex.tw}
-                    className={`inline-flex items-center gap-1.5 rounded-lg border border-ink/10 px-2 py-1 text-[11px] font-mono ${
+                    className={`inline-flex items-center gap-1.5 rounded-md border border-ink/10 px-2 py-1 text-[11px] font-mono ${
                       ex.tw.startsWith('bg-') || ex.tw.startsWith('border-')
                         ? `bg-surface ${ex.tw} text-ink`
                         : `bg-surface ${ex.tw}`
@@ -235,7 +385,7 @@ function LiveSyncDemo({ onChange }) {
         </p>
       </div>
 
-      <div className="rounded-xl bg-surface p-4 space-y-4 border border-ink/10">
+      <div className="rounded-lg bg-surface p-4 space-y-4 border border-ink/10">
         <label className="flex flex-wrap items-center gap-3 text-sm text-ink">
           <span className="w-36 shrink-0 font-mono text-xs text-ink/70">--surface-muted</span>
           <input
@@ -258,11 +408,11 @@ function LiveSyncDemo({ onChange }) {
         </label>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          <div className="rounded-xl bg-surface-muted p-4 border border-ink/10">
+          <div className="rounded-lg bg-surface-muted p-4 border border-ink/10">
             <p className="text-xs text-ink/50 mb-2 font-mono">bg-surface-muted</p>
             <p className="text-ink">Страница / body фон</p>
           </div>
-          <div className="flex flex-wrap gap-2 items-center rounded-xl bg-surface-muted p-4 border border-ink/10">
+          <div className="flex flex-wrap gap-2 items-center rounded-lg bg-surface-muted p-4 border border-ink/10">
             <Chip>chip</Chip>
             <Chip active>chip active</Chip>
             <span className="hover-darken px-4 py-1.5 rounded-full bg-alert text-alert-ink text-sm">
@@ -346,7 +496,7 @@ function ComponentsGallery() {
       </GalleryBlock>
 
       <GalleryBlock name="DepartureRow" hint="routeId, labels">
-        <div className="divide-y divide-ink/5 rounded-xl bg-surface-muted px-1">
+        <div className="divide-y divide-ink/5 rounded-lg bg-surface-muted px-1">
           <DepartureRow
             routeId="533"
             routeName="533"
@@ -375,7 +525,7 @@ function ComponentsGallery() {
 
 function GalleryBlock({ name, hint, children }) {
   return (
-    <div className="rounded-xl bg-surface p-4 border border-ink/10 space-y-3">
+    <div className="rounded-lg bg-surface p-4 border border-ink/10 space-y-3">
       <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
         <p className="text-sm font-medium text-ink font-mono">{name}</p>
         {hint ? <p className="text-xs font-mono text-ink/50">{hint}</p> : null}
@@ -405,7 +555,7 @@ function CopyTokensSection() {
               <h3 className="text-sm font-medium text-ink">{group.label}</h3>
               <p className="text-xs text-ink/50 mt-0.5">{group.description}</p>
             </div>
-            <div className="rounded-xl bg-surface border border-ink/10 overflow-x-auto">
+            <div className="rounded-lg bg-surface border border-ink/10 overflow-x-auto">
               <table className="w-full text-sm text-left">
                 <thead>
                   <tr className="text-ink/70 border-b border-ink/10">
@@ -452,6 +602,7 @@ function DesignSystem() {
 
         <HowItWorks />
         <CssPaletteSection revision={revision} />
+        <RadiusSection revision={revision} />
         <LiveSyncDemo onChange={bump} />
 
         <section className="space-y-2">
@@ -467,7 +618,7 @@ function DesignSystem() {
               <h2 className="text-lg font-medium text-ink">{group.label}</h2>
               <p className="text-sm text-ink/70 mt-1">{group.description}</p>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2 rounded-xl bg-surface p-4 border border-ink/10">
+            <div className="grid gap-4 sm:grid-cols-2 rounded-lg bg-surface p-4 border border-ink/10">
               {group.tokens.map((token) => (
                 <Swatch key={token.name} token={token} revision={revision} />
               ))}
@@ -483,7 +634,7 @@ function DesignSystem() {
             </p>
           </div>
 
-          <div className="rounded-xl bg-surface p-4 border border-ink/10 space-y-4">
+          <div className="rounded-lg bg-surface p-4 border border-ink/10 space-y-4">
             <div className="flex flex-wrap gap-2">
               {Object.values(ROUTE_COLORS).map((c) => (
                 <span
@@ -529,11 +680,15 @@ function DesignSystem() {
 
         <section className="space-y-4 pb-8">
           <h2 className="text-lg font-medium text-ink">Cheatsheet</h2>
-          <pre className="rounded-xl bg-surface p-4 border border-ink/10 text-xs text-ink/80 overflow-x-auto leading-relaxed">{`import { copy } from '../config/copy'
+          <pre className="rounded-lg bg-surface p-4 border border-ink/10 text-xs text-ink/80 overflow-x-auto leading-relaxed">{`import { copy } from '../config/copy'
 import { Chip, Alert, BackLink } from './ui'
 
 copy.home.title
-copy.errors.scheduleLoad('533')
+rounded-md   /* control */
+rounded-lg   /* panel */
+rounded-3xl  /* DirectionCard, PromoCard, sheet */
+rounded-xl / rounded-2xl  /* reserved */
+rounded-full /* pill */
 
 bg-surface-muted text-ink
 bg-accent-soft text-accent-ink

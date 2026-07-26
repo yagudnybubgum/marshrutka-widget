@@ -5,7 +5,7 @@
 
 export const copy = {
   nav: {
-    back: 'назад',
+    back: 'Назад',
     fullSchedule: 'Полное расписание',
     routeMap: 'Карта маршрута',
     about: 'О проекте',

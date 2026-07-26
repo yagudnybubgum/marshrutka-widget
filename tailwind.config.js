@@ -6,10 +6,21 @@ export default {
   ],
   theme: {
     extend: {
+      borderRadius: {
+        sm: 'var(--radius-sm)',
+        DEFAULT: 'var(--radius-sm)',
+        md: 'var(--radius-md)',
+        lg: 'var(--radius-lg)',
+        xl: 'var(--radius-xl)',
+        '2xl': 'var(--radius-2xl)',
+        '3xl': 'var(--radius-3xl)',
+        full: 'var(--radius-full)',
+      },
       colors: {
         surface: {
           DEFAULT: 'var(--surface)',
           muted: 'var(--surface-muted)',
+          chip: 'var(--surface-chip)',
           sunken: 'var(--surface-sunken)',
         },
         // channels → text-ink/70, bg-ink/40, border-ink/10, …
