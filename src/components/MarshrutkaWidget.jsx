@@ -23,7 +23,7 @@ const LadozhskayaStopNotice = ({ onShowMap }) => (
     onClick={onShowMap}
     className="hover-darken w-full rounded-t-3xl bg-alert px-4 pb-4 pt-3 text-left text-alert-ink"
   >
-    <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+    <div className="flex flex-col gap-1">
       <p className="text-base font-normal">{copy.widget.stopMoved}</p>
       <span className="inline-flex items-center gap-1 text-sm font-normal">
         {copy.widget.viewOnMap}
@@ -204,9 +204,9 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
   const windowDir2 = schedule ? getScheduleWindow(schedule.direction2, currentTime) : { nextTrip: null, followingTrips: [], previousTrip: null }
 
   return (
-    <div className="w-full space-y-5">
+    <div className="w-full">
       {loading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6" aria-busy="true" aria-label={copy.a11y.loadingSchedule}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6" aria-busy="true" aria-label={copy.a11y.loadingSchedule}>
           <DirectionCardSkeleton />
           <DirectionCardSkeleton />
         </div>
@@ -221,7 +221,7 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
       )}
 
       {schedule && !loading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           <DirectionCard
             directionName={schedule.direction1Name}
             nextTrip={windowDir1.nextTrip}

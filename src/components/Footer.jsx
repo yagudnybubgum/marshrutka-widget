@@ -3,7 +3,7 @@ import { TextLink } from './ui'
 
 function Footer({ className = '' }) {
   return (
-    <footer className={`py-6 ${className}`}>
+    <footer className={`pt-4 ${className}`}>
       <div className="flex flex-col items-center gap-4">
         <TextLink to="/about" size="xs">
           {copy.nav.about}
