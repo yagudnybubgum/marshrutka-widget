@@ -120,16 +120,16 @@ const FromLadozhskaya = ({ active = false }) => {
 
   if (error) {
     return (
-      <div className="alert alert-error">
-        <span className="text-ink">{error}</span>
+      <div className="rounded-xl bg-danger px-4 py-3 text-danger-ink" role="alert">
+        {error}
       </div>
     )
   }
 
   if (upcomingDepartures.length === 0) {
     return (
-      <div className="alert alert-info">
-        <span className="text-ink">Нет данных о расписании с Ладожской</span>
+      <div className="rounded-xl bg-surface-sunken px-4 py-3 text-ink/70">
+        Нет данных о расписании с Ладожской
       </div>
     )
   }
@@ -155,7 +155,7 @@ const FromLadozhskaya = ({ active = false }) => {
             </div>
 
             <div className="flex items-center gap-3">
-              <span className="text-sm text-ink/60">{formatTimeUntil(dep.minutesUntil)}</span>
+              <span className="text-sm text-ink/70">{formatTimeUntil(dep.minutesUntil)}</span>
               <span className="text-xl font-normal text-ink/80">{formatTime(dep.time)}</span>
             </div>
           </div>
@@ -174,7 +174,7 @@ const FromLadozhskaya = ({ active = false }) => {
       )}
 
       {!hasMore && todayDepartures.length > 0 && (
-        <div className="mt-4 text-center text-sm text-ink/50">Больше рейсов сегодня нет</div>
+        <div className="mt-4 text-center text-sm text-ink/70">Больше рейсов сегодня нет</div>
       )}
     </div>
   )

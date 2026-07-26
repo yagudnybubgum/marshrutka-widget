@@ -22,20 +22,35 @@
   box-sizing: border-box;
 }
 
-html, body {
+html {
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
   width: 100%;
+  /* clip не форсит overflow-y:auto (в отличие от hidden) — иначе ломается скролл страницы */
+  overflow-x: clip;
   background-color: var(--surface-muted);
+  color: rgb(var(--ink));
   font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   overscroll-behavior-y: none;
   -webkit-overflow-scrolling: touch;
 }
 
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: clip;
+  background-color: var(--surface-muted);
+  color: rgb(var(--ink));
+}
+
+body.is-scroll-locked {
+  overflow: hidden;
+}
+
 #root {
   width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 .scrollbar-hide {
@@ -47,40 +62,88 @@ html, body {
   display: none;
 }
 
+/**
+ * Значения задаются в OKLCH-сетке: нейтрали H=258, акцент H=264.
+ * Пастель поверхностей — L=95% C=0.045, парный ink — L=42%, контраст 7.0–7.9.
+ */
 :root,
 [data-theme="light"] {
   --ease-expo-out: cubic-bezier(0.16, 1, 0.3, 1);
 
-  /* Surface */
+  /* Surface — три уровня одного холодного ряда */
   --surface: #ffffff;
-  --surface-muted: #fafafa;
+  --surface-muted: #f8fafd;
+  --surface-sunken: #eff2f7;
 
   /* Ink — channels for text-ink/70, bg-ink/40, … */
-  --ink: 0 0 0;
+  --ink: 21 30 44;
 
-  /* Chip / accent (hover = #bfdbfe in TW; soft ink = /70) */
-  --chip: #f3f4f6;
-  --chip-active: #dbeafe;
-  --chip-active-ink: 30 58 138; /* #1e3a8a */
+  /* Accent */
+  --accent: #3061d8;
+  --accent-soft: #deedff;
+  --accent-ink: 33 69 157; /* channels → text-accent-ink/70 */
 
   /* Feedback */
-  --alert: #fbbf24;
-  --alert-hover: #f59e0b;
-  --highlight: #fef08a;
-  --stroke: #d1d5db;
-  --map-line: #2563eb;
+  --alert: #ffddd1;
+  --alert-ink: 143 51 28; /* #8f331c — channels → text-alert-ink/70 */
+  --danger: #ffe2de;
+  --danger-ink: #a51e24;
+  --highlight: #d3ebff;
+  --stroke: #d3d8e0;
+  --map-line: var(--accent);
 
-  /* Routes (blue/gray bg = chip tokens) */
-  --route-blue: var(--chip-active);
-  --route-blue-ink: #1e40af;
-  --route-green: #dcfce7;
-  --route-green-ink: #166534;
-  --route-gray: var(--chip);
-  --route-gray-ink: #1f2937;
-  --route-purple: #f3e8ff;
-  --route-purple-ink: #6b21a8;
-  --route-orange: #ffedd5;
-  --route-orange-ink: #9a3412;
+  /* Hover: любой фон +10% к чёрному (см. .hover-darken) */
+  --hover-darken: 3%;
+
+  /* Routes */
+  --route-blue: var(--accent-soft);
+  --route-blue-ink: rgb(var(--accent-ink));
+  --route-green: #d9f8e0;
+  --route-green-ink: #015d2d;
+  --route-gray: var(--surface-sunken);
+  --route-gray-ink: #4a4d53;
+  --route-purple: #f5e8ff;
+  --route-purple-ink: #632895;
+  --route-orange: #ffe9d0;
+  --route-orange-ink: #793900;
+}
+
+@layer components {
+  .skeleton {
+    border-radius: 0.5rem;
+    background-color: rgb(var(--ink) / 0.07);
+    background-image: linear-gradient(
+      105deg,
+      transparent 0% 40%,
+      var(--surface) 50%,
+      transparent 60% 100%
+    );
+    background-size: 200% auto;
+    background-position-x: -50%;
+    animation: skeleton 1.6s ease-in-out infinite;
+    will-change: background-position;
+  }
+
+  /**
+   * Универсальный hover/active: затемняет фон на --hover-darken к чёрному.
+   * Работает поверх любого background-color (alert, accent-soft, surface…).
+   */
+  .hover-darken {
+    transition-property: color, background-color, border-color, box-shadow;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+
+  .hover-darken:hover,
+  .hover-darken:active {
+    box-shadow: inset 0 0 0 9999px color-mix(in oklab, black var(--hover-darken), transparent);
+  }
+}
+
+@keyframes skeleton {
+  to {
+    background-position-x: 150%;
+  }
 }
 
 @keyframes chip-enter {
@@ -146,5 +209,10 @@ html, body {
     opacity: 1;
     animation: none;
     transform: none;
+  }
+
+  .skeleton {
+    animation: none;
+    background-image: none;
   }
 }

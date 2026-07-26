@@ -65,8 +65,8 @@ const RouteMapPage = () => {
               onClick={() => setDirectionId(d.id)}
               className={`flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors ${
                 direction.id === d.id
-                  ? 'bg-chip-active text-chip-active-ink'
-                  : 'bg-chip text-ink/70 hover:text-ink'
+                  ? 'bg-accent-soft text-accent-ink'
+                  : 'bg-surface-sunken text-ink/70 hover:text-ink'
               }`}
             >
               {d.name}
@@ -79,7 +79,7 @@ const RouteMapPage = () => {
         <div className="bg-surface rounded-lg overflow-hidden h-[min(70dvh,640px)] border border-ink/5">
           <RouteMap stops={direction.stops} />
         </div>
-        <p className="text-xs text-ink/50 mt-2 px-0.5">
+        <p className="text-xs text-ink/70 mt-2 px-0.5">
           {direction.stops.length} остановок · маршрут по дорогам
         </p>
       </div>

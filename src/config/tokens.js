@@ -2,9 +2,10 @@
  * Color system map for /ds.
  *
  * 1. CSS vars in src/index.css (:root)  ← values
- * 2. tailwind.config.js                 ← var → utilities (+ opacity on ink)
+ * 2. tailwind.config.js                 ← var → utilities (+ opacity on ink/accent-ink)
  * 3. Components use TW classes
  * 4. routes.js color key → ROUTE_COLORS
+ * 5. .hover-darken — затемнение фона на --hover-darken (10%)
  */
 
 /** Raw CSS vars from index.css. Keep in sync with :root. */
@@ -12,13 +13,13 @@ export const CSS_PALETTE = [
   {
     id: 'surface',
     label: 'Surface',
-    note: 'Фоны. Два почти-белых уровня.',
-    vars: ['--surface', '--surface-muted'],
+    note: 'Три уровня одного холодного ряда (OKLCH H=258).',
+    vars: ['--surface', '--surface-muted', '--surface-sunken'],
   },
   {
     id: 'ink',
     label: 'Ink',
-    note: 'Один токен (channels). Прозрачность — через TW: text-ink/70, bg-ink/40, …',
+    note: 'Один токен (channels), холодный near-black. Прозрачность — через TW: text-ink/70, bg-ink/40, …',
     vars: ['--ink'],
     examples: [
       { tw: 'text-ink', label: '100%' },
@@ -30,25 +31,25 @@ export const CSS_PALETTE = [
       { tw: 'border-ink/20', label: 'line 20%' },
       { tw: 'border-ink/10', label: 'hairline 10%' },
       { tw: 'bg-ink/5', label: 'ghost 5%' },
-      { tw: 'bg-ink/[0.03]', label: 'press 3%' },
     ],
   },
   {
-    id: 'chip',
-    label: 'Chip / accent',
-    note: '3 токена. soft ink → text-chip-active-ink/70; hover → bg-chip-active-hover (#bfdbfe в TW).',
-    vars: ['--chip', '--chip-active', '--chip-active-ink'],
+    id: 'accent',
+    label: 'Accent',
+    note: 'Один hue (OKLCH H=264): solid для линий и иконок, soft для чипов и CTA. Hover → .hover-darken.',
+    vars: ['--accent', '--accent-soft', '--accent-ink'],
   },
   {
     id: 'feedback',
     label: 'Feedback',
-    note: 'Реально разные hue.',
-    vars: ['--alert', '--alert-hover', '--highlight', '--stroke', '--map-line'],
+    note: 'alert — soft coral (не жёлтый). Hover → .hover-darken.',
+    vars: ['--alert', '--alert-ink', '--danger', '--danger-ink', '--highlight', '--stroke', '--map-line', '--hover-darken'],
+    aliases: [{ css: '--map-line', pointsTo: '--accent' }],
   },
   {
     id: 'routes',
     label: 'Routes',
-    note: 'Пары bg+ink. --route-blue → --chip-active, --route-gray → --chip.',
+    note: 'Пары bg+ink на общей сетке: bg L=95% C=0.045, ink L=42%, контраст 7.0–7.9.',
     vars: [
       '--route-blue',
       '--route-blue-ink',
@@ -62,8 +63,9 @@ export const CSS_PALETTE = [
       '--route-orange-ink',
     ],
     aliases: [
-      { css: '--route-blue', pointsTo: '--chip-active' },
-      { css: '--route-gray', pointsTo: '--chip' },
+      { css: '--route-blue', pointsTo: '--accent-soft' },
+      { css: '--route-blue-ink', pointsTo: '--accent-ink' },
+      { css: '--route-gray', pointsTo: '--surface-sunken' },
     ],
   },
 ]
@@ -72,10 +74,11 @@ export const TOKEN_GROUPS = [
   {
     id: 'surface',
     label: 'Surface',
-    description: 'Фоны страниц и карточек',
+    description: 'Фоны страниц, карточек и нейтральных чипов',
     tokens: [
       { name: 'surface', css: '--surface', tw: 'bg-surface', role: 'bg' },
       { name: 'surface-muted', css: '--surface-muted', tw: 'bg-surface-muted', role: 'bg' },
+      { name: 'surface-sunken', css: '--surface-sunken', tw: 'bg-surface-sunken', role: 'bg' },
     ],
   },
   {
@@ -90,23 +93,24 @@ export const TOKEN_GROUPS = [
     ],
   },
   {
-    id: 'chip',
-    label: 'Chip / accent',
-    description: 'Табы и CTA',
+    id: 'accent',
+    label: 'Accent',
+    description: 'Табы, CTA, линия маршрута',
     tokens: [
-      { name: 'chip', css: '--chip', tw: 'bg-chip', role: 'bg' },
-      { name: 'chip-active', css: '--chip-active', tw: 'bg-chip-active', role: 'bg' },
-      { name: 'chip-active-ink', css: '--chip-active-ink', tw: 'text-chip-active-ink', role: 'fg' },
-      { name: 'chip-active-hover', css: '#bfdbfe', tw: 'bg-chip-active-hover', role: 'bg' },
+      { name: 'accent', css: '--accent', tw: 'bg-accent', role: 'bg' },
+      { name: 'accent-soft', css: '--accent-soft', tw: 'bg-accent-soft', role: 'bg' },
+      { name: 'accent-ink', css: '--accent-ink', tw: 'text-accent-ink', role: 'fg' },
     ],
   },
   {
     id: 'feedback',
     label: 'Feedback',
-    description: 'Алерты, хайлайт, бордер, линия карты',
+    description: 'Алерты, ошибки, выделение строки, бордер',
     tokens: [
       { name: 'alert', css: '--alert', tw: 'bg-alert', role: 'bg' },
-      { name: 'alert-hover', css: '--alert-hover', tw: 'bg-alert-hover', role: 'bg' },
+      { name: 'alert-ink', css: '--alert-ink', tw: 'text-alert-ink', role: 'fg' },
+      { name: 'danger', css: '--danger', tw: 'bg-danger', role: 'bg' },
+      { name: 'danger-ink', css: '--danger-ink', tw: 'text-danger-ink', role: 'fg' },
       { name: 'highlight', css: '--highlight', tw: 'bg-highlight', role: 'bg' },
       { name: 'stroke', css: '--stroke', tw: 'border-stroke', role: 'border' },
       { name: 'map-line', css: '--map-line', tw: 'bg-map-line', role: 'bg' },

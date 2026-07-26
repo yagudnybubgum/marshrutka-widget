@@ -2,7 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 import { loadYmaps, getYandexMapsKey } from '../utils/loadYmaps'
 
 function getMapLineColor() {
-  return getComputedStyle(document.documentElement).getPropertyValue('--map-line').trim() || '#2563eb'
+  const styles = getComputedStyle(document.documentElement)
+  const value = styles.getPropertyValue('--map-line').trim()
+  if (value && !value.startsWith('var(')) return value
+  return styles.getPropertyValue('--accent').trim()
 }
 
 /** OSRM → [lat, lng][] вдоль дорог. При fail — прямые отрезки. */
@@ -149,7 +152,7 @@ const RouteMap = ({ stops }) => {
 
   if (error) {
     return (
-      <div className="h-full w-full min-h-[320px] flex items-center justify-center px-4 text-sm text-ink/60 text-center">
+      <div className="h-full w-full min-h-[320px] flex items-center justify-center px-4 text-sm text-ink/70 text-center">
         {error}
       </div>
     )

@@ -71,8 +71,8 @@ function Home() {
                 style={{ '--chip-i': i }}
                 className={`chip-enter flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors ${
                   activeTab === route.id
-                    ? 'bg-chip-active text-chip-active-ink'
-                    : 'bg-chip text-ink/70 hover:text-ink'
+                    ? 'bg-accent-soft text-accent-ink'
+                    : 'bg-surface-sunken text-ink/70 hover:text-ink'
                 }`}
               >
                 {route.name}
@@ -83,8 +83,8 @@ function Home() {
               style={{ '--chip-i': ROUTES.length }}
               className={`chip-enter flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors ${
                 activeTab === 'ladozhskaya'
-                  ? 'bg-chip-active text-chip-active-ink'
-                  : 'bg-chip text-ink/70 hover:text-ink'
+                  ? 'bg-accent-soft text-accent-ink'
+                  : 'bg-surface-sunken text-ink/70 hover:text-ink'
               }`}
             >
               С Ладожской
@@ -120,14 +120,14 @@ function Home() {
           )}
           <Link
             to="/homescreen"
-            className="mt-6 block md:max-w-[360px] md:mx-auto bg-chip-active text-chip-active-ink rounded-xl p-4 transition-colors hover:bg-chip-active-hover active:bg-chip-active-hover"
+            className="hover-darken mt-6 block md:max-w-[360px] md:mx-auto bg-accent-soft text-accent-ink rounded-xl p-4"
           >
             <div className="flex items-center justify-between">
               <div className="flex flex-col">
                 <span className="text-base font-normal">Расписание всегда под рукой</span>
                 <span className="text-sm mt-0.5">Добавьте его на главный экран</span>
               </div>
-              <ArrowRightIcon className="ml-2 h-5 w-5 flex-shrink-0 text-chip-active-ink/70" />
+              <ArrowRightIcon className="ml-2 h-5 w-5 flex-shrink-0 text-accent-ink/70" />
             </div>
           </Link>
         </div>

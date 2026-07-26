@@ -19,7 +19,7 @@ const LadozhskayaStopNotice = ({ onShowMap }) => (
   <button
     type="button"
     onClick={onShowMap}
-    className="w-full rounded-t-xl bg-alert px-4 pb-4 pt-3 text-left text-ink transition-colors hover:bg-alert-hover active:bg-alert-hover"
+    className="hover-darken w-full rounded-t-xl bg-alert px-4 pb-4 pt-3 text-left text-alert-ink"
   >
     <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
       <p className="text-base font-normal">Остановка переехала</p>
@@ -73,7 +73,7 @@ const DirectionCard = ({
     >
       <Link
         to={scheduleTo}
-        className="block p-4 transition-colors hover:bg-ink/5 active:bg-ink/[0.03]"
+        className="hover-darken block p-4"
       >
         {nextTrip ? (
           <div className="space-y-4">
@@ -110,8 +110,8 @@ const DirectionCard = ({
             </div>
           </div>
         ) : (
-          <div className="alert alert-info">
-            <span className="text-ink">нет данных по этому направлению.</span>
+          <div className="rounded-xl bg-surface-sunken px-4 py-3 text-ink/70">
+            нет данных по этому направлению.
           </div>
         )}
       </Link>
@@ -213,14 +213,14 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
       )}
 
       {error && (
-        <div className="alert alert-error">
-          <span className="text-ink">{error}</span>
+        <div className="rounded-xl bg-danger px-4 py-3 text-danger-ink" role="alert">
+          {error}
         </div>
       )}
 
       {!loading && rawData && !schedule && !error && (
-        <div className="alert alert-error">
-          <span className="text-ink">Не удалось обработать данные расписания для маршрута {routeNumber}.</span>
+        <div className="rounded-xl bg-danger px-4 py-3 text-danger-ink" role="alert">
+          Не удалось обработать данные расписания для маршрута {routeNumber}.
         </div>
       )}
 

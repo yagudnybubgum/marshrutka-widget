@@ -11,12 +11,11 @@ const StopLocationOverlay = ({ open, onClose, stop, title }) => {
       if (e.key === 'Escape') onClose()
     }
 
-    const prevOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
+    document.body.classList.add('is-scroll-locked')
     window.addEventListener('keydown', onKeyDown)
 
     return () => {
-      document.body.style.overflow = prevOverflow
+      document.body.classList.remove('is-scroll-locked')
       window.removeEventListener('keydown', onKeyDown)
     }
   }, [open, onClose])
@@ -44,7 +43,7 @@ const StopLocationOverlay = ({ open, onClose, stop, title }) => {
             <button
               type="button"
               onClick={onClose}
-              className="hidden md:inline-flex shrink-0 rounded-lg p-1.5 text-ink/60 hover:bg-ink/5"
+              className="hover-darken hidden md:inline-flex shrink-0 rounded-lg p-1.5 text-ink/70"
               aria-label="Закрыть"
             >
               <XMarkIcon />

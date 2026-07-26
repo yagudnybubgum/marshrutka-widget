@@ -66,7 +66,7 @@ const StopLocationMap = ({ lat, lng, name, className = '' }) => {
 
   if (error) {
     return (
-      <div className={`flex items-center justify-center px-4 text-sm text-ink/60 text-center ${className}`}>
+      <div className={`flex items-center justify-center px-4 text-sm text-ink/70 text-center ${className}`}>
         {error}
       </div>
     )

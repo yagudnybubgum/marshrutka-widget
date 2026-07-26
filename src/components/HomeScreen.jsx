@@ -30,9 +30,9 @@ const HomeScreen = () => {
             href="https://www.iphones.ru/iNotes/q/kak-v-ios-dobavit-yarlyk-lyubogo-sayta-na-rabochiy-stol"
             target="_blank"
             rel="noopener noreferrer"
-            className="card bg-surface rounded-xl border border-transparent hover:border-stroke transition-colors cursor-pointer"
+            className="block bg-surface rounded-xl border border-transparent hover:border-stroke transition-colors cursor-pointer"
           >
-            <div className="card-body p-6">
+            <div className="p-6">
               <h2 className="text-xl font-normal text-ink">У меня iPhone</h2>
             </div>
           </a>
@@ -41,9 +41,9 @@ const HomeScreen = () => {
             href="https://androidinsider.ru/polezno-znat/kak-dobavit-yarlyk-sajta-na-rabochij-stol-android-smartfona.html"
             target="_blank"
             rel="noopener noreferrer"
-            className="card bg-surface rounded-xl border border-transparent hover:border-stroke transition-colors cursor-pointer"
+            className="block bg-surface rounded-xl border border-transparent hover:border-stroke transition-colors cursor-pointer"
           >
-            <div className="card-body p-6">
+            <div className="p-6">
               <h2 className="text-xl font-normal text-ink">У меня Android</h2>
             </div>
           </a>

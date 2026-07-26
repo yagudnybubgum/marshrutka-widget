@@ -186,8 +186,8 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
   if (error) {
     return (
       <div className="h-[100dvh] bg-surface-muted flex items-center justify-center">
-        <div className="alert alert-error">
-          <span className="text-ink">{error}</span>
+        <div className="rounded-xl bg-danger px-4 py-3 text-danger-ink" role="alert">
+          {error}
         </div>
       </div>
     )
@@ -196,8 +196,8 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
   if (!scheduleData || scheduleData.columns.length === 0) {
     return (
       <div className="h-[100dvh] bg-surface-muted flex items-center justify-center">
-        <div className="alert alert-info">
-          <span className="text-ink">Нет данных расписания</span>
+        <div className="rounded-xl bg-surface-sunken px-4 py-3 text-ink/70">
+          Нет данных расписания
         </div>
       </div>
     )
@@ -235,7 +235,7 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
                     onClick={() => setActiveTab('weekday')}
                     className={`flex-1 px-5 py-2 text-base font-normal rounded-full transition-colors ${
                       activeTab === 'weekday'
-                        ? 'bg-chip-active text-chip-active-ink'
+                        ? 'bg-accent-soft text-accent-ink'
                         : 'text-ink/70 hover:text-ink'
                     }`}
                   >
@@ -245,7 +245,7 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
                     onClick={() => setActiveTab('weekend')}
                     className={`flex-1 px-5 py-2 text-base font-normal rounded-full transition-colors ${
                       activeTab === 'weekend'
-                        ? 'bg-chip-active text-chip-active-ink'
+                        ? 'bg-accent-soft text-accent-ink'
                         : 'text-ink/70 hover:text-ink'
                     }`}
                   >
@@ -281,7 +281,7 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
                         key={timeIdx}
                         ref={isFocused ? focusCellRef : undefined}
                         className={`px-3 py-3 text-sm border-b border-ink/10 ${
-                          isHighlighted ? 'bg-highlight font-semibold' : 'text-ink'
+                          isHighlighted ? 'bg-highlight text-accent-ink font-semibold' : 'text-ink'
                         }`}
                       >
                         {formatTime(time)}

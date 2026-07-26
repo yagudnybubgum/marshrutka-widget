@@ -1,5 +1,3 @@
-import daisyui from "daisyui"
-
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -12,19 +10,22 @@ export default {
         surface: {
           DEFAULT: 'var(--surface)',
           muted: 'var(--surface-muted)',
+          sunken: 'var(--surface-sunken)',
         },
         // channels → text-ink/70, bg-ink/40, border-ink/10, …
         ink: 'rgb(var(--ink) / <alpha-value>)',
-        chip: {
-          DEFAULT: 'var(--chip)',
-          active: 'var(--chip-active)',
-          'active-ink': 'rgb(var(--chip-active-ink) / <alpha-value>)',
-          // companion to --chip-active (old blue-200), not a :root token
-          'active-hover': '#bfdbfe',
+        accent: {
+          DEFAULT: 'var(--accent)',
+          soft: 'var(--accent-soft)',
+          ink: 'rgb(var(--accent-ink) / <alpha-value>)',
         },
         alert: {
           DEFAULT: 'var(--alert)',
-          hover: 'var(--alert-hover)',
+          ink: 'rgb(var(--alert-ink) / <alpha-value>)',
+        },
+        danger: {
+          DEFAULT: 'var(--danger)',
+          ink: 'var(--danger-ink)',
         },
         highlight: 'var(--highlight)',
         stroke: 'var(--stroke)',
@@ -44,5 +45,5 @@ export default {
       },
     },
   },
-  plugins: [daisyui],
+  plugins: [],
 }

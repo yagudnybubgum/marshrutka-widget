@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "@material-symbols/svg-400": "^0.45.8",
-    "daisyui": "^5.5.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^7.11.0"

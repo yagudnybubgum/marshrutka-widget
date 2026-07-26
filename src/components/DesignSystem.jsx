@@ -98,8 +98,8 @@ function HowItWorks() {
         <li className="p-4 space-y-1">
           <p className="font-medium text-ink">1. CSS vars — <code className="font-mono text-ink/70">src/index.css</code></p>
           <p className="text-ink/70">
-            <code className="text-ink">--surface</code>, <code className="text-ink">--ink</code> (channels),{' '}
-            <code className="text-ink">--chip-*</code>, feedback, routes.
+            <code className="text-ink">--surface-*</code>, <code className="text-ink">--ink</code> (channels),{' '}
+            <code className="text-ink">--accent-*</code>, feedback, routes.
           </p>
         </li>
         <li className="p-4 space-y-1">
@@ -112,7 +112,7 @@ function HowItWorks() {
         <li className="p-4 space-y-1">
           <p className="font-medium text-ink">3. Components</p>
           <p className="text-ink/70">
-            Semantic classes only. Пример: <code className="text-ink">bg-chip-active text-chip-active-ink</code>.
+            Semantic classes only. Пример: <code className="text-ink">bg-accent-soft text-accent-ink</code>.
           </p>
         </li>
         <li className="p-4 space-y-1">
@@ -188,14 +188,14 @@ function CssPaletteSection({ revision }) {
 }
 
 function LiveSyncDemo({ onChange }) {
-  const [muted, setMuted] = useState('#fafafa')
-  const [chipActive, setChipActive] = useState('#dbeafe')
+  const [muted, setMuted] = useState('#f8fafd')
+  const [accentSoft, setAccentSoft] = useState('#deedff')
 
   useEffect(() => {
     const nextMuted = readCssVar('--surface-muted')
-    const nextChip = readCssVar('--chip-active')
+    const nextAccent = readCssVar('--accent-soft')
     if (nextMuted) setMuted(nextMuted)
-    if (nextChip) setChipActive(nextChip)
+    if (nextAccent) setAccentSoft(nextAccent)
   }, [])
 
   useEffect(() => {
@@ -207,12 +207,12 @@ function LiveSyncDemo({ onChange }) {
   }, [muted, onChange])
 
   useEffect(() => {
-    document.documentElement.style.setProperty('--chip-active', chipActive)
+    document.documentElement.style.setProperty('--accent-soft', accentSoft)
     onChange?.()
     return () => {
-      document.documentElement.style.removeProperty('--chip-active')
+      document.documentElement.style.removeProperty('--accent-soft')
     }
-  }, [chipActive, onChange])
+  }, [accentSoft, onChange])
 
   return (
     <section className="space-y-4">
@@ -228,21 +228,21 @@ function LiveSyncDemo({ onChange }) {
           <span className="w-36 shrink-0 font-mono text-xs text-ink/70">--surface-muted</span>
           <input
             type="color"
-            value={muted.startsWith('#') && muted.length === 7 ? muted : '#fafafa'}
+            value={muted.startsWith('#') && muted.length === 7 ? muted : '#f8fafd'}
             onChange={(e) => setMuted(e.target.value)}
             className="h-9 w-12 cursor-pointer rounded border border-ink/10 bg-transparent"
           />
           <code className="text-xs text-ink/60">{muted}</code>
         </label>
         <label className="flex flex-wrap items-center gap-3 text-sm text-ink">
-          <span className="w-36 shrink-0 font-mono text-xs text-ink/70">--chip-active</span>
+          <span className="w-36 shrink-0 font-mono text-xs text-ink/70">--accent-soft</span>
           <input
             type="color"
-            value={chipActive.startsWith('#') && chipActive.length === 7 ? chipActive : '#dbeafe'}
-            onChange={(e) => setChipActive(e.target.value)}
+            value={accentSoft.startsWith('#') && accentSoft.length === 7 ? accentSoft : '#deedff'}
+            onChange={(e) => setAccentSoft(e.target.value)}
             className="h-9 w-12 cursor-pointer rounded border border-ink/10 bg-transparent"
           />
-          <code className="text-xs text-ink/60">{chipActive}</code>
+          <code className="text-xs text-ink/60">{accentSoft}</code>
         </label>
 
         <div className="grid gap-3 sm:grid-cols-2">
@@ -251,9 +251,12 @@ function LiveSyncDemo({ onChange }) {
             <p className="text-ink">Страница / body фон</p>
           </div>
           <div className="flex flex-wrap gap-2 items-center rounded-xl bg-surface-muted p-4 border border-ink/10">
-            <span className="px-4 py-1.5 rounded-full bg-chip text-ink/70 text-sm">chip</span>
-            <span className="px-4 py-1.5 rounded-full bg-chip-active text-chip-active-ink text-sm">
-              chip-active
+            <span className="hover-darken px-4 py-1.5 rounded-full bg-surface-sunken text-ink/70 text-sm">chip</span>
+            <span className="hover-darken px-4 py-1.5 rounded-full bg-accent-soft text-accent-ink text-sm">
+              chip active
+            </span>
+            <span className="hover-darken px-4 py-1.5 rounded-full bg-alert text-alert-ink text-sm">
+              alert
             </span>
           </div>
         </div>
@@ -278,7 +281,7 @@ function DesignSystem() {
           </Link>
           <h1 className="text-2xl font-normal text-ink">Design tokens</h1>
           <p className="text-sm text-ink/70 max-w-xl">
-            Упрощённая система: ink × opacity, chip × 3, без Daisy aliases.
+            Один нейтральный ряд, один акцентный hue, ink × opacity. Без сторонних палитр.
           </p>
         </header>
 
@@ -362,10 +365,11 @@ function DesignSystem() {
           <h2 className="text-lg font-medium text-ink">Cheatsheet</h2>
           <pre className="rounded-xl bg-surface p-4 border border-ink/10 text-xs text-ink/80 overflow-x-auto leading-relaxed">{`bg-surface-muted text-ink
 text-ink/70   border-ink/10   bg-ink/40
-bg-chip text-ink/70
-bg-chip-active text-chip-active-ink
-text-chip-active-ink/70
-hover:bg-chip-active-hover
+bg-surface-sunken text-ink/70
+bg-accent-soft text-accent-ink
+text-accent-ink/70
+hover-darken   /* фон +10% к чёрному */
+bg-danger text-danger-ink
 getRouteColor('533')`}</pre>
         </section>
       </div>
