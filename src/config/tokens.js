@@ -138,7 +138,7 @@ export const RADIUS_USAGE = [
     places: [
       'MarshrutkaWidget DirectionCard (+ skeleton, stop notice rounded-t-3xl)',
       'ui/PromoCard — home CTA + homescreen platform cards',
-      'StopLocationOverlay — bottom sheet (rounded-t-3xl) + desktop modal (md:rounded-3xl)',
+      'StopLocationOverlay — mobile vaul sheet (rounded-t-3xl, snaps 0.55/0.92) + desktop modal (rounded-3xl)',
     ],
   },
   {

@@ -183,15 +183,6 @@ body.is-scroll-locked {
   animation-delay: calc(60ms + var(--card-i, 0) * 80ms);
 }
 
-@keyframes stop-sheet-enter {
-  from {
-    transform: translateY(100%);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
-
 @keyframes stop-modal-enter {
   from {
     opacity: 0;
@@ -203,10 +194,6 @@ body.is-scroll-locked {
   }
 }
 
-.stop-sheet-enter {
-  animation: stop-sheet-enter 320ms var(--ease-expo-out) both;
-}
-
 @media (min-width: 768px) {
   .stop-modal-enter-md {
     animation: stop-modal-enter 280ms var(--ease-expo-out) both;
@@ -216,7 +203,6 @@ body.is-scroll-locked {
 @media (prefers-reduced-motion: reduce) {
   .chip-enter,
   .card-enter,
-  .stop-sheet-enter,
   .stop-modal-enter-md {
     opacity: 1;
     animation: none;
