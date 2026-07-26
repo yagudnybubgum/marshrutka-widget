@@ -229,12 +229,13 @@ export const TYPE_SCALE = [
   {
     name: 'countdown',
     tw: 'font-normal text-ink',
-    style: { fontSize: '40px', lineHeight: '1' },
+    style: { fontSize: '40px', lineHeight: 1 },
+    recipe: "font-normal text-ink · style={{ fontSize: '40px', lineHeight: 1 }}",
     size: '40 / 40',
     rem: '2.5rem',
     weight: '400',
     role: 'hero-num',
-    sample: '12',
+    sample: '20:57',
   },
 ]
 
@@ -322,10 +323,10 @@ export const TYPE_USAGE = [
   },
   {
     name: 'countdown',
-    tw: ["style={{ fontSize: '40px' }}", 'font-normal'],
+    tw: ["font-normal text-ink", "style={{ fontSize: '40px', lineHeight: 1 }}"],
     used: true,
-    notes: 'Кастомный размер — единственный вне TW scale.',
-    places: ['MarshrutkaWidget — минуты до рейса'],
+    notes: 'Единственный custom size. font-size 40px + lh:1 → бокс 40px.',
+    places: ['MarshrutkaWidget DirectionCard — время ближайшего рейса'],
   },
   {
     name: 'emphasis',

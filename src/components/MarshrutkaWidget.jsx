@@ -90,7 +90,7 @@ const DirectionCard = ({
                 </p>
               </div>
               <div className="text-right self-start">
-                <p className="font-normal text-ink" style={{ fontSize: '40px' }}>
+                <p className="font-normal text-ink" style={{ fontSize: '40px', lineHeight: 1 }}>
                   {formatTime(nextTrip.time)}
                 </p>
               </div>

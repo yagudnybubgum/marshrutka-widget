@@ -638,7 +638,7 @@ function TypeTokensSection() {
           </li>
           <li>
             <code className="text-ink">display</code> — hero;{' '}
-            <code className="text-ink">countdown</code> — 40px в виджете
+            <code className="text-ink">countdown</code> — 40/40 (lh:1) в DirectionCard
           </li>
         </ul>
       </div>
@@ -661,7 +661,9 @@ function TypeTokensSection() {
                 <p className={t.tw} style={t.style}>
                   {t.sample}
                 </p>
-                <p className="font-mono text-[11px] text-ink/40 break-all">{t.tw}</p>
+                <p className="font-mono text-[11px] text-ink/40 break-all">
+                  {t.recipe ?? t.tw}
+                </p>
               </div>
             </li>
           ))}
@@ -852,7 +854,7 @@ text-sm font-medium          /* label / RouteBadge */
 text-lg font-normal          /* title-sm / sheet */
 text-xl font-normal          /* title */
 text-2xl font-normal         /* display */
-fontSize: 40px               /* countdown */
+fontSize: 40px; line-height: 1  /* countdown */
 
 rounded-md   /* control */
 rounded-lg   /* panel */
