@@ -1,0 +1,18 @@
+{
+  "name": "Маршрутки Янино-1",
+  "short_name": "Маршрутки",
+  "description": "Расписание маршруток Янино-1",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafd",
+  "theme_color": "#f8fafd",
+  "lang": "ru",
+  "icons": [
+    {
+      "src": "/fav.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
