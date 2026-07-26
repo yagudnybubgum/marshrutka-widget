@@ -47,7 +47,7 @@ function Home() {
   return (
     <PageShell
       padClassName="py-6 px-2 sm:py-10 sm:px-4"
-      contentClassName="space-y-6"
+      contentClassName="space-y-4"
       footer={<Footer />}
     >
       {/* px-4 + page px-2 → 24, aligns with card content (p-4) */}
