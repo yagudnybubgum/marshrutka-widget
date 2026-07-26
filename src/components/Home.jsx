@@ -51,10 +51,14 @@ function Home() {
       footer={<Footer />}
     >
       {/* px-4 + page px-2 → 24, aligns with card content (p-4) */}
-      <div className="flex flex-col gap-1 px-4">
+      <div className="flex flex-wrap items-baseline gap-y-1 px-4">
         <h1 className="text-xl font-normal text-ink leading-7">
           {copy.home.title}
         </h1>
+        <span
+          className="pointer-events-none h-0 basis-[60px] grow-[999]"
+          aria-hidden="true"
+        />
         <span className="text-sm font-normal text-ink leading-5">
           {formatDate(now)}, {getDayTypeUtil(now).toLowerCase()}
         </span>
