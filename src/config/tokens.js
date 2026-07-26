@@ -132,7 +132,7 @@ export const RADIUS_USAGE = [
   },
   {
     name: '3xl',
-    tw: ['rounded-3xl', 'rounded-t-3xl', 'md:rounded-3xl'],
+    tw: ['rounded-3xl', 'rounded-t-3xl'],
     used: true,
     notes: 'DirectionCard + PromoCard + sheet/modal.',
     places: [
