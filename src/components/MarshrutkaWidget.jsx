@@ -23,7 +23,7 @@ const LadozhskayaStopNotice = ({ onShowMap }) => (
     onClick={onShowMap}
     className="hover-darken w-full rounded-t-3xl bg-alert px-4 pb-4 pt-3 text-left text-alert-ink"
   >
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
       <p className="text-base font-normal">{copy.widget.stopMoved}</p>
       <span className="inline-flex items-center gap-1 text-sm font-normal">
         {copy.widget.viewOnMap}
