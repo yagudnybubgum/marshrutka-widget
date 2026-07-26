@@ -7,6 +7,7 @@
  * 4. routes.js color key → ROUTE_COLORS
  * 5. .hover-darken — затемнение фона на --hover-darken
  * 6. Radius: --radius-* → rounded-{sm|md|lg|xl|2xl|3xl|full}
+ * 7. Type: Google Sans + TW text-* / font-* (см. TYPE_SCALE / TYPE_USAGE)
  */
 
 /** Raw CSS vars from index.css. Keep in sync with :root. */
@@ -153,6 +154,185 @@ export const RADIUS_USAGE = [
       'StopLocationOverlay — drag handle',
       'DesignSystem — chip / route previews',
     ],
+  },
+]
+
+/**
+ * Typography scale used in product UI (not legal pages).
+ * Values = Tailwind defaults; countdown is the only custom size.
+ * Face: Google Sans 400/500 from index.css @font-face.
+ */
+export const TYPE_SCALE = [
+  {
+    name: 'caption',
+    tw: 'text-xs text-ink/70',
+    size: '12 / 16',
+    rem: '0.75rem',
+    weight: '400',
+    role: 'meta',
+    sample: 'Источник: расписание перевозчика',
+  },
+  {
+    name: 'body-sm',
+    tw: 'text-sm font-normal text-ink/70',
+    size: '14 / 20',
+    rem: '0.875rem',
+    weight: '400',
+    role: 'secondary',
+    sample: 'До ближайшей · через 12 мин',
+  },
+  {
+    name: 'body',
+    tw: 'text-base font-normal text-ink',
+    size: '16 / 24',
+    rem: '1rem',
+    weight: '400',
+    role: 'primary',
+    sample: 'Остановка перенесена',
+  },
+  {
+    name: 'label',
+    tw: 'text-sm font-medium text-ink',
+    size: '14 / 20',
+    rem: '0.875rem',
+    weight: '500',
+    role: 'chip',
+    sample: '533 · Всеволожск',
+  },
+  {
+    name: 'title-sm',
+    tw: 'text-lg font-normal text-ink',
+    size: '18 / 28',
+    rem: '1.125rem',
+    weight: '400',
+    role: 'sheet',
+    sample: 'Где остановка',
+  },
+  {
+    name: 'title',
+    tw: 'text-xl font-normal text-ink',
+    size: '20 / 28',
+    rem: '1.25rem',
+    weight: '400',
+    role: 'page',
+    sample: 'В сторону Ладожской',
+  },
+  {
+    name: 'display',
+    tw: 'text-2xl font-normal text-ink',
+    size: '24 / 32',
+    rem: '1.5rem',
+    weight: '400',
+    role: 'hero',
+    sample: 'Маршрутки от метро',
+  },
+  {
+    name: 'countdown',
+    tw: 'font-normal text-ink',
+    style: { fontSize: '40px', lineHeight: '1' },
+    size: '40 / 40',
+    rem: '2.5rem',
+    weight: '400',
+    role: 'hero-num',
+    sample: '12',
+  },
+]
+
+/** Ink opacity roles for type. Keep in sync with product classes. */
+export const TYPE_INK = [
+  { name: 'ink', tw: 'text-ink', opacity: '100%', role: 'primary' },
+  { name: 'ink/80', tw: 'text-ink/80', opacity: '80%', role: 'soft primary (время, подписи)' },
+  { name: 'ink/70', tw: 'text-ink/70', opacity: '70%', role: 'secondary / meta' },
+]
+
+/**
+ * Current production type usage. Keep in sync when migrating components.
+ */
+export const TYPE_USAGE = [
+  {
+    name: 'caption',
+    tw: ['text-xs', 'text-xs text-ink/70'],
+    used: true,
+    notes: 'Сноски, source, мелкие ссылки.',
+    places: [
+      'FullSchedule — sourceLabel + privacy link',
+      'RouteMapPage — подпись под картой',
+      'ui/TextLink size=xs',
+    ],
+  },
+  {
+    name: 'body-sm',
+    tw: ['text-sm font-normal', 'text-sm text-ink/70', 'text-sm text-ink/80'],
+    used: true,
+    notes: 'Основной secondary-текст UI.',
+    places: [
+      'Home, HomeScreen, DepartureRow, BackLink',
+      'MarshrutkaWidget — подписи к countdown',
+      'FullSchedule — ячейки таблицы',
+      'ui/TextLink size=sm, RouteBadge (с font-medium → label)',
+    ],
+  },
+  {
+    name: 'body',
+    tw: ['text-base font-normal', 'text-base text-ink/70'],
+    used: true,
+    notes: 'Чипы, notice, body на больших экранах.',
+    places: [
+      'ui/Chip',
+      'MarshrutkaWidget — stopMoved notice',
+      'HomeScreen — subtitle (non-compact)',
+      'FromLadozhskaya — tab labels',
+      'ui/TextLink size=base, PromoCard compact title',
+    ],
+  },
+  {
+    name: 'label',
+    tw: ['text-sm font-medium'],
+    used: true,
+    notes: 'Единственный medium на compact controls.',
+    places: ['ui/RouteBadge'],
+  },
+  {
+    name: 'title-sm',
+    tw: ['text-lg font-normal'],
+    used: true,
+    notes: 'Заголовки sheet / modal.',
+    places: ['StopLocationOverlay — Drawer.Title + desktop h2'],
+  },
+  {
+    name: 'title',
+    tw: ['text-xl font-normal', 'text-xl font-normal leading-7'],
+    used: true,
+    notes: 'Заголовки экранов и карточек.',
+    places: [
+      'Home — h1',
+      'FullSchedule, RouteMapPage — h1',
+      'MarshrutkaWidget — directionName',
+      'DepartureRow — timeLabel',
+      'PromoCard — title (default)',
+      'HomeScreen compact title',
+    ],
+  },
+  {
+    name: 'display',
+    tw: ['text-2xl font-normal', 'text-2xl sm:text-3xl font-normal'],
+    used: true,
+    notes: 'Крупный hero. sm:text-3xl только HomeScreen non-compact.',
+    places: ['About — h1', 'HomeScreen — title (non-compact)'],
+  },
+  {
+    name: 'countdown',
+    tw: ["style={{ fontSize: '40px' }}", 'font-normal'],
+    used: true,
+    notes: 'Кастомный размер — единственный вне TW scale.',
+    places: ['MarshrutkaWidget — минуты до рейса'],
+  },
+  {
+    name: 'emphasis',
+    tw: ['font-semibold'],
+    used: true,
+    notes: 'Не отдельный size — только weight на body-sm.',
+    places: ['FullSchedule — highlighted ближайший рейс'],
   },
 ]
 

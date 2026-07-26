@@ -60,7 +60,7 @@ const StopLocationOverlay = ({ open, onClose, stop, title }) => {
             <div className="flex shrink-0 flex-col items-center pt-3 pb-2">
               <div className="h-1 w-10 rounded-full bg-ink/20" aria-hidden />
             </div>
-            <Drawer.Title className="shrink-0 px-4 pb-3 text-lg font-medium text-ink">
+            <Drawer.Title className="shrink-0 px-4 pb-3 text-lg font-normal text-ink">
               {heading}
             </Drawer.Title>
             <div
@@ -97,7 +97,7 @@ const StopLocationOverlay = ({ open, onClose, stop, title }) => {
       <div className="absolute inset-0 flex items-center justify-center p-6 pointer-events-none">
         <div className="pointer-events-auto w-full max-w-lg overflow-hidden rounded-3xl bg-surface shadow-xl stop-modal-enter-md">
           <div className="flex items-center justify-between gap-3 px-5 py-4">
-            <h2 className="text-lg font-medium text-ink">{heading}</h2>
+            <h2 className="text-lg font-normal text-ink">{heading}</h2>
             <button
               type="button"
               onClick={onClose}

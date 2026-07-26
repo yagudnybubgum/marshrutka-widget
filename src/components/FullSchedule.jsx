@@ -8,6 +8,10 @@ import { formatTime, getCurrentTimeInMinutes } from '../utils/schedule/formatTim
 import { Alert, BackLink, Chip, EmptyState } from './ui'
 import { copy } from '../config/copy'
 
+const HEADER_HIDE_AFTER = 50
+const HEADER_DELTA = 12
+const HEADER_BOTTOM_GUARD = 50
+
 const FullSchedule = ({ routeNumber = '533', onBack }) => {
   const [scheduleData, setScheduleData] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -15,6 +19,7 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
   const [headerVisible, setHeaderVisible] = useState(true)
   const [searchParams] = useSearchParams()
   const lastScrollTopRef = useRef(0)
+  const headerVisibleRef = useRef(true)
   const scrollContainerRef = useRef(null)
   const focusCellRef = useRef(null)
   const hasScrolledToFocusRef = useRef(false)
@@ -75,34 +80,41 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
     const scrollContainer = scrollContainerRef.current
     if (!scrollContainer) return
 
+    const setVisible = (visible) => {
+      if (headerVisibleRef.current === visible) return
+      headerVisibleRef.current = visible
+      setHeaderVisible(visible)
+    }
+
     const handleScroll = () => {
       const currentScrollTop = scrollContainer.scrollTop
       const lastScrollTop = lastScrollTopRef.current
+      const delta = currentScrollTop - lastScrollTop
       const scrollHeight = scrollContainer.scrollHeight
       const clientHeight = scrollContainer.clientHeight
 
       if (currentScrollTop <= 0) {
-        setHeaderVisible(true)
+        setVisible(true)
         lastScrollTopRef.current = 0
         return
       }
 
       const distanceFromBottom = scrollHeight - currentScrollTop - clientHeight
-      if (distanceFromBottom < 50) {
+      if (distanceFromBottom < HEADER_BOTTOM_GUARD) {
         lastScrollTopRef.current = currentScrollTop
         return
       }
 
-      if (currentScrollTop > lastScrollTop && currentScrollTop > 50) {
-        setHeaderVisible(false)
-      } else if (currentScrollTop < lastScrollTop) {
-        setHeaderVisible(true)
+      if (delta > HEADER_DELTA && currentScrollTop > HEADER_HIDE_AFTER) {
+        setVisible(false)
+      } else if (delta < -HEADER_DELTA) {
+        setVisible(true)
       }
 
       lastScrollTopRef.current = currentScrollTop
     }
 
-    scrollContainer.addEventListener('scroll', handleScroll)
+    scrollContainer.addEventListener('scroll', handleScroll, { passive: true })
     return () => scrollContainer.removeEventListener('scroll', handleScroll)
   }, [scheduleData])
 
@@ -201,9 +213,9 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
   }
 
   return (
-    <div className="h-[100dvh] bg-surface-muted flex flex-col relative">
+    <div className="h-[100dvh] bg-surface-muted flex flex-col relative overflow-hidden">
       <div
-        className={`absolute top-0 left-0 right-0 z-20 bg-surface-muted px-4 pt-6 pb-4 transition-transform duration-300 ${
+        className={`absolute top-0 left-0 right-0 z-30 bg-surface-muted px-4 pt-6 pb-4 transition-transform duration-200 ease-out will-change-transform ${
           headerVisible ? 'translate-y-0' : '-translate-y-full'
         }`}
       >
@@ -216,8 +228,19 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
         </div>
       </div>
 
+      {/*
+        Dual transform: pt stays put (no layout jump). On hide, shell grows by header
+        height (extends into overflow:hidden — invisible) and translates up in lockstep
+        with the header, freeing the same space as the old pt-20 ↔ pt-0 toggle.
+      */}
       <div className="flex-1 min-h-0 overflow-hidden">
-        <div className={`h-full max-w-7xl mx-auto ${headerVisible ? 'pt-20' : 'pt-0'}`}>
+        <div
+          className={`max-w-7xl mx-auto pt-20 transition-transform duration-200 ease-out will-change-transform ${
+            headerVisible
+              ? 'h-full translate-y-0'
+              : 'h-[calc(100%+5rem)] -translate-y-20'
+          }`}
+        >
           <div ref={scrollContainerRef} className="h-full overflow-y-auto pb-4 px-4">
             <div className="sticky top-0 bg-surface-muted z-20">
               {scheduleData?.hasPeriodInfo && (

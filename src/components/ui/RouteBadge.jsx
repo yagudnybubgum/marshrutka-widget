@@ -7,7 +7,7 @@ export function RouteBadge({ routeId, color, className = '', children, ...rest }
 
   return (
     <span
-      className={`px-5 py-2 rounded-full text-sm font-medium ${tone} ${className}`.trim()}
+      className={`inline-flex items-center justify-center px-5 py-2 rounded-full text-sm font-medium ${tone} ${className}`.trim()}
       {...rest}
     >
       {children}

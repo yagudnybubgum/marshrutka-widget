@@ -6,9 +6,12 @@ import {
   ROUTE_COLORS,
   RADIUS_SCALE,
   RADIUS_USAGE,
+  TYPE_SCALE,
+  TYPE_INK,
+  TYPE_USAGE,
   getRouteColorClasses,
 } from '../config/tokens'
-import { copy, COPY_GROUPS, flattenCopyBranch } from '../config/copy'
+import { copy } from '../config/copy'
 import {
   Alert,
   BackLink,
@@ -21,6 +24,67 @@ import {
   TextLink,
 } from './ui'
 import { ArrowRightIcon } from './icons'
+
+const DS_NAV = [
+  { id: 'how', label: 'How it works' },
+  { id: 'palette', label: '1 · Palette' },
+  { id: 'radius', label: '1b · Radius' },
+  { id: 'live', label: 'Live sync' },
+  { id: 'tailwind', label: '2 · Tailwind' },
+  { id: 'routes', label: '3 · Routes' },
+  { id: 'components', label: '4 · Components' },
+  { id: 'type', label: '5 · Type' },
+  { id: 'cheatsheet', label: 'Cheatsheet' },
+]
+
+const SECTION_SCROLL = 'scroll-mt-6'
+
+function DsSideNav() {
+  const [active, setActive] = useState(DS_NAV[0].id)
+
+  useEffect(() => {
+    const nodes = DS_NAV.map(({ id }) => document.getElementById(id)).filter(Boolean)
+    if (nodes.length === 0) return undefined
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)
+        if (visible[0]?.target?.id) setActive(visible[0].target.id)
+      },
+      { rootMargin: '-20% 0px -55% 0px', threshold: [0, 0.25, 0.5, 1] },
+    )
+
+    nodes.forEach((n) => observer.observe(n))
+    return () => observer.disconnect()
+  }, [])
+
+  return (
+    <nav
+      aria-label="Разделы"
+      className="pointer-events-none fixed inset-y-0 left-0 z-20 hidden xl:flex items-center pl-4"
+    >
+      <ul className="pointer-events-auto flex flex-col gap-1.5 px-3">
+        {DS_NAV.map((item) => {
+          const isActive = active === item.id
+          return (
+            <li key={item.id}>
+              <a
+                href={`#${item.id}`}
+                className={`block text-sm whitespace-nowrap transition-colors ${
+                  isActive ? 'text-ink font-medium' : 'text-ink/40 hover:text-ink/70'
+                }`}
+              >
+                {item.label}
+              </a>
+            </li>
+          )
+        })}
+      </ul>
+    </nav>
+  )
+}
 
 function readCssVar(name) {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
@@ -100,7 +164,7 @@ function CssVarSwatch({ cssVar, revision = 0 }) {
 
 function HowItWorks() {
   return (
-    <section className="space-y-4">
+    <section id="how" className={`space-y-4 ${SECTION_SCROLL}`}>
       <div>
         <h2 className="text-lg font-medium text-ink">How it works</h2>
         <p className="text-sm text-ink/70 mt-1">
@@ -152,7 +216,7 @@ function HowItWorks() {
 
 function RadiusSection({ revision = 0 }) {
   return (
-    <section className="space-y-6">
+    <section id="radius" className={`space-y-6 ${SECTION_SCROLL}`}>
       <div>
         <h2 className="text-lg font-medium text-ink">1b · Radius</h2>
         <p className="text-sm text-ink/70 mt-1">
@@ -291,7 +355,7 @@ function RadiusSwatch({ token, revision = 0 }) {
 
 function CssPaletteSection({ revision }) {
   return (
-    <section className="space-y-4">
+    <section id="palette" className={`space-y-4 ${SECTION_SCROLL}`}>
       <div>
         <h2 className="text-lg font-medium text-ink">1 · CSS palette</h2>
         <p className="text-sm text-ink/70 mt-1">
@@ -377,7 +441,7 @@ function LiveSyncDemo({ onChange }) {
   }, [accentSoft, onChange])
 
   return (
-    <section className="space-y-4">
+    <section id="live" className={`space-y-4 ${SECTION_SCROLL}`}>
       <div>
         <h2 className="text-lg font-medium text-ink">Live sync</h2>
         <p className="text-sm text-ink/70 mt-1">
@@ -430,7 +494,7 @@ function ComponentsGallery() {
   const [chip, setChip] = useState('a')
 
   return (
-    <section className="space-y-6 pb-8">
+    <section id="components" className={`space-y-6 pb-8 ${SECTION_SCROLL}`}>
       <div>
         <h2 className="text-lg font-medium text-ink">4 · Components</h2>
         <p className="text-sm text-ink/70 mt-1">
@@ -505,6 +569,13 @@ function ComponentsGallery() {
             timeLabel="14:30"
           />
           <DepartureRow
+            routeId="430A"
+            routeName="430А"
+            destination={ROUTES[3].destination}
+            untilLabel={`${copy.widget.inPrefix} ${copy.time.minutes(18)}`}
+            timeLabel="14:36"
+          />
+          <DepartureRow
             routeId="429"
             routeName="429"
             destination={ROUTES[1].destination}
@@ -535,52 +606,143 @@ function GalleryBlock({ name, hint, children }) {
   )
 }
 
-function CopyTokensSection() {
+function TypeTokensSection() {
   return (
-    <section className="space-y-6">
+    <section id="type" className={`space-y-6 ${SECTION_SCROLL}`}>
       <div>
-        <h2 className="text-lg font-medium text-ink">5 · Copy</h2>
+        <h2 className="text-lg font-medium text-ink">5 · Typography</h2>
         <p className="text-sm text-ink/70 mt-1">
-          UI-строки из <code className="text-ink">src/config/copy.js</code>. Privacy/About не здесь.
-          Шаблоны (<code className="text-ink">fn</code>) показаны с sample args.
+          Google Sans (400/500) + TW <code className="text-ink">text-*</code> /{' '}
+          <code className="text-ink">font-*</code>. Роли в{' '}
+          <code className="text-ink">TYPE_SCALE</code> / <code className="text-ink">TYPE_USAGE</code>.
+          Privacy legal-страница — отдельный кейс, сюда не входит.
         </p>
       </div>
 
-      {COPY_GROUPS.map((group) => {
-        const branch = copy[group.id]
-        const rows = flattenCopyBranch(branch, group.id)
-        return (
-          <div key={group.id} className="space-y-3">
-            <div>
-              <h3 className="text-sm font-medium text-ink">{group.label}</h3>
-              <p className="text-xs text-ink/50 mt-0.5">{group.description}</p>
+      <div className="rounded-lg bg-surface p-4 border border-ink/10 space-y-3 text-sm text-ink/70">
+        <p className="font-medium text-ink">Как выбирать</p>
+        <ul className="list-disc list-inside space-y-1">
+          <li>
+            <code className="text-ink">caption</code> — сноски, source
+          </li>
+          <li>
+            <code className="text-ink">body-sm</code> — secondary UI;{' '}
+            <code className="text-ink">body</code> — primary / чипы
+          </li>
+          <li>
+            <code className="text-ink">label</code> — RouteBadge (единственный medium на compact)
+          </li>
+          <li>
+            <code className="text-ink">title-sm</code> — sheet/modal;{' '}
+            <code className="text-ink">title</code> — экраны и карточки
+          </li>
+          <li>
+            <code className="text-ink">display</code> — hero;{' '}
+            <code className="text-ink">countdown</code> — 40px в виджете
+          </li>
+        </ul>
+      </div>
+
+      <div className="rounded-lg bg-surface border border-ink/10 overflow-hidden">
+        <div className="px-4 py-3 border-b border-ink/10">
+          <p className="text-sm font-medium text-ink">Scale</p>
+          <p className="text-xs text-ink/50 mt-0.5">size = px / line-height</p>
+        </div>
+        <ul className="divide-y divide-ink/5">
+          {TYPE_SCALE.map((t) => (
+            <li key={t.name} className="flex flex-col gap-2 px-4 py-4 sm:flex-row sm:items-baseline sm:gap-6">
+              <div className="sm:w-28 shrink-0">
+                <p className="font-mono text-xs text-ink">{t.name}</p>
+                <p className="font-mono text-[11px] text-ink/50">
+                  {t.size} · {t.weight} · {t.role}
+                </p>
+              </div>
+              <div className="min-w-0 flex-1 space-y-1">
+                <p className={t.tw} style={t.style}>
+                  {t.sample}
+                </p>
+                <p className="font-mono text-[11px] text-ink/40 break-all">{t.tw}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="rounded-lg bg-surface p-4 border border-ink/10 space-y-3">
+        <p className="text-sm font-medium text-ink">Ink on type</p>
+        <div className="grid gap-3 sm:grid-cols-3">
+          {TYPE_INK.map((ink) => (
+            <div key={ink.name} className="min-w-0">
+              <p className={ink.tw}>Аа · {ink.opacity}</p>
+              <p className="font-mono text-[11px] text-ink/50 mt-1">{ink.tw}</p>
+              <p className="text-xs text-ink/50">{ink.role}</p>
             </div>
-            <div className="rounded-lg bg-surface border border-ink/10 overflow-x-auto">
-              <table className="w-full text-sm text-left">
-                <thead>
-                  <tr className="text-ink/70 border-b border-ink/10">
-                    <th className="py-2 px-4 font-medium">key</th>
-                    <th className="py-2 px-4 font-medium">value</th>
+          ))}
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        <div>
+          <p className="text-sm font-medium text-ink">Usage in project</p>
+          <p className="text-xs text-ink/50 mt-0.5">
+            Карта из <code className="text-ink">TYPE_USAGE</code> в{' '}
+            <code className="text-ink">tokens.js</code> — обновляй при миграциях.
+          </p>
+        </div>
+        <div className="rounded-lg bg-surface border border-ink/10 overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead>
+              <tr className="text-ink/70 border-b border-ink/10">
+                <th className="py-2 px-4 font-medium">token</th>
+                <th className="py-2 px-4 font-medium">classes</th>
+                <th className="py-2 px-4 font-medium">status</th>
+                <th className="py-2 px-4 font-medium">where</th>
+              </tr>
+            </thead>
+            <tbody>
+              {TYPE_USAGE.map((row) => {
+                const scale = TYPE_SCALE.find((t) => t.name === row.name)
+                return (
+                  <tr key={row.name} className="border-b border-ink/5 align-top">
+                    <td className="py-2.5 px-4 whitespace-nowrap">
+                      <p className="font-mono text-xs text-ink">{row.name}</p>
+                      {scale ? (
+                        <p className="font-mono text-[11px] text-ink/50">
+                          {scale.size} · {scale.role}
+                        </p>
+                      ) : (
+                        <p className="font-mono text-[11px] text-ink/50">weight only</p>
+                      )}
+                    </td>
+                    <td className="py-2.5 px-4 font-mono text-xs text-ink/70">
+                      {row.tw.join(', ')}
+                    </td>
+                    <td className="py-2.5 px-4">
+                      {row.used ? (
+                        <span className="text-xs text-accent-ink">in use</span>
+                      ) : (
+                        <span className="text-xs text-ink/40">unused</span>
+                      )}
+                    </td>
+                    <td className="py-2.5 px-4 text-ink/80">
+                      <p className="text-xs text-ink/50 mb-1">{row.notes}</p>
+                      {row.places.length > 0 ? (
+                        <ul className="space-y-0.5 text-xs">
+                          {row.places.map((p) => (
+                            <li key={p}>· {p}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-xs text-ink/40">—</p>
+                      )}
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {rows.map((row) => (
-                    <tr key={row.key} className="border-b border-ink/5 align-top">
-                      <td className="py-2 px-4 font-mono text-xs text-ink/70 whitespace-nowrap">
-                        {row.key}
-                        {row.kind === 'fn' ? (
-                          <span className="ml-1.5 text-ink/40">fn</span>
-                        ) : null}
-                      </td>
-                      <td className="py-2 px-4 text-ink">{row.value}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )
-      })}
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </section>
   )
 }
@@ -591,6 +753,7 @@ function DesignSystem() {
 
   return (
     <div className="min-h-[100dvh] bg-surface-muted py-6 px-4 sm:py-10">
+      <DsSideNav />
       <div className="max-w-3xl mx-auto space-y-10">
         <header className="space-y-3">
           <BackLink to="/" />
@@ -605,7 +768,7 @@ function DesignSystem() {
         <RadiusSection revision={revision} />
         <LiveSyncDemo onChange={bump} />
 
-        <section className="space-y-2">
+        <section id="tailwind" className={`space-y-2 ${SECTION_SCROLL}`}>
           <h2 className="text-lg font-medium text-ink">2 · Tailwind mapping</h2>
           <p className="text-sm text-ink/70">
             Hex/channels правятся в <code className="text-ink">index.css</code>, не здесь.
@@ -626,7 +789,7 @@ function DesignSystem() {
           </section>
         ))}
 
-        <section className="space-y-4">
+        <section id="routes" className={`space-y-4 ${SECTION_SCROLL}`}>
           <div>
             <h2 className="text-lg font-medium text-ink">3 · Route keys</h2>
             <p className="text-sm text-ink/70 mt-1">
@@ -676,18 +839,24 @@ function DesignSystem() {
         </section>
 
         <ComponentsGallery />
-        <CopyTokensSection />
+        <TypeTokensSection />
 
-        <section className="space-y-4 pb-8">
+        <section id="cheatsheet" className={`space-y-4 pb-8 ${SECTION_SCROLL}`}>
           <h2 className="text-lg font-medium text-ink">Cheatsheet</h2>
-          <pre className="rounded-lg bg-surface p-4 border border-ink/10 text-xs text-ink/80 overflow-x-auto leading-relaxed">{`import { copy } from '../config/copy'
-import { Chip, Alert, BackLink } from './ui'
+          <pre className="rounded-lg bg-surface p-4 border border-ink/10 text-xs text-ink/80 overflow-x-auto leading-relaxed">{`import { Chip, Alert, BackLink } from './ui'
 
-copy.home.title
+text-xs text-ink/70          /* caption */
+text-sm font-normal text-ink/70  /* body-sm */
+text-base font-normal        /* body / Chip */
+text-sm font-medium          /* label / RouteBadge */
+text-lg font-normal          /* title-sm / sheet */
+text-xl font-normal          /* title */
+text-2xl font-normal         /* display */
+fontSize: 40px               /* countdown */
+
 rounded-md   /* control */
 rounded-lg   /* panel */
 rounded-3xl  /* DirectionCard, PromoCard, sheet */
-rounded-xl / rounded-2xl  /* reserved */
 rounded-full /* pill */
 
 bg-surface-muted text-ink
