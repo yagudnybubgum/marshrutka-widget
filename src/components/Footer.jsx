@@ -1,3 +1,4 @@
+import { copy } from '../config/copy'
 import { TextLink } from './ui'
 
 function Footer({ className = '' }) {
@@ -5,10 +6,10 @@ function Footer({ className = '' }) {
     <footer className={`py-6 ${className}`}>
       <div className="flex flex-col items-center gap-4">
         <TextLink to="/about" size="xs">
-          О проекте
+          {copy.nav.about}
         </TextLink>
         <TextLink to="/privacy-policy" size="xs">
-          Политика конфиденциальности
+          {copy.nav.privacy}
         </TextLink>
       </div>
     </footer>

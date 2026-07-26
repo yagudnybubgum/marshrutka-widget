@@ -1,4 +1,5 @@
 import Footer from './Footer'
+import { copy } from '../config/copy'
 import { BackLink, PageShell, PromoCard } from './ui'
 
 const HomeScreen = () => {
@@ -20,10 +21,10 @@ const HomeScreen = () => {
 
         <div className="mb-8">
           <h1 className="text-2xl sm:text-3xl font-normal text-ink mb-2">
-            Добавляем ярлык сайта на&nbsp;домашний экран телефона
+            {copy.homescreen.title}
           </h1>
           <p className="text-base text-ink/70">
-            Расписание всегда будет под рукой
+            {copy.homescreen.subtitle}
           </p>
         </div>
 
@@ -32,13 +33,13 @@ const HomeScreen = () => {
             variant="surface"
             external
             href="https://www.iphones.ru/iNotes/q/kak-v-ios-dobavit-yarlyk-lyubogo-sayta-na-rabochiy-stol"
-            title="У меня iPhone"
+            title={copy.homescreen.iphone}
           />
           <PromoCard
             variant="surface"
             external
             href="https://androidinsider.ru/polezno-znat/kak-dobavit-yarlyk-sajta-na-rabochij-stol-android-smartfona.html"
-            title="У меня Android"
+            title={copy.homescreen.android}
           />
         </div>
       </div>

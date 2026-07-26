@@ -5,6 +5,7 @@ import { loadSchedulesRaw } from '../utils/schedule/loadSchedule'
 import { extractLadozhskayaDepartures } from '../utils/schedule/processSchedule'
 import { formatTime, formatTimeUntil, getCurrentTimeInMinutes } from '../utils/schedule/formatTime'
 import { Alert, DepartureRow, EmptyState } from './ui'
+import { copy } from '../config/copy'
 
 const FromLadozhskaya = ({ active = false }) => {
   const [rawSchedules, setRawSchedules] = useState([])
@@ -31,7 +32,7 @@ const FromLadozhskaya = ({ active = false }) => {
         setLoading(false)
       } catch {
         if (cancelled) return
-        setError('Не удалось загрузить расписания')
+        setError(copy.errors.schedulesLoad)
         setLoading(false)
       }
     }
@@ -99,7 +100,7 @@ const FromLadozhskaya = ({ active = false }) => {
 
   if (loading) {
     return (
-      <div className="w-full" aria-busy="true" aria-label="Загрузка расписания">
+      <div className="w-full" aria-busy="true" aria-label={copy.a11y.loadingSchedule}>
         <div className="divide-y divide-ink/5">
           {Array.from({ length: 6 }, (_, i) => (
             <div key={i} className="flex items-center justify-between py-4" aria-hidden>
@@ -123,7 +124,7 @@ const FromLadozhskaya = ({ active = false }) => {
   }
 
   if (upcomingDepartures.length === 0) {
-    return <EmptyState>Нет данных о расписании с Ладожской</EmptyState>
+    return <EmptyState>{copy.fromLadozhskaya.empty}</EmptyState>
   }
 
   return (
@@ -147,13 +148,13 @@ const FromLadozhskaya = ({ active = false }) => {
             onClick={() => setVisibleCount((prev) => prev + 12)}
             className="px-5 py-2 text-base font-normal text-ink/70 hover:text-ink transition-colors"
           >
-            Показать ещё
+            {copy.fromLadozhskaya.showMore}
           </button>
         </div>
       )}
 
       {!hasMore && todayDepartures.length > 0 && (
-        <div className="mt-4 text-center text-sm text-ink/70">Больше рейсов сегодня нет</div>
+        <div className="mt-4 text-center text-sm text-ink/70">{copy.fromLadozhskaya.noMoreToday}</div>
       )}
     </div>
   )

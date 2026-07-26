@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import StopLocationMap from './StopLocationMap'
 import { XMarkIcon } from './icons'
+import { copy } from '../config/copy'
 
 const StopLocationOverlay = ({ open, onClose, stop, title }) => {
   useEffect(() => {
@@ -29,7 +30,7 @@ const StopLocationOverlay = ({ open, onClose, stop, title }) => {
       <button
         type="button"
         className="absolute inset-0 bg-ink/40"
-        aria-label="Закрыть"
+        aria-label={copy.a11y.close}
         onClick={onClose}
       />
 
@@ -44,7 +45,7 @@ const StopLocationOverlay = ({ open, onClose, stop, title }) => {
               type="button"
               onClick={onClose}
               className="hover-darken hidden md:inline-flex shrink-0 rounded-lg p-1.5 text-ink/70"
-              aria-label="Закрыть"
+              aria-label={copy.a11y.close}
             >
               <XMarkIcon />
             </button>

@@ -1,3 +1,5 @@
+import { copy } from '../../config/copy'
+
 export function formatTime(minutes) {
   const hours = Math.floor(minutes / 60) % 24
   const mins = minutes % 60
@@ -6,11 +8,11 @@ export function formatTime(minutes) {
 
 export function formatTimeUntil(minutes) {
   if (minutes < 60) {
-    return `${minutes} мин`
+    return copy.time.minutes(minutes)
   }
   const hours = Math.floor(minutes / 60)
   const mins = minutes % 60
-  return mins > 0 ? `${hours} ч. ${mins} мин` : `${hours} ч.`
+  return mins > 0 ? copy.time.hoursMinutes(hours, mins) : copy.time.hours(hours)
 }
 
 export function getCurrentTimeInMinutes(date) {

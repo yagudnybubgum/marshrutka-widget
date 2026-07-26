@@ -6,6 +6,7 @@ import {
   ROUTE_COLORS,
   getRouteColorClasses,
 } from '../config/tokens'
+import { copy, COPY_GROUPS, flattenCopyBranch } from '../config/copy'
 import {
   Alert,
   BackLink,
@@ -306,22 +307,22 @@ function ComponentsGallery() {
       </GalleryBlock>
 
       <GalleryBlock name="Alert" hint="variant=danger">
-        <Alert>Не удалось загрузить расписание</Alert>
+        <Alert>{copy.errors.schedulesLoad}</Alert>
       </GalleryBlock>
 
       <GalleryBlock name="EmptyState">
-        <EmptyState>Нет данных о расписании</EmptyState>
+        <EmptyState>{copy.fromLadozhskaya.empty}</EmptyState>
       </GalleryBlock>
 
       <GalleryBlock name="PromoCard" hint="variant=accent|surface">
         <div className="grid gap-3 sm:grid-cols-2">
           <PromoCard
             to="/homescreen"
-            title="Расписание всегда под рукой"
-            subtitle="Добавьте его на главный экран"
+            title={copy.home.promoTitle}
+            subtitle={copy.home.promoSubtitle}
             trailing={<ArrowRightIcon className="ml-2 h-5 w-5 flex-shrink-0 text-accent-ink/70" />}
           />
-          <PromoCard variant="surface" href="#" title="У меня iPhone" />
+          <PromoCard variant="surface" href="#" title={copy.homescreen.iphone} />
         </div>
       </GalleryBlock>
 
@@ -337,9 +338,9 @@ function ComponentsGallery() {
 
       <GalleryBlock name="TextLink" hint="size=base|xs">
         <div className="flex flex-wrap items-center gap-4">
-          <TextLink to="/full/533">Полное расписание</TextLink>
+          <TextLink to="/full/533">{copy.nav.fullSchedule}</TextLink>
           <TextLink to="/about" size="xs">
-            О проекте
+            {copy.nav.about}
           </TextLink>
         </div>
       </GalleryBlock>
@@ -349,15 +350,15 @@ function ComponentsGallery() {
           <DepartureRow
             routeId="533"
             routeName="533"
-            destination="Янино-1"
-            untilLabel="через 12 мин"
+            destination={ROUTES[0].destination}
+            untilLabel={`${copy.widget.inPrefix} ${copy.time.minutes(12)}`}
             timeLabel="14:30"
           />
           <DepartureRow
             routeId="429"
             routeName="429"
-            destination="Разметелево"
-            untilLabel="через 25 мин"
+            destination={ROUTES[1].destination}
+            untilLabel={`${copy.widget.inPrefix} ${copy.time.minutes(25)}`}
             timeLabel="14:43"
           />
         </div>
@@ -381,6 +382,56 @@ function GalleryBlock({ name, hint, children }) {
       </div>
       {children}
     </div>
+  )
+}
+
+function CopyTokensSection() {
+  return (
+    <section className="space-y-6">
+      <div>
+        <h2 className="text-lg font-medium text-ink">5 · Copy</h2>
+        <p className="text-sm text-ink/70 mt-1">
+          UI-строки из <code className="text-ink">src/config/copy.js</code>. Privacy/About не здесь.
+          Шаблоны (<code className="text-ink">fn</code>) показаны с sample args.
+        </p>
+      </div>
+
+      {COPY_GROUPS.map((group) => {
+        const branch = copy[group.id]
+        const rows = flattenCopyBranch(branch, group.id)
+        return (
+          <div key={group.id} className="space-y-3">
+            <div>
+              <h3 className="text-sm font-medium text-ink">{group.label}</h3>
+              <p className="text-xs text-ink/50 mt-0.5">{group.description}</p>
+            </div>
+            <div className="rounded-xl bg-surface border border-ink/10 overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead>
+                  <tr className="text-ink/70 border-b border-ink/10">
+                    <th className="py-2 px-4 font-medium">key</th>
+                    <th className="py-2 px-4 font-medium">value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map((row) => (
+                    <tr key={row.key} className="border-b border-ink/5 align-top">
+                      <td className="py-2 px-4 font-mono text-xs text-ink/70 whitespace-nowrap">
+                        {row.key}
+                        {row.kind === 'fn' ? (
+                          <span className="ml-1.5 text-ink/40">fn</span>
+                        ) : null}
+                      </td>
+                      <td className="py-2 px-4 text-ink">{row.value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )
+      })}
+    </section>
   )
 }
 
@@ -474,13 +525,17 @@ function DesignSystem() {
         </section>
 
         <ComponentsGallery />
+        <CopyTokensSection />
 
         <section className="space-y-4 pb-8">
           <h2 className="text-lg font-medium text-ink">Cheatsheet</h2>
-          <pre className="rounded-xl bg-surface p-4 border border-ink/10 text-xs text-ink/80 overflow-x-auto leading-relaxed">{`import { Chip, Alert, BackLink } from './ui'
+          <pre className="rounded-xl bg-surface p-4 border border-ink/10 text-xs text-ink/80 overflow-x-auto leading-relaxed">{`import { copy } from '../config/copy'
+import { Chip, Alert, BackLink } from './ui'
+
+copy.home.title
+copy.errors.scheduleLoad('533')
 
 bg-surface-muted text-ink
-text-ink/70   border-ink/10   bg-ink/40
 bg-accent-soft text-accent-ink
 hover-darken
 getRouteColor('533')`}</pre>

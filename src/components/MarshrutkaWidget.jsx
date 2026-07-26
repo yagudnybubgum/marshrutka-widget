@@ -9,6 +9,7 @@ import { getRouteGeo } from '../utils/routesGeo'
 import StopLocationOverlay from './StopLocationOverlay'
 import { MapPinIcon } from './icons'
 import { Alert, EmptyState } from './ui'
+import { copy } from '../config/copy'
 
 const getLadozhskayaStop = (routeNumber) => {
   const geo = getRouteGeo(routeNumber)
@@ -23,9 +24,9 @@ const LadozhskayaStopNotice = ({ onShowMap }) => (
     className="hover-darken w-full rounded-t-xl bg-alert px-4 pb-4 pt-3 text-left text-alert-ink"
   >
     <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
-      <p className="text-base font-normal">Остановка переехала</p>
+      <p className="text-base font-normal">{copy.widget.stopMoved}</p>
       <span className="inline-flex items-center gap-1 text-sm font-normal">
-        Посмотреть на карте
+        {copy.widget.viewOnMap}
         <MapPinIcon />
       </span>
     </div>
@@ -60,7 +61,7 @@ const DirectionCard = ({
   animate = true,
 }) => {
   const [mapOpen, setMapOpen] = useState(false)
-  const showStopNotice = routeNumber === '533' && directionName === 'С Ладожской'
+  const showStopNotice = routeNumber === '533' && directionName === copy.direction.fromLadozhskaya
   const stop = showStopNotice ? getLadozhskayaStop(routeNumber) : null
 
   const scheduleTo = nextTrip
@@ -83,9 +84,9 @@ const DirectionCard = ({
                 <h3 className="text-xl font-normal text-ink">{directionName}</h3>
                 <p className="text-sm text-ink/70">
                   {nextTrip.minutesUntil === 0
-                    ? 'сейчас'
-                    : `через ${formatTimeUntil(nextTrip.minutesUntil)}`}
-                  {nextTrip.isTomorrow ? ' (завтра)' : ''}
+                    ? copy.widget.now
+                    : `${copy.widget.inPrefix} ${formatTimeUntil(nextTrip.minutesUntil)}`}
+                  {nextTrip.isTomorrow ? copy.widget.tomorrowSuffix : ''}
                 </p>
               </div>
               <div className="text-right self-start">
@@ -97,21 +98,21 @@ const DirectionCard = ({
             <div className="space-y-2">
               {followingTrips.length > 0 && (
                 <p className="text-sm text-ink/80">
-                  {`Следующие в ${followingTrips
+                  {`${copy.widget.followingPrefix} ${followingTrips
                     .slice(0, 3)
-                    .map((t) => `${formatTime(t.time)}${t.isTomorrow ? ' (завтра)' : ''}`)
+                    .map((t) => `${formatTime(t.time)}${t.isTomorrow ? copy.widget.tomorrowSuffix : ''}`)
                     .join(', ')}`}
                 </p>
               )}
               {previousTrip && (
                 <p className="text-sm text-ink/80">
-                  {`Предыдущая ушла ${formatTimeUntil(-previousTrip.minutesUntil)} назад`}
+                  {copy.widget.previousLeft(formatTimeUntil(-previousTrip.minutesUntil))}
                 </p>
               )}
             </div>
           </div>
         ) : (
-          <EmptyState>нет данных по этому направлению.</EmptyState>
+          <EmptyState>{copy.widget.emptyDirection}</EmptyState>
         )}
       </Link>
       {showStopNotice && nextTrip && (
@@ -121,7 +122,7 @@ const DirectionCard = ({
         open={mapOpen}
         onClose={() => setMapOpen(false)}
         stop={stop}
-        title="Остановка на Ладожской"
+        title={copy.widget.stopLadozhskayaTitle}
       />
     </div>
   )
@@ -173,7 +174,7 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
           routeNumber,
           rawData: null,
           loading: false,
-          error: `Не удалось загрузить расписание для маршрута ${routeNumber}.`,
+          error: copy.errors.scheduleLoad(routeNumber),
         })
       }
     }
@@ -205,7 +206,7 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
   return (
     <div className="w-full space-y-5">
       {loading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6" aria-busy="true" aria-label="Загрузка расписания">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6" aria-busy="true" aria-label={copy.a11y.loadingSchedule}>
           <DirectionCardSkeleton />
           <DirectionCardSkeleton />
         </div>
@@ -215,7 +216,7 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
 
       {!loading && rawData && !schedule && !error && (
         <Alert>
-          Не удалось обработать данные расписания для маршрута {routeNumber}.
+          {copy.errors.scheduleProcess(routeNumber)}
         </Alert>
       )}
 

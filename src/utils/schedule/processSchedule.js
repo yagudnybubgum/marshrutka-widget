@@ -1,6 +1,7 @@
 import { parseTime } from './parseTime.js'
 import { formatDirectionName } from './formatDirectionName.js'
 import { isWeekendOrHoliday } from '../holidays.js'
+import { copy } from '../../config/copy.js'
 
 function detectFormat(data) {
   const firstRow = data[0] || []
@@ -82,8 +83,8 @@ export function processScheduleForWidget(data, date = new Date()) {
   return {
     direction1: primary.times,
     direction2: secondary ? secondary.times : [],
-    direction1Name: primary.name || 'Направление 1',
-    direction2Name: secondary ? secondary.name || 'Направление 2' : 'Направление 2',
+    direction1Name: primary.name || copy.direction.fallback1,
+    direction2Name: secondary ? secondary.name || copy.direction.fallback2 : copy.direction.fallback2,
     isWeekend,
   }
 }
@@ -101,7 +102,7 @@ export function processScheduleForFull(data) {
       const weekdayCols = columnMeta.filter((col) => col.type === 'weekday')
       weekdayCols.forEach((col) => {
         columns.push({
-          period: 'Будние дни',
+          period: copy.period.weekday,
           name: formatDirectionName(directionRow[col.idx] || ''),
           times: extractTimesForColumn(bodyRows, col.idx),
           colIdx: col.idx,
@@ -111,7 +112,7 @@ export function processScheduleForFull(data) {
       const weekendCols = columnMeta.filter((col) => col.type === 'weekend')
       weekendCols.forEach((col) => {
         columns.push({
-          period: 'Выходные дни',
+          period: copy.period.weekend,
           name: formatDirectionName(directionRow[col.idx] || ''),
           times: extractTimesForColumn(bodyRows, col.idx),
           colIdx: col.idx,
@@ -120,7 +121,7 @@ export function processScheduleForFull(data) {
     } else {
       columnMeta.forEach((col) => {
         columns.push({
-          period: 'Будние дни',
+          period: copy.period.weekday,
           name: formatDirectionName(directionRow[col.idx] || ''),
           times: extractTimesForColumn(bodyRows, col.idx),
           colIdx: col.idx,

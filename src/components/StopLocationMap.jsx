@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { loadYmaps, getYandexMapsKey } from '../utils/loadYmaps'
+import { copy } from '../config/copy'
 
 const DEFAULT_ZOOM = 17
 
@@ -11,11 +12,11 @@ const StopLocationMap = ({ lat, lng, name, className = '' }) => {
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
     if (lat == null || lng == null) {
-      setError('Нет координат остановки')
+      setError(copy.errors.stopNoCoords)
       return
     }
     if (!getYandexMapsKey()) {
-      setError('Не задан ключ Яндекс.Карт (VITE_YANDEX_MAPS_KEY)')
+      setError(copy.errors.ymapsKeyMissing)
       return
     }
 
@@ -50,7 +51,7 @@ const StopLocationMap = ({ lat, lng, name, className = '' }) => {
         requestAnimationFrame(() => map.container.fitToViewport())
       })
       .catch(() => {
-        if (!cancelled) setError('Не удалось загрузить Яндекс.Карты')
+        if (!cancelled) setError(copy.errors.ymapsLoad)
       })
 
     return () => {

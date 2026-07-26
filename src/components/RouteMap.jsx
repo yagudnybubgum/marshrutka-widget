@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { loadYmaps, getYandexMapsKey } from '../utils/loadYmaps'
+import { copy } from '../config/copy'
 
 function getMapLineColor() {
   const styles = getComputedStyle(document.documentElement)
@@ -83,7 +84,7 @@ const RouteMap = ({ stops }) => {
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
     if (!getYandexMapsKey()) {
-      setError('Не задан ключ Яндекс.Карт (VITE_YANDEX_MAPS_KEY)')
+      setError(copy.errors.ymapsKeyMissing)
       return
     }
 
@@ -116,7 +117,7 @@ const RouteMap = ({ stops }) => {
         setReady(true)
       })
       .catch(() => {
-        if (!cancelled) setError('Не удалось загрузить Яндекс.Карты')
+        if (!cancelled) setError(copy.errors.ymapsLoad)
       })
 
     return () => {

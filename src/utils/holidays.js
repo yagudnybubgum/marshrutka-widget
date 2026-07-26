@@ -1,4 +1,5 @@
 import holidaysData from '../data/holidays.json'
+import { copy } from '../config/copy'
 
 const holidaySet = new Set(
   Object.values(holidaysData).flat(),
@@ -45,5 +46,5 @@ export const isWeekendOrHoliday = (date) => {
 }
 
 export const getDayType = (date) => {
-  return isWeekendOrHoliday(date) ? 'Выходной' : 'Будний'
+  return isWeekendOrHoliday(date) ? copy.day.weekend : copy.day.weekday
 }

@@ -1,4 +1,5 @@
 import { getBasePath } from './getBasePath.js'
+import { copy } from '../../config/copy.js'
 
 const cache = new Map()
 const inflight = new Map()
@@ -26,7 +27,7 @@ export async function loadScheduleRaw(routeId) {
 
     const response = await fetch(filePath)
     if (!response.ok) {
-      throw new Error(`Файл расписания не найден (${response.status})`)
+      throw new Error(copy.errors.scheduleFileNotFound(response.status))
     }
 
     const data = await response.json()

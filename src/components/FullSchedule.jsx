@@ -6,6 +6,7 @@ import { loadScheduleRaw } from '../utils/schedule/loadSchedule'
 import { processScheduleForFull } from '../utils/schedule/processSchedule'
 import { formatTime, getCurrentTimeInMinutes } from '../utils/schedule/formatTime'
 import { Alert, BackLink, Chip, EmptyState } from './ui'
+import { copy } from '../config/copy'
 
 const FullSchedule = ({ routeNumber = '533', onBack }) => {
   const [scheduleData, setScheduleData] = useState(null)
@@ -49,14 +50,14 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
 
         const processedData = processScheduleForFull(rawData)
         if (!processedData) {
-          throw new Error('Не удалось обработать данные расписания')
+          throw new Error(copy.errors.scheduleProcessGeneric)
         }
 
         setScheduleData(processedData)
         setLoading(false)
       } catch {
         if (cancelled) return
-        setError('Не удалось загрузить файл расписания.')
+        setError(copy.errors.scheduleFile)
         setLoading(false)
       }
     }
@@ -112,7 +113,7 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
       return scheduleData.columns
     }
 
-    const targetPeriod = activeTab === 'weekday' ? 'Будние дни' : 'Выходные дни'
+    const targetPeriod = activeTab === 'weekday' ? copy.period.weekday : copy.period.weekend
     return scheduleData.columns.filter((col) => col.period === targetPeriod)
   }, [scheduleData, activeTab])
 
@@ -177,7 +178,7 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
       <div className="h-[100dvh] bg-surface-muted flex items-center justify-center">
         <div className="flex flex-col items-center gap-3 text-ink/70">
           <span className="loading loading-spinner loading-lg text-ink" />
-          <p className="text-sm font-normal">загружаем расписание…</p>
+          <p className="text-sm font-normal">{copy.fullSchedule.loading}</p>
         </div>
       </div>
     )
@@ -194,7 +195,7 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
   if (!scheduleData || scheduleData.columns.length === 0) {
     return (
       <div className="h-[100dvh] bg-surface-muted flex items-center justify-center">
-        <EmptyState>Нет данных расписания</EmptyState>
+        <EmptyState>{copy.fullSchedule.empty}</EmptyState>
       </div>
     )
   }
@@ -209,7 +210,7 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
         <div className="max-w-7xl mx-auto flex items-center">
           <BackLink onClick={onBack} />
           <h1 className="text-xl font-normal text-ink flex-1 text-center">
-            Маршрутка {routeNumber}
+            {copy.fullSchedule.title(routeNumber)}
           </h1>
           <div className="w-16" />
         </div>
@@ -227,7 +228,7 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
                     active={activeTab === 'weekday'}
                     onClick={() => setActiveTab('weekday')}
                   >
-                    Будние дни
+                    {copy.period.weekday}
                   </Chip>
                   <Chip
                     variant="ghost"
@@ -235,7 +236,7 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
                     active={activeTab === 'weekend'}
                     onClick={() => setActiveTab('weekend')}
                   >
-                    Выходные дни
+                    {copy.period.weekend}
                   </Chip>
                 </div>
               )}
@@ -280,14 +281,14 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
 
             <div className="mt-8 pb-8 flex justify-center">
               <div className="flex flex-col items-center gap-2">
-                <p className="text-xs text-ink/70">Источник расписания</p>
+                <p className="text-xs text-ink/70">{copy.fullSchedule.sourceLabel}</p>
                 <a
                   href="https://vk.com/doc546677069_685452050?hash=DNg9ALCXkg2QX3cQxTPS3fy3eG1D449zfQ9zZtxAuvk"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs text-ink/70 hover:text-ink transition-colors"
                 >
-                  https://vk.com/doc546677069_685452050
+                  {copy.fullSchedule.sourceUrlLabel}
                 </a>
               </div>
             </div>

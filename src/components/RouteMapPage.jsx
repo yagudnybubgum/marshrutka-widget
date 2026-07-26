@@ -4,6 +4,7 @@ import { getRoute, isValidRouteId } from '../config/routes'
 import { getRouteGeo } from '../utils/routesGeo'
 import RouteMap from './RouteMap'
 import { BackLink, Chip, ChipGroup } from './ui'
+import { copy } from '../config/copy'
 
 const RouteMapPage = () => {
   const { routeId } = useParams()
@@ -32,7 +33,7 @@ const RouteMapPage = () => {
       <div className="min-h-[100dvh] bg-surface-muted py-6 px-4 flex flex-col">
         <div className="max-w-4xl mx-auto w-full">
           <BackLink to={backTo} className="mb-6" />
-          <p className="text-sm text-ink/70">Карта для маршрута {routeId} пока не добавлена.</p>
+          <p className="text-sm text-ink/70">{copy.map.missing(routeId)}</p>
         </div>
       </div>
     )
@@ -44,7 +45,7 @@ const RouteMapPage = () => {
         <BackLink to={backTo} className="mb-3" />
 
         <h1 className="text-xl font-normal text-ink mb-1">
-          Карта маршрута {route?.name ?? routeId}
+          {copy.map.title(route?.name ?? routeId)}
         </h1>
 
         <ChipGroup className="mt-3">
@@ -66,7 +67,7 @@ const RouteMapPage = () => {
           <RouteMap stops={direction.stops} />
         </div>
         <p className="text-xs text-ink/70 mt-2 px-0.5">
-          {direction.stops.length} остановок · маршрут по дорогам
+          {copy.map.stopsMeta(direction.stops.length)}
         </p>
       </div>
     </div>

@@ -4,6 +4,7 @@ import MarshrutkaWidget from './MarshrutkaWidget'
 import FromLadozhskaya from './FromLadozhskaya'
 import Footer from './Footer'
 import { ROUTES, isValidRouteId } from '../config/routes'
+import { copy } from '../config/copy'
 import { hasRouteGeo } from '../utils/routesGeo'
 import { useNow } from '../context/TimeContext'
 import { getDayType as getDayTypeUtil } from '../utils/holidays'
@@ -14,6 +15,12 @@ const DEFAULT_TAB = '533'
 
 function isValidTab(tab) {
   return tab === 'ladozhskaya' || isValidRouteId(tab)
+}
+
+function formatDate(date) {
+  const day = date.getDate()
+  const month = copy.monthsGenitive[date.getMonth()]
+  return `${day} ${month}`
 }
 
 function Home() {
@@ -33,16 +40,6 @@ function Home() {
     setSearchParams({ tab }, { replace: true })
   }
 
-  const formatDate = (date) => {
-    const months = [
-      'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
-      'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря',
-    ]
-    const day = date.getDate()
-    const month = months[date.getMonth()]
-    return `${day} ${month}`
-  }
-
   useEffect(() => {
     setSchedule(null)
   }, [routeNumber])
@@ -54,7 +51,7 @@ function Home() {
     >
       <div className="flex flex-wrap items-baseline gap-y-1">
         <h1 className="text-xl font-normal text-ink">
-          Маршрутки Янино-1
+          {copy.home.title}
         </h1>
         <span
           className="pointer-events-none h-0 basis-[60px] grow-[999]"
@@ -83,7 +80,7 @@ function Home() {
           style={{ '--chip-i': ROUTES.length }}
           className="chip-enter"
         >
-          С Ладожской
+          {copy.home.tabFromLadozhskaya}
         </Chip>
       </ChipGroup>
 
@@ -93,9 +90,9 @@ function Home() {
             <MarshrutkaWidget routeNumber={routeNumber} onScheduleChange={setSchedule} />
             {schedule && (
               <div className="mt-6 flex flex-wrap justify-center items-center gap-x-6 gap-y-3">
-                <TextLink to={`/full/${routeNumber}`}>Полное расписание</TextLink>
+                <TextLink to={`/full/${routeNumber}`}>{copy.nav.fullSchedule}</TextLink>
                 {hasRouteGeo(routeNumber) && (
-                  <TextLink to={`/map/${routeNumber}`}>Карта маршрута</TextLink>
+                  <TextLink to={`/map/${routeNumber}`}>{copy.nav.routeMap}</TextLink>
                 )}
               </div>
             )}
@@ -106,8 +103,8 @@ function Home() {
         <PromoCard
           to="/homescreen"
           className="mt-6 md:max-w-[360px] md:mx-auto"
-          title="Расписание всегда под рукой"
-          subtitle="Добавьте его на главный экран"
+          title={copy.home.promoTitle}
+          subtitle={copy.home.promoSubtitle}
           trailing={<ArrowRightIcon className="ml-2 h-5 w-5 flex-shrink-0 text-accent-ink/70" />}
         />
       </div>
