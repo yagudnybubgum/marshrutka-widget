@@ -12,9 +12,10 @@ const LEGACY_FULL_ROUTES = ['533', '429', '664', '430A', '453']
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<Home />}>
+        <Route path="homescreen" element={<HomeScreen />} />
+      </Route>
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-      <Route path="/homescreen" element={<HomeScreen />} />
       <Route path="/full/:routeId" element={<FullSchedulePage />} />
       <Route path="/map/:routeId" element={<RouteMapPage />} />
       {LEGACY_FULL_ROUTES.map((routeId) => (

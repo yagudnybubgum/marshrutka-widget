@@ -2,8 +2,9 @@ import { Link } from 'react-router-dom'
 
 const variants = {
   accent: 'hover-darken bg-accent-soft text-accent-ink p-4',
-  surface:
-    'bg-surface border border-transparent hover:border-stroke transition-colors p-6',
+  surface: 'hover-darken bg-surface p-6',
+  // On bg-surface (e.g. mobile sheet) — muted fill so cards don't disappear
+  muted: 'hover-darken bg-surface-muted p-4',
 }
 
 export function PromoCard({
@@ -23,7 +24,13 @@ export function PromoCard({
   const body = (
     <div className="flex items-center justify-between">
       <div className="flex flex-col">
-        <span className={variant === 'surface' ? 'text-xl font-normal text-ink' : 'text-base font-normal'}>
+        <span
+          className={
+            variant === 'accent'
+              ? 'text-base font-normal'
+              : 'text-xl font-normal text-ink'
+          }
+        >
           {title}
         </span>
         {subtitle ? (
