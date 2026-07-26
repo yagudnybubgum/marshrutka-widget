@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, Navigate, useParams } from 'react-router-dom'
+import { Navigate, useParams } from 'react-router-dom'
 import { getRoute, isValidRouteId } from '../config/routes'
 import { getRouteGeo } from '../utils/routesGeo'
 import RouteMap from './RouteMap'
-import { ChevronLeftIcon } from './icons'
+import { BackLink, Chip, ChipGroup } from './ui'
 
 const RouteMapPage = () => {
   const { routeId } = useParams()
@@ -21,6 +21,8 @@ const RouteMapPage = () => {
     return geo.directions.find((d) => d.id === directionId) ?? geo.directions[0]
   }, [geo, directionId])
 
+  const backTo = routeId === '533' ? '/' : `/?tab=${encodeURIComponent(routeId)}`
+
   if (!isValidRouteId(routeId)) {
     return <Navigate to="/" replace />
   }
@@ -29,13 +31,7 @@ const RouteMapPage = () => {
     return (
       <div className="min-h-[100dvh] bg-surface-muted py-6 px-4 flex flex-col">
         <div className="max-w-4xl mx-auto w-full">
-          <Link
-            to={routeId === '533' ? '/' : `/?tab=${encodeURIComponent(routeId)}`}
-            className="text-ink hover:text-ink/70 transition-colors flex items-center gap-1 text-sm mb-6"
-          >
-            <ChevronLeftIcon />
-            назад
-          </Link>
+          <BackLink to={backTo} className="mb-6" />
           <p className="text-sm text-ink/70">Карта для маршрута {routeId} пока не добавлена.</p>
         </div>
       </div>
@@ -45,34 +41,24 @@ const RouteMapPage = () => {
   return (
     <div className="min-h-[100dvh] bg-surface-muted flex flex-col">
       <div className="px-4 pt-4 pb-3 max-w-4xl mx-auto w-full shrink-0">
-        <Link
-          to={routeId === '533' ? '/' : `/?tab=${encodeURIComponent(routeId)}`}
-          className="text-ink hover:text-ink/70 transition-colors flex items-center gap-1 text-sm mb-3"
-        >
-          <ChevronLeftIcon />
-          назад
-        </Link>
+        <BackLink to={backTo} className="mb-3" />
 
         <h1 className="text-xl font-normal text-ink mb-1">
           Карта маршрута {route?.name ?? routeId}
         </h1>
 
-        <div className="flex flex-wrap gap-2 mt-3">
+        <ChipGroup className="mt-3">
           {geo.directions.map((d) => (
-            <button
+            <Chip
               key={d.id}
               type="button"
               onClick={() => setDirectionId(d.id)}
-              className={`flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors ${
-                direction.id === d.id
-                  ? 'bg-accent-soft text-accent-ink'
-                  : 'bg-surface-sunken text-ink/70 hover:text-ink'
-              }`}
+              active={direction.id === d.id}
             >
               {d.name}
-            </button>
+            </Chip>
           ))}
-        </div>
+        </ChipGroup>
       </div>
 
       <div className="flex-1 px-4 pb-4 max-w-4xl mx-auto w-full min-h-0">

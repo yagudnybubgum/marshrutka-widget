@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import MarshrutkaWidget from './MarshrutkaWidget'
 import FromLadozhskaya from './FromLadozhskaya'
 import Footer from './Footer'
@@ -8,6 +8,7 @@ import { hasRouteGeo } from '../utils/routesGeo'
 import { useNow } from '../context/TimeContext'
 import { getDayType as getDayTypeUtil } from '../utils/holidays'
 import { ArrowRightIcon } from './icons'
+import { Chip, ChipGroup, PageShell, PromoCard, TextLink } from './ui'
 
 const DEFAULT_TAB = '533'
 
@@ -47,93 +48,70 @@ function Home() {
   }, [routeNumber])
 
   return (
-    <div className="min-h-[100dvh] bg-surface-muted pt-5 pb-8 px-4 sm:py-10 flex flex-col">
-      <div className="max-w-5xl mx-auto space-y-3 sm:space-y-4 w-full flex-1 flex flex-col">
-        <div className="flex flex-wrap items-baseline gap-y-1">
-          <h1 className="text-xl font-normal text-ink">
-            Маршрутки Янино-1
-          </h1>
-          <span
-            className="pointer-events-none h-0 basis-[60px] grow-[999]"
-            aria-hidden="true"
-          />
-          <span className="text-sm font-normal text-ink">
-            {formatDate(now)}, {getDayTypeUtil(now).toLowerCase()}
-          </span>
-        </div>
-
-        <div className="-mx-4 overflow-x-auto scrollbar-hide">
-          <div className="flex w-max flex-nowrap gap-2 px-4 pb-1">
-            {ROUTES.map((route, i) => (
-              <button
-                key={route.id}
-                onClick={() => setActiveTab(route.id)}
-                style={{ '--chip-i': i }}
-                className={`chip-enter flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors ${
-                  activeTab === route.id
-                    ? 'bg-accent-soft text-accent-ink'
-                    : 'bg-surface-sunken text-ink/70 hover:text-ink'
-                }`}
-              >
-                {route.name}
-              </button>
-            ))}
-            <button
-              onClick={() => setActiveTab('ladozhskaya')}
-              style={{ '--chip-i': ROUTES.length }}
-              className={`chip-enter flex-shrink-0 px-5 py-2 text-base font-normal rounded-full transition-colors ${
-                activeTab === 'ladozhskaya'
-                  ? 'bg-accent-soft text-accent-ink'
-                  : 'bg-surface-sunken text-ink/70 hover:text-ink'
-              }`}
-            >
-              С Ладожской
-            </button>
-          </div>
-        </div>
-
-        <div className="mt-3 flex-1">
-          {activeTab !== 'ladozhskaya' ? (
-            <>
-              <MarshrutkaWidget routeNumber={routeNumber} onScheduleChange={setSchedule} />
-              {schedule && (
-                <div className="mt-6 flex flex-wrap justify-center items-center gap-x-6 gap-y-3">
-                  <Link
-                    to={`/full/${routeNumber}`}
-                    className="text-base font-normal text-ink/70 hover:text-ink transition-colors"
-                  >
-                    Полное расписание
-                  </Link>
-                  {hasRouteGeo(routeNumber) && (
-                    <Link
-                      to={`/map/${routeNumber}`}
-                      className="text-base font-normal text-ink/70 hover:text-ink transition-colors"
-                    >
-                      Карта маршрута
-                    </Link>
-                  )}
-                </div>
-              )}
-            </>
-          ) : (
-            <FromLadozhskaya active />
-          )}
-          <Link
-            to="/homescreen"
-            className="hover-darken mt-6 block md:max-w-[360px] md:mx-auto bg-accent-soft text-accent-ink rounded-xl p-4"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex flex-col">
-                <span className="text-base font-normal">Расписание всегда под рукой</span>
-                <span className="text-sm mt-0.5">Добавьте его на главный экран</span>
-              </div>
-              <ArrowRightIcon className="ml-2 h-5 w-5 flex-shrink-0 text-accent-ink/70" />
-            </div>
-          </Link>
-        </div>
-        <Footer className="mt-auto" />
+    <PageShell
+      contentClassName="space-y-3 sm:space-y-4"
+      footer={<Footer className="mt-auto" />}
+    >
+      <div className="flex flex-wrap items-baseline gap-y-1">
+        <h1 className="text-xl font-normal text-ink">
+          Маршрутки Янино-1
+        </h1>
+        <span
+          className="pointer-events-none h-0 basis-[60px] grow-[999]"
+          aria-hidden="true"
+        />
+        <span className="text-sm font-normal text-ink">
+          {formatDate(now)}, {getDayTypeUtil(now).toLowerCase()}
+        </span>
       </div>
-    </div>
+
+      <ChipGroup scroll>
+        {ROUTES.map((route, i) => (
+          <Chip
+            key={route.id}
+            onClick={() => setActiveTab(route.id)}
+            active={activeTab === route.id}
+            style={{ '--chip-i': i }}
+            className="chip-enter"
+          >
+            {route.name}
+          </Chip>
+        ))}
+        <Chip
+          onClick={() => setActiveTab('ladozhskaya')}
+          active={activeTab === 'ladozhskaya'}
+          style={{ '--chip-i': ROUTES.length }}
+          className="chip-enter"
+        >
+          С Ладожской
+        </Chip>
+      </ChipGroup>
+
+      <div className="mt-3 flex-1">
+        {activeTab !== 'ladozhskaya' ? (
+          <>
+            <MarshrutkaWidget routeNumber={routeNumber} onScheduleChange={setSchedule} />
+            {schedule && (
+              <div className="mt-6 flex flex-wrap justify-center items-center gap-x-6 gap-y-3">
+                <TextLink to={`/full/${routeNumber}`}>Полное расписание</TextLink>
+                {hasRouteGeo(routeNumber) && (
+                  <TextLink to={`/map/${routeNumber}`}>Карта маршрута</TextLink>
+                )}
+              </div>
+            )}
+          </>
+        ) : (
+          <FromLadozhskaya active />
+        )}
+        <PromoCard
+          to="/homescreen"
+          className="mt-6 md:max-w-[360px] md:mx-auto"
+          title="Расписание всегда под рукой"
+          subtitle="Добавьте его на главный экран"
+          trailing={<ArrowRightIcon className="ml-2 h-5 w-5 flex-shrink-0 text-accent-ink/70" />}
+        />
+      </div>
+    </PageShell>
   )
 }
 

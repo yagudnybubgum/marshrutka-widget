@@ -1,19 +1,21 @@
-import { Link } from 'react-router-dom'
 import Footer from './Footer'
-import { ChevronLeftIcon } from './icons'
+import { BackLink, PageShell, PromoCard } from './ui'
 
 const HomeScreen = () => {
   return (
-    <div className="h-[100dvh] bg-surface-muted pt-6 pb-2 px-4 sm:py-10 overflow-hidden flex flex-col">
-      <div className="max-w-5xl mx-auto space-y-8 w-full flex-1 min-h-0 overflow-y-auto">
+    <PageShell
+      fullHeight="full"
+      padClassName="pt-6 pb-2 px-4 sm:py-10"
+      className="overflow-hidden"
+      footer={
+        <div className="w-full flex-shrink-0 mt-auto">
+          <Footer />
+        </div>
+      }
+    >
+      <div className="flex-1 min-h-0 overflow-y-auto space-y-8">
         <div className="flex items-center gap-4 mb-8">
-          <Link
-            to="/"
-            className="text-ink hover:text-ink/70 transition-colors flex items-center gap-1 text-sm font-normal"
-          >
-            <ChevronLeftIcon />
-            назад
-          </Link>
+          <BackLink to="/" />
         </div>
 
         <div className="mb-8">
@@ -26,35 +28,22 @@ const HomeScreen = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <a
+          <PromoCard
+            variant="surface"
+            external
             href="https://www.iphones.ru/iNotes/q/kak-v-ios-dobavit-yarlyk-lyubogo-sayta-na-rabochiy-stol"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block bg-surface rounded-xl border border-transparent hover:border-stroke transition-colors cursor-pointer"
-          >
-            <div className="p-6">
-              <h2 className="text-xl font-normal text-ink">У меня iPhone</h2>
-            </div>
-          </a>
-
-          <a
+            title="У меня iPhone"
+          />
+          <PromoCard
+            variant="surface"
+            external
             href="https://androidinsider.ru/polezno-znat/kak-dobavit-yarlyk-sajta-na-rabochij-stol-android-smartfona.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block bg-surface rounded-xl border border-transparent hover:border-stroke transition-colors cursor-pointer"
-          >
-            <div className="p-6">
-              <h2 className="text-xl font-normal text-ink">У меня Android</h2>
-            </div>
-          </a>
+            title="У меня Android"
+          />
         </div>
       </div>
-      <div className="max-w-5xl mx-auto w-full flex-shrink-0 mt-auto">
-        <Footer />
-      </div>
-    </div>
+    </PageShell>
   )
 }
 
 export default HomeScreen
-

@@ -1,0 +1,25 @@
+import { Link } from 'react-router-dom'
+import { ChevronLeftIcon } from '../icons'
+
+const baseClass =
+  'text-ink hover:text-ink/70 transition-colors inline-flex items-center gap-1 text-sm font-normal'
+
+export function BackLink({ to, onClick, className = '', children = 'назад', type = 'button', ...rest }) {
+  const classes = `${baseClass} ${className}`.trim()
+
+  if (to != null) {
+    return (
+      <Link to={to} className={classes} {...rest}>
+        <ChevronLeftIcon />
+        {children}
+      </Link>
+    )
+  }
+
+  return (
+    <button type={type} onClick={onClick} className={classes} {...rest}>
+      <ChevronLeftIcon />
+      {children}
+    </button>
+  )
+}

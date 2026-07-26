@@ -5,7 +5,7 @@ import { isWeekendOrHoliday } from '../utils/holidays'
 import { loadScheduleRaw } from '../utils/schedule/loadSchedule'
 import { processScheduleForFull } from '../utils/schedule/processSchedule'
 import { formatTime, getCurrentTimeInMinutes } from '../utils/schedule/formatTime'
-import { ChevronLeftIcon } from './icons'
+import { Alert, BackLink, Chip, EmptyState } from './ui'
 
 const FullSchedule = ({ routeNumber = '533', onBack }) => {
   const [scheduleData, setScheduleData] = useState(null)
@@ -186,9 +186,7 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
   if (error) {
     return (
       <div className="h-[100dvh] bg-surface-muted flex items-center justify-center">
-        <div className="rounded-xl bg-danger px-4 py-3 text-danger-ink" role="alert">
-          {error}
-        </div>
+        <Alert>{error}</Alert>
       </div>
     )
   }
@@ -196,9 +194,7 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
   if (!scheduleData || scheduleData.columns.length === 0) {
     return (
       <div className="h-[100dvh] bg-surface-muted flex items-center justify-center">
-        <div className="rounded-xl bg-surface-sunken px-4 py-3 text-ink/70">
-          Нет данных расписания
-        </div>
+        <EmptyState>Нет данных расписания</EmptyState>
       </div>
     )
   }
@@ -211,13 +207,7 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
         }`}
       >
         <div className="max-w-7xl mx-auto flex items-center">
-          <button
-            onClick={onBack}
-            className="text-ink hover:text-ink/70 transition-colors flex items-center gap-1 text-sm font-normal"
-          >
-            <ChevronLeftIcon />
-            назад
-          </button>
+          <BackLink onClick={onBack} />
           <h1 className="text-xl font-normal text-ink flex-1 text-center">
             Маршрутка {routeNumber}
           </h1>
@@ -231,26 +221,22 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
             <div className="sticky top-0 bg-surface-muted z-20">
               {scheduleData?.hasPeriodInfo && (
                 <div className="flex gap-2 mb-4 pt-1">
-                  <button
+                  <Chip
+                    variant="ghost"
+                    className="flex-1"
+                    active={activeTab === 'weekday'}
                     onClick={() => setActiveTab('weekday')}
-                    className={`flex-1 px-5 py-2 text-base font-normal rounded-full transition-colors ${
-                      activeTab === 'weekday'
-                        ? 'bg-accent-soft text-accent-ink'
-                        : 'text-ink/70 hover:text-ink'
-                    }`}
                   >
                     Будние дни
-                  </button>
-                  <button
+                  </Chip>
+                  <Chip
+                    variant="ghost"
+                    className="flex-1"
+                    active={activeTab === 'weekend'}
                     onClick={() => setActiveTab('weekend')}
-                    className={`flex-1 px-5 py-2 text-base font-normal rounded-full transition-colors ${
-                      activeTab === 'weekend'
-                        ? 'bg-accent-soft text-accent-ink'
-                        : 'text-ink/70 hover:text-ink'
-                    }`}
                   >
                     Выходные дни
-                  </button>
+                  </Chip>
                 </div>
               )}
 

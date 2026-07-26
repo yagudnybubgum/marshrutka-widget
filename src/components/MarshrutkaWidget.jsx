@@ -8,6 +8,7 @@ import { getScheduleWindow } from '../utils/schedule/getScheduleWindow'
 import { getRouteGeo } from '../utils/routesGeo'
 import StopLocationOverlay from './StopLocationOverlay'
 import { MapPinIcon } from './icons'
+import { Alert, EmptyState } from './ui'
 
 const getLadozhskayaStop = (routeNumber) => {
   const geo = getRouteGeo(routeNumber)
@@ -110,9 +111,7 @@ const DirectionCard = ({
             </div>
           </div>
         ) : (
-          <div className="rounded-xl bg-surface-sunken px-4 py-3 text-ink/70">
-            нет данных по этому направлению.
-          </div>
+          <EmptyState>нет данных по этому направлению.</EmptyState>
         )}
       </Link>
       {showStopNotice && nextTrip && (
@@ -212,16 +211,12 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
         </div>
       )}
 
-      {error && (
-        <div className="rounded-xl bg-danger px-4 py-3 text-danger-ink" role="alert">
-          {error}
-        </div>
-      )}
+      {error && <Alert>{error}</Alert>}
 
       {!loading && rawData && !schedule && !error && (
-        <div className="rounded-xl bg-danger px-4 py-3 text-danger-ink" role="alert">
+        <Alert>
           Не удалось обработать данные расписания для маршрута {routeNumber}.
-        </div>
+        </Alert>
       )}
 
       {schedule && !loading && (

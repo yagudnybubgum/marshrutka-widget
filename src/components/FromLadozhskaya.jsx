@@ -1,10 +1,10 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useNow } from '../context/TimeContext'
-import { ROUTES_FROM_LADOZHSKAYA, getRouteColor } from '../config/routes'
+import { ROUTES_FROM_LADOZHSKAYA } from '../config/routes'
 import { loadSchedulesRaw } from '../utils/schedule/loadSchedule'
 import { extractLadozhskayaDepartures } from '../utils/schedule/processSchedule'
 import { formatTime, formatTimeUntil, getCurrentTimeInMinutes } from '../utils/schedule/formatTime'
-import { ArrowRightIcon } from './icons'
+import { Alert, DepartureRow, EmptyState } from './ui'
 
 const FromLadozhskaya = ({ active = false }) => {
   const [rawSchedules, setRawSchedules] = useState([])
@@ -119,46 +119,25 @@ const FromLadozhskaya = ({ active = false }) => {
   }
 
   if (error) {
-    return (
-      <div className="rounded-xl bg-danger px-4 py-3 text-danger-ink" role="alert">
-        {error}
-      </div>
-    )
+    return <Alert>{error}</Alert>
   }
 
   if (upcomingDepartures.length === 0) {
-    return (
-      <div className="rounded-xl bg-surface-sunken px-4 py-3 text-ink/70">
-        Нет данных о расписании с Ладожской
-      </div>
-    )
+    return <EmptyState>Нет данных о расписании с Ладожской</EmptyState>
   }
 
   return (
     <div className="w-full">
       <div className="divide-y divide-ink/5">
         {upcomingDepartures.map((dep, index) => (
-          <div
+          <DepartureRow
             key={`${dep.routeId}-${dep.time}-${index}`}
-            className="flex items-center justify-between py-4"
-          >
-            <div className="flex items-center gap-3">
-              <span className={`px-5 py-2 rounded-full text-sm font-medium ${getRouteColor(dep.routeId)}`}>
-                {dep.routeName}
-              </span>
-              <div className="flex flex-col">
-                <span className="inline-flex items-center gap-1 text-sm text-ink/70">
-                  <ArrowRightIcon className="h-3.5 w-3.5" />
-                  {dep.destination}
-                </span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-ink/70">{formatTimeUntil(dep.minutesUntil)}</span>
-              <span className="text-xl font-normal text-ink/80">{formatTime(dep.time)}</span>
-            </div>
-          </div>
+            routeId={dep.routeId}
+            routeName={dep.routeName}
+            destination={dep.destination}
+            untilLabel={formatTimeUntil(dep.minutesUntil)}
+            timeLabel={formatTime(dep.time)}
+          />
         ))}
       </div>
 

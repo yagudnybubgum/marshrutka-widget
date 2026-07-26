@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom'
 import { useCallback, useEffect, useState } from 'react'
 import { ROUTES } from '../config/routes'
 import {
@@ -7,6 +6,18 @@ import {
   ROUTE_COLORS,
   getRouteColorClasses,
 } from '../config/tokens'
+import {
+  Alert,
+  BackLink,
+  Chip,
+  ChipGroup,
+  DepartureRow,
+  EmptyState,
+  PromoCard,
+  RouteBadge,
+  TextLink,
+} from './ui'
+import { ArrowRightIcon } from './icons'
 
 function readCssVar(name) {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
@@ -251,17 +262,125 @@ function LiveSyncDemo({ onChange }) {
             <p className="text-ink">Страница / body фон</p>
           </div>
           <div className="flex flex-wrap gap-2 items-center rounded-xl bg-surface-muted p-4 border border-ink/10">
-            <span className="hover-darken px-4 py-1.5 rounded-full bg-surface-sunken text-ink/70 text-sm">chip</span>
-            <span className="hover-darken px-4 py-1.5 rounded-full bg-accent-soft text-accent-ink text-sm">
-              chip active
-            </span>
+            <Chip>chip</Chip>
+            <Chip active>chip active</Chip>
             <span className="hover-darken px-4 py-1.5 rounded-full bg-alert text-alert-ink text-sm">
-              alert
+              alert token
             </span>
+            <RouteBadge routeId="533">533</RouteBadge>
           </div>
         </div>
       </div>
     </section>
+  )
+}
+
+function ComponentsGallery() {
+  const [chip, setChip] = useState('a')
+
+  return (
+    <section className="space-y-6 pb-8">
+      <div>
+        <h2 className="text-lg font-medium text-ink">4 · Components</h2>
+        <p className="text-sm text-ink/70 mt-1">
+          Те же модули, что на экранах — <code className="text-ink">src/components/ui</code>.
+        </p>
+      </div>
+
+      <GalleryBlock name="BackLink" hint="to | onClick">
+        <BackLink to="/" />
+      </GalleryBlock>
+
+      <GalleryBlock name="Chip / ChipGroup" hint="active, variant=default|ghost, scroll">
+        <ChipGroup>
+          <Chip active={chip === 'a'} onClick={() => setChip('a')}>
+            533
+          </Chip>
+          <Chip active={chip === 'b'} onClick={() => setChip('b')}>
+            429
+          </Chip>
+          <Chip variant="ghost" active={chip === 'c'} onClick={() => setChip('c')}>
+            ghost
+          </Chip>
+        </ChipGroup>
+      </GalleryBlock>
+
+      <GalleryBlock name="Alert" hint="variant=danger">
+        <Alert>Не удалось загрузить расписание</Alert>
+      </GalleryBlock>
+
+      <GalleryBlock name="EmptyState">
+        <EmptyState>Нет данных о расписании</EmptyState>
+      </GalleryBlock>
+
+      <GalleryBlock name="PromoCard" hint="variant=accent|surface">
+        <div className="grid gap-3 sm:grid-cols-2">
+          <PromoCard
+            to="/homescreen"
+            title="Расписание всегда под рукой"
+            subtitle="Добавьте его на главный экран"
+            trailing={<ArrowRightIcon className="ml-2 h-5 w-5 flex-shrink-0 text-accent-ink/70" />}
+          />
+          <PromoCard variant="surface" href="#" title="У меня iPhone" />
+        </div>
+      </GalleryBlock>
+
+      <GalleryBlock name="RouteBadge" hint="routeId">
+        <div className="flex flex-wrap gap-2">
+          {ROUTES.map((r) => (
+            <RouteBadge key={r.id} routeId={r.id}>
+              {r.name}
+            </RouteBadge>
+          ))}
+        </div>
+      </GalleryBlock>
+
+      <GalleryBlock name="TextLink" hint="size=base|xs">
+        <div className="flex flex-wrap items-center gap-4">
+          <TextLink to="/full/533">Полное расписание</TextLink>
+          <TextLink to="/about" size="xs">
+            О проекте
+          </TextLink>
+        </div>
+      </GalleryBlock>
+
+      <GalleryBlock name="DepartureRow" hint="routeId, labels">
+        <div className="divide-y divide-ink/5 rounded-xl bg-surface-muted px-1">
+          <DepartureRow
+            routeId="533"
+            routeName="533"
+            destination="Янино-1"
+            untilLabel="через 12 мин"
+            timeLabel="14:30"
+          />
+          <DepartureRow
+            routeId="429"
+            routeName="429"
+            destination="Разметелево"
+            untilLabel="через 25 мин"
+            timeLabel="14:43"
+          />
+        </div>
+      </GalleryBlock>
+
+      <GalleryBlock name="PageShell" hint="maxWidth, bg, fullHeight — layout chrome">
+        <p className="text-sm text-ink/70">
+          Используется на Home, About, Privacy, HomeScreen. Здесь не вложен во избежание двойного shell.
+        </p>
+      </GalleryBlock>
+    </section>
+  )
+}
+
+function GalleryBlock({ name, hint, children }) {
+  return (
+    <div className="rounded-xl bg-surface p-4 border border-ink/10 space-y-3">
+      <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+        <p className="text-sm font-medium text-ink font-mono">{name}</p>
+        {hint ? <p className="text-xs font-mono text-ink/50">{hint}</p> : null}
+      </div>
+      {children}
+    </div>
   )
 }
 
@@ -273,12 +392,7 @@ function DesignSystem() {
     <div className="min-h-[100dvh] bg-surface-muted py-6 px-4 sm:py-10">
       <div className="max-w-3xl mx-auto space-y-10">
         <header className="space-y-3">
-          <Link
-            to="/"
-            className="text-ink hover:text-ink/70 transition-colors inline-flex items-center gap-1 text-sm font-normal"
-          >
-            ← Назад
-          </Link>
+          <BackLink to="/" />
           <h1 className="text-2xl font-normal text-ink">Design tokens</h1>
           <p className="text-sm text-ink/70 max-w-xl">
             Один нейтральный ряд, один акцентный hue, ink × opacity. Без сторонних палитр.
@@ -346,9 +460,7 @@ function DesignSystem() {
                       <td className="py-2.5 pr-3 text-ink">{route.name}</td>
                       <td className="py-2.5 pr-3 font-mono text-xs text-ink/70">{route.color}</td>
                       <td className="py-2.5 pr-3">
-                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getRouteColorClasses(route.color)}`}>
-                          {route.destination}
-                        </span>
+                        <RouteBadge routeId={route.id}>{route.destination}</RouteBadge>
                       </td>
                       <td className="py-2.5 font-mono text-xs text-ink/50 whitespace-nowrap">
                         {getRouteColorClasses(route.color)}
@@ -361,15 +473,16 @@ function DesignSystem() {
           </div>
         </section>
 
+        <ComponentsGallery />
+
         <section className="space-y-4 pb-8">
           <h2 className="text-lg font-medium text-ink">Cheatsheet</h2>
-          <pre className="rounded-xl bg-surface p-4 border border-ink/10 text-xs text-ink/80 overflow-x-auto leading-relaxed">{`bg-surface-muted text-ink
+          <pre className="rounded-xl bg-surface p-4 border border-ink/10 text-xs text-ink/80 overflow-x-auto leading-relaxed">{`import { Chip, Alert, BackLink } from './ui'
+
+bg-surface-muted text-ink
 text-ink/70   border-ink/10   bg-ink/40
-bg-surface-sunken text-ink/70
 bg-accent-soft text-accent-ink
-text-accent-ink/70
-hover-darken   /* фон +10% к чёрному */
-bg-danger text-danger-ink
+hover-darken
 getRouteColor('533')`}</pre>
         </section>
       </div>

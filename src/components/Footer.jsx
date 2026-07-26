@@ -1,21 +1,15 @@
-import { Link } from 'react-router-dom'
+import { TextLink } from './ui'
 
 function Footer({ className = '' }) {
   return (
     <footer className={`py-6 ${className}`}>
       <div className="flex flex-col items-center gap-4">
-        <Link 
-          to="/about"
-          className="text-xs text-ink/70 text-center hover:text-ink transition-colors"
-        >
+        <TextLink to="/about" size="xs">
           О проекте
-        </Link>
-        <Link 
-          to="/privacy-policy"
-          className="text-xs text-ink/70 text-center hover:text-ink transition-colors"
-        >
+        </TextLink>
+        <TextLink to="/privacy-policy" size="xs">
           Политика конфиденциальности
-        </Link>
+        </TextLink>
       </div>
     </footer>
   )
