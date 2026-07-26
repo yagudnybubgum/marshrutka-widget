@@ -135,8 +135,8 @@ body.is-scroll-locked {
   }
 
   /**
-   * Универсальный press/hover: затемняет фон на --hover-darken к чёрному.
-   * Hover — только устройства с настоящим hover; :active остаётся для тача.
+   * Универсальный hover: затемняет фон на --hover-darken к чёрному.
+   * Только устройства с настоящим hover/fine pointer — без sticky/press на таче.
    */
   .hover-darken {
     transition-property: color, background-color, border-color, box-shadow;
@@ -144,12 +144,9 @@ body.is-scroll-locked {
     transition-duration: 150ms;
   }
 
-  .hover-darken:active {
-    box-shadow: inset 0 0 0 9999px color-mix(in oklab, black var(--hover-darken), transparent);
-  }
-
   @media (hover: hover) and (pointer: fine) {
-    .hover-darken:hover {
+    .hover-darken:hover,
+    .hover-darken:active {
       box-shadow: inset 0 0 0 9999px color-mix(in oklab, black var(--hover-darken), transparent);
     }
   }
