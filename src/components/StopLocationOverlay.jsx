@@ -82,6 +82,7 @@ const StopLocationOverlay = ({ open, onClose, stop, title }) => {
       snapPoints={SNAP_POINTS}
       activeSnapPoint={snap}
       setActiveSnapPoint={setSnap}
+      fadeFromIndex={0}
       dismissible
     >
       <Drawer.Portal>
