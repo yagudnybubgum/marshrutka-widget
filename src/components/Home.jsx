@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react'
 import { Outlet, useSearchParams } from 'react-router-dom'
 import MarshrutkaWidget from './MarshrutkaWidget'
 import FromLadozhskaya from './FromLadozhskaya'
@@ -25,7 +24,6 @@ function formatDate(date) {
 
 function Home() {
   const [searchParams, setSearchParams] = useSearchParams()
-  const [schedule, setSchedule] = useState(null)
   const now = useNow()
 
   const tabFromUrl = searchParams.get('tab')
@@ -39,10 +37,6 @@ function Home() {
     }
     setSearchParams({ tab }, { replace: true })
   }
-
-  useEffect(() => {
-    setSchedule(null)
-  }, [routeNumber])
 
   return (
     <>
@@ -90,15 +84,13 @@ function Home() {
         <div className="space-y-6">
           {activeTab !== 'ladozhskaya' ? (
             <>
-              <MarshrutkaWidget routeNumber={routeNumber} onScheduleChange={setSchedule} />
-              {schedule && (
-                <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-3">
-                  <TextLink to={`/full/${routeNumber}`}>{copy.nav.fullSchedule}</TextLink>
-                  {hasRouteGeo(routeNumber) && (
-                    <TextLink to={`/map/${routeNumber}`}>{copy.nav.routeMap}</TextLink>
-                  )}
-                </div>
-              )}
+              <MarshrutkaWidget routeNumber={routeNumber} />
+              <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-3">
+                <TextLink to={`/full/${routeNumber}`}>{copy.nav.fullSchedule}</TextLink>
+                {hasRouteGeo(routeNumber) && (
+                  <TextLink to={`/map/${routeNumber}`}>{copy.nav.routeMap}</TextLink>
+                )}
+              </div>
             </>
           ) : (
             <FromLadozhskaya active />

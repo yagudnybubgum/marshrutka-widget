@@ -30,27 +30,23 @@ function HomeScreenBody({ compact = false }) {
         </p>
       </div>
 
-      <div className={compact ? 'grid grid-cols-1 gap-3' : 'grid grid-cols-1 md:grid-cols-2 gap-6'}>
+      <div className={compact ? 'grid grid-cols-1 gap-3' : 'grid grid-cols-1 md:grid-cols-2 gap-3'}>
         <PromoCard
-          variant={compact ? 'muted' : 'surface'}
+          variant="muted"
           external
           href="https://www.iphones.ru/iNotes/q/kak-v-ios-dobavit-yarlyk-lyubogo-sayta-na-rabochiy-stol"
           title={copy.homescreen.iphone}
           trailing={
-            compact ? (
-              <ArrowRightIcon className="ml-2 h-5 w-5 flex-shrink-0 text-ink/40" />
-            ) : undefined
+            <ArrowRightIcon className="ml-2 h-5 w-5 flex-shrink-0 text-ink/40" />
           }
         />
         <PromoCard
-          variant={compact ? 'muted' : 'surface'}
+          variant="muted"
           external
           href="https://androidinsider.ru/polezno-znat/kak-dobavit-yarlyk-sajta-na-rabochij-stol-android-smartfona.html"
           title={copy.homescreen.android}
           trailing={
-            compact ? (
-              <ArrowRightIcon className="ml-2 h-5 w-5 flex-shrink-0 text-ink/40" />
-            ) : undefined
+            <ArrowRightIcon className="ml-2 h-5 w-5 flex-shrink-0 text-ink/40" />
           }
         />
       </div>
@@ -110,6 +106,7 @@ const HomeScreen = () => {
   return createPortal(
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <PageShell
+        bg="surface"
         fullHeight="full"
         padClassName="pt-6 pb-2 px-4 sm:py-10"
         className="overflow-hidden"

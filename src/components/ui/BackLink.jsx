@@ -18,7 +18,7 @@ export function BackLink({
   if (to != null) {
     return (
       <Link to={to} className={classes} {...rest}>
-        <ChevronLeftIcon />
+        <ChevronLeftIcon className="h-5 w-5" />
         {children}
       </Link>
     )
@@ -26,7 +26,7 @@ export function BackLink({
 
   return (
     <button type={type} onClick={onClick} className={classes} {...rest}>
-      <ChevronLeftIcon />
+      <ChevronLeftIcon className="h-5 w-5" />
       {children}
     </button>
   )
