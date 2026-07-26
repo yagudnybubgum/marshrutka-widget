@@ -55,7 +55,7 @@ const StopLocationOverlay = ({ open, onClose, stop, title }) => {
           <Drawer.Overlay className="fixed inset-0 z-50 bg-ink/40" />
           <Drawer.Content
             aria-describedby={undefined}
-            className="fixed inset-x-0 bottom-0 z-50 flex h-full max-h-[97%] flex-col rounded-t-3xl bg-surface shadow-xl outline-none"
+            className="fixed inset-x-0 bottom-0 z-50 flex h-full flex-col rounded-t-3xl bg-surface shadow-xl outline-none"
           >
             <div className="flex shrink-0 flex-col items-center pt-3 pb-2">
               <div className="h-1 w-10 rounded-full bg-ink/20" aria-hidden />
@@ -67,7 +67,7 @@ const StopLocationOverlay = ({ open, onClose, stop, title }) => {
               data-vaul-no-drag
               className="w-full shrink-0 overflow-hidden"
               style={{
-                height: 'calc(100dvh - var(--snap-point-height, 0px) - 4.25rem - env(safe-area-inset-bottom, 0px))',
+                height: 'calc(100dvh - var(--snap-point-height, 0px) - 4rem - env(safe-area-inset-bottom, 0px))',
                 transition: 'height .5s cubic-bezier(.32,.72,0,1)',
               }}
             >
