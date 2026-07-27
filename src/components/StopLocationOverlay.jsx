@@ -60,9 +60,19 @@ const StopLocationOverlay = ({ open, onClose, stop, title }) => {
             <div className="flex shrink-0 flex-col items-center pt-3 pb-2">
               <div className="h-1 w-10 rounded-full bg-ink/20" aria-hidden />
             </div>
-            <Drawer.Title className="shrink-0 px-4 pb-3 text-lg font-normal text-ink">
-              {heading}
-            </Drawer.Title>
+            <div className="flex shrink-0 items-center justify-between gap-3 px-4 pb-3">
+              <Drawer.Title className="min-w-0 text-lg font-normal text-ink">
+                {heading}
+              </Drawer.Title>
+              <button
+                type="button"
+                onClick={onClose}
+                className="hover-darken inline-flex shrink-0 rounded-md p-1.5 text-ink/70"
+                aria-label={copy.a11y.close}
+              >
+                <XMarkIcon />
+              </button>
+            </div>
             <div
               data-vaul-no-drag
               className="w-full shrink-0 overflow-hidden"

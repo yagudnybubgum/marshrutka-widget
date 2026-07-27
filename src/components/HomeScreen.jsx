@@ -5,26 +5,38 @@ import { Drawer } from 'vaul'
 import Footer from './Footer'
 import { copy } from '../config/copy'
 import { useMediaQuery } from '../hooks/useMediaQuery'
-import { ArrowRightIcon } from './icons'
+import { ArrowRightIcon, XMarkIcon } from './icons'
 import { BackLink, PageShell, PromoCard } from './ui'
 
 const SNAP_MEDIUM = 0.55
 const SNAP_LARGE = 0.92
 const SNAP_POINTS = [SNAP_MEDIUM, SNAP_LARGE]
 
-function HomeScreenBody({ compact = false }) {
+function HomeScreenBody({ compact = false, onClose }) {
   return (
     <div className={compact ? 'space-y-6' : 'space-y-8'}>
       <div>
-        <h1
-          className={
-            compact
-              ? 'text-xl font-normal text-ink mb-1'
-              : 'text-2xl sm:text-3xl font-normal text-ink mb-2'
-          }
-        >
-          {copy.homescreen.title}
-        </h1>
+        <div className={onClose ? 'mb-1 flex items-start justify-between gap-3' : undefined}>
+          <h1
+            className={
+              compact
+                ? `text-xl font-normal text-ink${onClose ? '' : ' mb-1'}`
+                : 'text-2xl sm:text-3xl font-normal text-ink mb-2'
+            }
+          >
+            {copy.homescreen.title}
+          </h1>
+          {onClose ? (
+            <button
+              type="button"
+              onClick={onClose}
+              className="hover-darken inline-flex shrink-0 rounded-md p-1.5 text-ink/70"
+              aria-label={copy.a11y.close}
+            >
+              <XMarkIcon />
+            </button>
+          ) : null}
+        </div>
         <p className={compact ? 'text-sm text-ink/70' : 'text-base text-ink/70'}>
           {copy.homescreen.subtitle}
         </p>
@@ -95,7 +107,7 @@ const HomeScreen = () => {
               data-vaul-no-drag
               className="min-h-0 flex-1 overflow-y-auto px-4 pb-6"
             >
-              <HomeScreenBody compact />
+              <HomeScreenBody compact onClose={() => setOpen(false)} />
             </div>
           </Drawer.Content>
         </Drawer.Portal>
