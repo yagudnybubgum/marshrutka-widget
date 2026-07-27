@@ -137,6 +137,9 @@ body.is-scroll-locked {
   /**
    * Универсальный hover: затемняет фон на --hover-darken к чёрному.
    * Только устройства с настоящим hover/fine pointer — без sticky/press на таче.
+   *
+   * .card-hover — оверлей на весь силуэт (включая уголки и детей с своим bg).
+   * inset box-shadow на родителе рисуется под детьми и не покрывает углы.
    */
   .hover-darken {
     transition-property: color, background-color, border-color, box-shadow;
@@ -144,10 +147,32 @@ body.is-scroll-locked {
     transition-duration: 150ms;
   }
 
+  .card-hover {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .card-hover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 1;
+    background: color-mix(in oklab, black var(--hover-darken), transparent);
+    opacity: 0;
+    transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
   @media (hover: hover) and (pointer: fine) {
     .hover-darken:hover,
     .hover-darken:active {
       box-shadow: inset 0 0 0 9999px color-mix(in oklab, black var(--hover-darken), transparent);
+    }
+
+    .card-hover:hover::after,
+    .card-hover:active::after {
+      opacity: 1;
     }
   }
 }

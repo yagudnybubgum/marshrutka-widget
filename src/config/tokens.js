@@ -137,7 +137,7 @@ export const RADIUS_USAGE = [
     used: true,
     notes: 'DirectionCard + PromoCard + sheet/modal.',
     places: [
-      'MarshrutkaWidget DirectionCard (+ skeleton, stop notice rounded-t-3xl)',
+      'MarshrutkaWidget DirectionCard (+ skeleton, stop notice flush under overflow clip)',
       'ui/PromoCard — home CTA + homescreen platform cards (surface on muted page, muted on surface sheet)',
       'StopLocationOverlay — mobile vaul sheet (rounded-t-3xl, snaps 0.55/0.92) + desktop modal (rounded-3xl)',
       'HomeScreen — mobile vaul sheet (rounded-t-3xl, snaps 0.55/0.92) over Home; desktop full-page portal',

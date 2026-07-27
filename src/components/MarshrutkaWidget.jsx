@@ -21,7 +21,7 @@ const LadozhskayaStopNotice = ({ onShowMap }) => (
   <button
     type="button"
     onClick={onShowMap}
-    className="hover-darken w-full rounded-t-3xl bg-alert px-4 pb-4 pt-3 text-left text-alert-ink"
+    className="relative z-0 w-full bg-alert px-4 pb-4 pt-3 text-left text-alert-ink"
   >
     <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
       <p className="text-base font-normal">{copy.widget.stopMoved}</p>
@@ -71,11 +71,11 @@ const DirectionCard = ({
   return (
     <div
       style={cardIndex != null ? { '--card-i': cardIndex } : undefined}
-      className={`${animate ? 'card-enter ' : ''}rounded-3xl overflow-hidden bg-surface`}
+      className={`${animate ? 'card-enter ' : ''}card-hover h-full flex flex-col rounded-3xl overflow-hidden bg-surface`}
     >
       <Link
         to={scheduleTo}
-        className="hover-darken block p-4"
+        className="relative z-0 block flex-1 p-4"
       >
         {nextTrip ? (
           <div className="space-y-4">
