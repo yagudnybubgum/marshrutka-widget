@@ -21,7 +21,7 @@ const LadozhskayaStopNotice = ({ onShowMap }) => (
   <button
     type="button"
     onClick={onShowMap}
-    className="relative z-0 w-full bg-alert px-4 pb-4 pt-3 text-left text-alert-ink"
+    className="relative z-0 w-full rounded-t-3xl bg-alert px-4 pb-4 pt-3 text-left text-alert-ink"
   >
     <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
       <p className="text-base font-normal">{copy.widget.stopMoved}</p>
