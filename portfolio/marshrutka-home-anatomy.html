@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Marshrutka — Home Anatomy</title>
+  <style>
+    :root {
+      --surface: #ffffff;
+      --surface-muted: #f8fafd;
+      --surface-chip: #f2f5f9;
+      --ink: 21 30 44;
+      --accent-soft: #deedff;
+      --accent-ink: 33 69 157;
+      --alert: #ffddd1;
+      --alert-ink: 143 51 28;
+      --radius-3xl: 1.5rem;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background: #fff;
+      color: #000;
+      font-family: "Google Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      min-height: 100dvh;
+      width: 100%;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .stage {
+      position: relative;
+      margin: 0 auto;
+      display: flex;
+      min-height: 100dvh;
+      width: 100%;
+      max-width: 560px;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem 1.5rem;
+    }
+
+    .meta {
+      pointer-events: none;
+      position: absolute;
+      inset-inline: 1.5rem;
+      top: max(1.5rem, calc(50% - 400px));
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: #000;
+    }
+
+    .artboard {
+      position: relative;
+      transform-origin: center;
+      width: 470px;
+      height: 980px;
+    }
+
+    .guides {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      z-index: 30;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .hatch {
+      position: absolute;
+      z-index: 30;
+      width: 20px;
+      height: 20px;
+      background-color: transparent;
+      background-image: repeating-linear-gradient(
+        -45deg,
+        #d1a7e2 0 1px,
+        transparent 1px 3.5px
+      );
+      border: 1px solid #d1a7e2;
+    }
+
+    .phone {
+      position: absolute;
+      left: 40px;
+      top: 40px;
+      width: 390px;
+      height: 900px;
+      overflow: hidden;
+      border-radius: 40px;
+    }
+
+    .phone-chrome {
+      position: absolute;
+      inset: 0;
+      border-radius: 40px;
+      background: var(--surface-muted);
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.1),
+        0 24px 80px rgba(21, 30, 44, 0.12);
+    }
+
+    .skeleton {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+    }
+
+    .bone {
+      position: absolute;
+      border: 1px solid rgba(0, 0, 0, 0.8);
+      background: transparent;
+    }
+
+    .mock {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      z-index: 20;
+      overflow: hidden;
+      border-radius: 40px;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .home {
+      display: flex;
+      flex-direction: column;
+      padding: 24px 8px 24px;
+      background: var(--surface-muted);
+      color: rgb(var(--ink));
+    }
+
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      padding: 0 16px;
+    }
+
+    .title {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 400;
+      line-height: 1.75rem;
+    }
+
+    .date {
+      font-size: 0.875rem;
+      font-weight: 400;
+      line-height: 1.25rem;
+    }
+
+    .chips-wrap {
+      margin-top: 16px;
+      margin-left: -8px;
+      margin-right: -8px;
+      overflow: hidden;
+    }
+
+    .chips {
+      display: flex;
+      width: max-content;
+      flex-wrap: nowrap;
+      gap: 8px;
+      padding: 0 8px 4px;
+    }
+
+    .chip {
+      flex-shrink: 0;
+      padding: 8px 16px;
+      font-size: 1rem;
+      font-weight: 400;
+      border-radius: 9999px;
+      background: var(--surface-chip);
+      color: rgb(var(--ink) / 0.7);
+    }
+
+    .chip.is-active {
+      background: var(--accent-soft);
+      color: rgb(var(--accent-ink));
+    }
+
+    .cards {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .card {
+      border-radius: var(--radius-3xl);
+      overflow: hidden;
+      background: var(--surface);
+    }
+
+    .card-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .card-top h3 {
+      margin: 0 0 8px;
+      font-size: 1.25rem;
+      font-weight: 400;
+    }
+
+    .muted {
+      margin: 0;
+      font-size: 0.875rem;
+      color: rgb(var(--ink) / 0.7);
+    }
+
+    .meta-line {
+      margin: 0;
+      font-size: 0.875rem;
+      color: rgb(var(--ink) / 0.8);
+    }
+
+    .meta-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .time {
+      margin: 0;
+      font-size: 40px;
+      font-weight: 400;
+      line-height: 1;
+      color: rgb(var(--ink));
+    }
+
+    .alert {
+      width: 100%;
+      border-radius: var(--radius-3xl) var(--radius-3xl) 0 0;
+      background: var(--alert);
+      color: rgb(var(--alert-ink));
+      padding: 12px 16px 16px;
+      text-align: left;
+    }
+
+    .alert-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px 16px;
+    }
+
+    .alert-row p {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 400;
+    }
+
+    .alert-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.875rem;
+    }
+
+    .alert-link svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    .links {
+      margin-top: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 12px 24px;
+      font-size: 1rem;
+      color: rgb(var(--ink) / 0.7);
+    }
+
+    .promo {
+      margin-top: 24px;
+      border-radius: var(--radius-3xl);
+      background: var(--accent-soft);
+      color: rgb(var(--accent-ink));
+      padding: 16px;
+    }
+
+    .promo-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .promo-title { font-size: 1rem; font-weight: 400; }
+    .promo-sub { font-size: 0.875rem; margin-top: 2px; }
+
+    .promo svg {
+      margin-left: 8px;
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      fill: rgb(var(--accent-ink) / 0.7);
+    }
+  </style>
+</head>
+<body>
+  <div class="page" id="root">
+    <div class="stage">
+      <div class="meta">
+        <span data-label>1:1</span>
+        <span data-label>390PX</span>
+      </div>
+
+      <div class="artboard" id="artboard">
+        <svg class="guides" id="svg" viewBox="0 0 470 980" fill="none" aria-hidden="true"></svg>
+
+        <div class="hatch" data-offset></div>
+        <div class="hatch" data-offset></div>
+        <div class="hatch" data-offset></div>
+        <div class="hatch" data-offset></div>
+
+        <div class="phone" id="phone">
+          <div class="phone-chrome" data-phone-chrome></div>
+          <div class="skeleton" id="skeleton"></div>
+
+          <div class="mock" data-mock>
+            <div class="home">
+              <div class="header" data-block="header">
+                <h1 class="title" data-block="title">Маршрутки Янино-1</h1>
+                <span class="date" data-block="date">19 июля, выходной</span>
+              </div>
+
+              <div class="chips-wrap" data-block="chips">
+                <div class="chips">
+                  <span class="chip is-active" data-chip>533</span>
+                  <span class="chip" data-chip>429</span>
+                  <span class="chip" data-chip>664</span>
+                  <span class="chip" data-chip>430А</span>
+                  <span class="chip" data-chip>453</span>
+                  <span class="chip" data-chip>С Ладожской</span>
+                </div>
+              </div>
+
+              <div class="cards">
+                <div data-block="card1">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="card-top">
+                        <div>
+                          <h3>Из Янино</h3>
+                          <p class="muted">через 17 мин</p>
+                        </div>
+                        <p class="time">20:38</p>
+                      </div>
+                      <div class="meta-lines">
+                        <p class="meta-line">Следующие в 20:57, 21:16, 21:35</p>
+                        <p class="meta-line">Предыдущая ушла 2 мин назад</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div data-block="card2">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="card-top">
+                        <div>
+                          <h3>С Ладожской</h3>
+                          <p class="muted">через 9 мин</p>
+                        </div>
+                        <p class="time">21:05</p>
+                      </div>
+                      <div class="meta-lines">
+                        <p class="meta-line">Следующие в 21:24, 21:43, 22:02</p>
+                        <p class="meta-line">Предыдущая ушла 4 мин назад</p>
+                      </div>
+                    </div>
+                    <div class="alert">
+                      <div class="alert-row">
+                        <p>Остановка переехала</p>
+                        <span class="alert-link">
+                          Посмотреть на карте
+                          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="links" data-block="links">
+                <span>Полное расписание</span>
+                <span>Карта маршрута</span>
+              </div>
+
+              <div class="promo" data-block="promo">
+                <div class="promo-row">
+                  <div>
+                    <div class="promo-title">Расписание всегда под рукой</div>
+                    <div class="promo-sub">Добавьте его на главный экран</div>
+                  </div>
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./gsap.min.js"></script>
+  <script>
+    (function () {
+      const GUIDE = '#D1A7E2'
+      const PHONE_W = 390
+      const PHONE_H_INIT = 900
+      const ART_PAD = 40
+      const PAD = 16
+      const INSET = 8
+      const ART_W = PHONE_W + ART_PAD * 2
+
+      const BLOCKS = ['header', 'title', 'date', 'chips', 'card1', 'card2', 'links', 'promo']
+      const GUIDE_BLOCKS = ['card1', 'card2', 'links', 'promo']
+
+      const root = document.getElementById('root')
+      const artboard = document.getElementById('artboard')
+      const svg = document.getElementById('svg')
+      const skeleton = document.getElementById('skeleton')
+      const phone = document.getElementById('phone')
+
+      function fitScale(artH) {
+        const sx = (window.innerWidth - 48) / ART_W
+        const sy = (window.innerHeight - 48) / artH
+        const s = Math.min(1, sx, sy)
+        artboard.style.transform = 'scale(' + s + ')'
+      }
+
+      function yInArtboard(el) {
+        const a = artboard.getBoundingClientRect()
+        const r = el.getBoundingClientRect()
+        const scale = a.height / artboard.offsetHeight
+        return {
+          top: (r.top - a.top) / scale,
+          bottom: (r.bottom - a.top) / scale,
+          left: (r.left - a.left) / scale,
+          right: (r.right - a.left) / scale,
+          height: r.height / scale,
+          width: r.width / scale,
+        }
+      }
+
+      function uniqueSorted(values, eps) {
+        eps = eps == null ? 0.5 : eps
+        const out = []
+        values.slice().sort(function (a, b) { return a - b }).forEach(function (v) {
+          if (!out.length || Math.abs(out[out.length - 1] - v) > eps) out.push(v)
+        })
+        return out
+      }
+
+      function addBone(opts) {
+        const bone = document.createElement('div')
+        bone.setAttribute('data-bone', '')
+        bone.className = 'bone'
+        bone.style.top = (opts.top - ART_PAD) + 'px'
+        bone.style.left = opts.left + 'px'
+        bone.style.width = opts.width + 'px'
+        bone.style.height = opts.height + 'px'
+        bone.style.borderRadius = opts.radius + 'px'
+        skeleton.appendChild(bone)
+      }
+
+      function setup() {
+        const mockInner = root.querySelector('[data-mock] > *')
+        const fittedH = Math.ceil((mockInner && mockInner.offsetHeight) || PHONE_H_INIT)
+        const artH = fittedH + ART_PAD * 2
+
+        phone.style.height = fittedH + 'px'
+        artboard.style.height = artH + 'px'
+        svg.setAttribute('viewBox', '0 0 ' + ART_W + ' ' + artH)
+        fitScale(artH)
+
+        const phoneTop = ART_PAD
+        const phoneBottom = ART_PAD + fittedH
+        const measured = {}
+
+        BLOCKS.forEach(function (id) {
+          const el = root.querySelector('[data-block="' + id + '"]')
+          if (el) measured[id] = yInArtboard(el)
+        })
+
+        const chipRects = Array.prototype.map.call(
+          root.querySelectorAll('[data-chip]'),
+          function (el) { return yInArtboard(el) }
+        )
+
+        const hYs = uniqueSorted([].concat(
+          [phoneTop],
+          GUIDE_BLOCKS.reduce(function (acc, id) {
+            const m = measured[id]
+            if (m) acc.push(m.top, m.bottom)
+            return acc
+          }, []),
+          measured.title ? [measured.title.top, measured.title.bottom] : [],
+          measured.date ? [measured.date.bottom] : [],
+          chipRects.length
+            ? [
+                Math.min.apply(null, chipRects.map(function (r) { return r.top })),
+                Math.max.apply(null, chipRects.map(function (r) { return r.bottom })),
+              ]
+            : [],
+          [phoneBottom]
+        ))
+
+        svg.innerHTML = ''
+        ;[
+          ART_PAD,
+          ART_PAD + INSET,
+          ART_PAD + INSET + PAD,
+          ART_PAD + PHONE_W - INSET - PAD,
+          ART_PAD + PHONE_W - INSET,
+          ART_PAD + PHONE_W,
+        ].forEach(function (x) {
+          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+          line.setAttribute('data-guide', '')
+          line.setAttribute('x1', String(x))
+          line.setAttribute('x2', String(x))
+          line.setAttribute('y1', '0')
+          line.setAttribute('y2', String(artH))
+          line.setAttribute('stroke', GUIDE)
+          line.setAttribute('stroke-width', '1')
+          svg.appendChild(line)
+        })
+
+        hYs.forEach(function (y) {
+          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+          line.setAttribute('data-guide', '')
+          line.setAttribute('data-guide-h', '')
+          line.setAttribute('x1', '0')
+          line.setAttribute('x2', String(ART_W))
+          line.setAttribute('y1', String(y))
+          line.setAttribute('y2', String(y))
+          line.setAttribute('stroke', GUIDE)
+          line.setAttribute('stroke-width', '1')
+          svg.appendChild(line)
+        })
+
+        skeleton.innerHTML = ''
+
+        if (measured.title) {
+          const m = measured.title
+          addBone({
+            top: m.top,
+            left: m.left - ART_PAD,
+            width: Math.min(m.width, PHONE_W - (m.left - ART_PAD) - INSET - 16),
+            height: m.height,
+            radius: 6,
+          })
+        }
+        if (measured.date) {
+          const m = measured.date
+          addBone({
+            top: m.top,
+            left: m.left - ART_PAD,
+            width: Math.min(m.width + 8, 160),
+            height: m.height,
+            radius: 6,
+          })
+        }
+
+        Array.prototype.forEach.call(root.querySelectorAll('[data-chip]'), function (el) {
+          const m = yInArtboard(el)
+          addBone({
+            top: m.top,
+            left: m.left - ART_PAD,
+            width: m.width,
+            height: m.height,
+            radius: 999,
+          })
+        })
+
+        ;['card1', 'card2', 'promo'].forEach(function (id) {
+          const m = measured[id]
+          if (!m) return
+          addBone({
+            top: m.top,
+            left: INSET,
+            width: PHONE_W - INSET * 2,
+            height: m.height,
+            radius: 24,
+          })
+        })
+
+        if (measured.links) {
+          const m = measured.links
+          const h = Math.min(20, m.height)
+          const top = m.top + (m.height - h) / 2
+          addBone({ top: top, left: 56, width: 144, height: h, radius: 6 })
+          addBone({ top: top, left: PHONE_W - 56 - 112, width: 112, height: h, radius: 6 })
+        }
+
+        const contentL = ART_PAD + INSET + PAD
+        const contentR = ART_PAD + PHONE_W - INSET - PAD
+        const offsetYs = [
+          measured.header ? measured.header.top : phoneTop + 24,
+          measured.promo ? measured.promo.bottom : phoneBottom - 24,
+        ]
+        Array.prototype.forEach.call(root.querySelectorAll('[data-offset]'), function (el, i) {
+          const y = offsetYs[i < 2 ? 0 : 1]
+          const x = i % 2 === 0 ? contentL - 10 : contentR - 10
+          el.style.left = x + 'px'
+          el.style.top = (y - 10) + 'px'
+        })
+
+        const q = gsap.utils.selector(root)
+        const lines = q('[data-guide]')
+        const offsets = q('[data-offset]')
+        const bones = q('[data-bone]')
+        const labels = q('[data-label]')
+        const mock = q('[data-mock]')
+        const phoneChrome = q('[data-phone-chrome]')
+
+        lines.forEach(function (el) {
+          const len = el.getTotalLength ? el.getTotalLength() : 0
+          gsap.set(el, {
+            strokeDasharray: len,
+            strokeDashoffset: len,
+            opacity: 1,
+          })
+        })
+
+        gsap.set(offsets, { scale: 0.6, opacity: 0, transformOrigin: 'center' })
+        gsap.set(bones, { opacity: 0, y: 8 })
+        gsap.set(labels, { opacity: 0, y: 6 })
+        gsap.set(mock, { opacity: 0 })
+        gsap.set(phoneChrome, { opacity: 0 })
+
+        const tl = gsap.timeline({
+          repeat: -1,
+          defaults: { ease: 'power2.inOut' },
+        })
+
+        tl.to(lines, {
+          strokeDashoffset: 0,
+          duration: 1.05,
+          stagger: { each: 0.05, from: 'edges' },
+          ease: 'power2.out',
+        })
+
+        tl.to(offsets, {
+          opacity: 1,
+          scale: 1,
+          duration: 0.45,
+          stagger: 0.07,
+          ease: 'power3.out',
+        }, '-=0.35')
+
+        tl.to(bones, {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+          stagger: 0.08,
+          ease: 'power3.out',
+        }, '-=0.1')
+
+        tl.to(labels, {
+          opacity: 1,
+          y: 0,
+          duration: 0.55,
+          stagger: 0.08,
+          ease: 'power3.out',
+        }, '-=0.25')
+
+        tl.to(phoneChrome, { opacity: 1, duration: 0.5, ease: 'power2.out' }, '+=0.15')
+        tl.to(mock, { opacity: 1, duration: 0.85, ease: 'power2.inOut' }, '-=0.25')
+        tl.to([].concat(bones, offsets), { opacity: 0, duration: 0.55, ease: 'power2.inOut' }, '-=0.55')
+        tl.to(lines, { opacity: 0.28, duration: 0.55, ease: 'power2.inOut' }, '<')
+
+        tl.to({}, { duration: 2.1 })
+
+        tl.to([].concat(mock, labels, phoneChrome, lines, offsets), {
+          opacity: 0,
+          duration: 0.7,
+          ease: 'power2.inOut',
+          stagger: { each: 0.02, from: 'end' },
+        })
+
+        tl.set(lines, {
+          strokeDashoffset: function (_i, el) {
+            return el.getTotalLength ? el.getTotalLength() : 0
+          },
+          opacity: 1,
+        })
+        tl.set(offsets, { scale: 0.6, opacity: 0 })
+        tl.set(bones, { opacity: 0, y: 8 })
+        tl.set(labels, { opacity: 0, y: 6 })
+        tl.set([].concat(mock, phoneChrome), { opacity: 0 })
+        tl.to({}, { duration: 0.35 })
+      }
+
+      window.addEventListener('resize', function () {
+        const artH = artboard.offsetHeight || (PHONE_H_INIT + ART_PAD * 2)
+        fitScale(artH)
+      })
+
+      const fontsReady = document.fonts && document.fonts.ready
+        ? document.fonts.ready
+        : Promise.resolve()
+
+      fontsReady.then(function () {
+        requestAnimationFrame(setup)
+      })
+    })()
+  </script>
+</body>
+</html>

@@ -58,6 +58,17 @@ body.is-scroll-locked {
   scrollbar-width: none;
 }
 
+/* Portfolio anatomy page — hatched spacing markers */
+.anatomy-hatch {
+  background-color: transparent;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    #d1a7e2 0 1px,
+    transparent 1px 3.5px
+  );
+  border: 1px solid #d1a7e2;
+}
+
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
