@@ -1,4 +1,4 @@
-# Marshrutka — Home Anatomy (portfolio export)
+# Marshrutka: Home Anatomy (portfolio export)
 
 Автономная зацикленная anatomy-анимация главного экрана.
 

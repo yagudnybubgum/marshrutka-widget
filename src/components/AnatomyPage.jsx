@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef } from 'react'
 import gsap from 'gsap'
-import AnatomyHomeMock from './anatomy/AnatomyHomeMock'
+import AnatomyHomeMock, { AnatomyStopSheet } from './anatomy/AnatomyHomeMock'
 
 const GUIDE = '#D1A7E2'
 const PHONE_W = 390
@@ -198,9 +198,11 @@ export default function AnatomyPage() {
       const lines = q('[data-guide]')
       const offsets = q('[data-offset]')
       const bones = q('[data-bone]')
-      const labels = q('[data-label]')
       const mock = q('[data-mock]')
       const phoneChrome = q('[data-phone-chrome]')
+      const stopNotice = q('[data-stop-notice]')
+      const sheetScrim = q('[data-sheet-scrim]')
+      const sheet = q('[data-sheet]')
 
       lines.forEach((el) => {
         const len = el.getTotalLength?.() ?? 0
@@ -213,9 +215,15 @@ export default function AnatomyPage() {
 
       gsap.set(offsets, { scale: 0.6, opacity: 0, transformOrigin: 'center' })
       gsap.set(bones, { opacity: 0, y: 8 })
-      gsap.set(labels, { opacity: 0, y: 6 })
       gsap.set(mock, { opacity: 0 })
       gsap.set(phoneChrome, { opacity: 0 })
+      gsap.set(stopNotice, { scale: 1, transformOrigin: 'center' })
+      gsap.set(sheetScrim, { opacity: 0 })
+
+      const sheetClosedY = phone.offsetHeight || fittedH
+      const sheetHalfY = sheetClosedY * 0.45
+      const sheetLargeY = sheetClosedY * 0.08
+      gsap.set(sheet, { y: sheetClosedY, force3D: true })
 
       tl = gsap.timeline({
         repeat: -1,
@@ -254,18 +262,6 @@ export default function AnatomyPage() {
         '-=0.1',
       )
 
-      tl.to(
-        labels,
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.55,
-          stagger: 0.08,
-          ease: 'power3.out',
-        },
-        '-=0.25',
-      )
-
       tl.to(phoneChrome, { opacity: 1, duration: 0.5, ease: 'power2.out' }, '+=0.15')
       tl.to(mock, { opacity: 1, duration: 0.85, ease: 'power2.inOut' }, '-=0.25')
       tl.to(
@@ -275,10 +271,27 @@ export default function AnatomyPage() {
       )
       tl.to(lines, { opacity: 0.28, duration: 0.55, ease: 'power2.inOut' }, '<')
 
-      tl.to({}, { duration: 2.1 })
+      tl.to({}, { duration: 0.7 })
+
+      tl.to(stopNotice, { scale: 0.96, duration: 0.12, ease: 'power2.in' })
+      tl.to(stopNotice, { scale: 1, duration: 0.2, ease: 'power2.out' })
+
+      tl.to(sheetScrim, { opacity: 1, duration: 0.5, ease: 'power2.inOut' }, '-=0.05')
+      tl.to(sheet, { y: sheetHalfY, duration: 0.75, ease: 'expo.out' }, '<')
+
+      tl.to({}, { duration: 0.85 })
+
+      tl.to(sheet, { y: sheetLargeY, duration: 0.75, ease: 'power4.inOut' })
+
+      tl.to({}, { duration: 1.05 })
+
+      tl.to(sheet, { y: sheetClosedY, duration: 0.7, ease: 'power4.inOut' })
+      tl.to(sheetScrim, { opacity: 0, duration: 0.5, ease: 'power2.inOut' }, '-=0.4')
+
+      tl.to({}, { duration: 0.45 })
 
       tl.to(
-        [...mock, ...labels, ...phoneChrome, ...lines, ...offsets],
+        [...mock, ...phoneChrome, ...lines, ...offsets],
         {
           opacity: 0,
           duration: 0.7,
@@ -292,8 +305,10 @@ export default function AnatomyPage() {
       })
       tl.set(offsets, { scale: 0.6, opacity: 0 })
       tl.set(bones, { opacity: 0, y: 8 })
-      tl.set(labels, { opacity: 0, y: 6 })
       tl.set([mock, phoneChrome], { opacity: 0 })
+      tl.set(stopNotice, { scale: 1 })
+      tl.set(sheetScrim, { opacity: 0 })
+      tl.set(sheet, { y: sheetClosedY })
       tl.to({}, { duration: 0.35 })
     }
 
@@ -317,17 +332,6 @@ export default function AnatomyPage() {
       className="anatomy-page min-h-[100dvh] w-full overflow-hidden bg-white text-black"
     >
       <div className="relative mx-auto flex min-h-[100dvh] w-full max-w-[560px] items-center justify-center px-6 py-10">
-        <div
-          className="pointer-events-none absolute inset-x-6 top-[max(1.5rem,calc(50%-360px))] z-20 flex justify-between text-[11px] tracking-[0.08em] text-black sm:inset-x-10"
-          style={{
-            fontFamily:
-              'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace',
-          }}
-        >
-          <span data-label>1:1</span>
-          <span data-label>390PX</span>
-        </div>
-
         <div
           ref={artboardRef}
           className="relative origin-center"
@@ -372,17 +376,18 @@ export default function AnatomyPage() {
 
           <div
             ref={phoneRef}
-            className="absolute overflow-hidden rounded-[40px]"
+            className="absolute overflow-hidden rounded-[48px]"
             style={{
               left: ART_PAD,
               top: ART_PAD,
               width: PHONE_W,
               height: PHONE_H_INIT,
+              boxShadow: '0 0 0 10px #d3d8e0',
             }}
           >
             <div
               data-phone-chrome
-              className="absolute inset-0 rounded-[40px] bg-surface-muted ring-1 ring-black/10 shadow-[0_24px_80px_rgba(21,30,44,0.12)]"
+              className="absolute inset-0 rounded-[40px] bg-surface-muted"
             />
 
             <div
@@ -396,6 +401,8 @@ export default function AnatomyPage() {
             >
               <AnatomyHomeMock />
             </div>
+
+            <AnatomyStopSheet />
           </div>
         </div>
       </div>

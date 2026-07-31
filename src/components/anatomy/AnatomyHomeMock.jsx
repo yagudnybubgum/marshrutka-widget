@@ -1,11 +1,22 @@
-import { ArrowRightIcon, MapPinIcon } from '../icons'
+import { ArrowRightIcon, MapPinIcon, XMarkIcon } from '../icons'
 import { copy } from '../../config/copy'
 import { ROUTES } from '../../config/routes'
+import { getRouteGeo } from '../../utils/routesGeo'
+import StopLocationMap from '../StopLocationMap'
 
 const CHIP_IDLE =
   'flex-shrink-0 px-4 py-2 text-base font-normal rounded-full bg-surface-chip text-ink/70'
 const CHIP_ACTIVE =
   'flex-shrink-0 px-4 py-2 text-base font-normal rounded-full bg-accent-soft text-accent-ink'
+
+const LADOZHSKAYA_STOP =
+  getRouteGeo('533')?.directions
+    ?.find((d) => d.id === 'from_ladozhskaya')
+    ?.stops?.find((s) => s.id === 'ladozhskaya') ?? {
+    name: 'м. Ладожская',
+    lat: 59.93274,
+    lng: 30.441484,
+  }
 
 /**
  * Frozen home UI for portfolio recording — no live clock / navigation.
@@ -17,12 +28,8 @@ export default function AnatomyHomeMock() {
       className="pointer-events-none select-none bg-surface-muted flex flex-col px-2 pt-6 pb-6"
       aria-hidden
     >
-      {/* Stacked like real home at 390px (title + date wrap). */}
       <div data-block="header" className="flex flex-col items-start gap-y-1 px-4">
-        <h1
-          data-block="title"
-          className="text-xl font-normal text-ink leading-7"
-        >
+        <h1 data-block="title" className="text-xl font-normal text-ink leading-7">
           {copy.home.title}
         </h1>
         <span data-block="date" className="text-sm font-normal text-ink leading-5">
@@ -86,7 +93,50 @@ export default function AnatomyHomeMock() {
           <ArrowRightIcon className="ml-2 h-5 w-5 flex-shrink-0 text-accent-ink/70" />
         </div>
       </div>
+
+      <div
+        data-block="footer"
+        className="mt-8 flex flex-col items-center gap-4"
+      >
+        <span className="text-xs text-ink/70 text-center">{copy.nav.about}</span>
+        <span className="text-xs text-ink/70 text-center">{copy.nav.privacy}</span>
+      </div>
     </div>
+  )
+}
+
+export function AnatomyStopSheet() {
+  return (
+    <>
+      <div
+        data-sheet-scrim
+        className="pointer-events-none absolute inset-0 z-40 bg-ink/40 opacity-0"
+      />
+      <div
+        data-sheet
+        className="pointer-events-none absolute inset-0 z-50 flex flex-col overflow-hidden rounded-t-3xl bg-surface shadow-xl"
+      >
+        <div className="flex shrink-0 flex-col items-center pt-3 pb-2">
+          <div className="h-1 w-10 rounded-full bg-ink/20" aria-hidden />
+        </div>
+        <div className="flex shrink-0 items-center justify-between gap-3 px-4 pb-3">
+          <h2 className="min-w-0 text-lg font-normal text-ink">
+            {copy.widget.stopLadozhskayaTitle}
+          </h2>
+          <span className="inline-flex shrink-0 rounded-md p-1.5 text-ink/70" aria-hidden>
+            <XMarkIcon />
+          </span>
+        </div>
+        <div className="relative min-h-0 flex-1 overflow-hidden">
+          <StopLocationMap
+            lat={LADOZHSKAYA_STOP.lat}
+            lng={LADOZHSKAYA_STOP.lng}
+            name={LADOZHSKAYA_STOP.name}
+            className="h-full w-full"
+          />
+        </div>
+      </div>
+    </>
   )
 }
 
@@ -113,7 +163,10 @@ function DirectionCard({ name, until, time, following, previous, stopNotice = fa
         </div>
       </div>
       {stopNotice ? (
-        <div className="relative z-0 w-full rounded-t-3xl bg-alert px-4 pb-4 pt-3 text-left text-alert-ink">
+        <div
+          data-stop-notice
+          className="relative z-0 w-full rounded-t-3xl bg-alert px-4 pb-4 pt-3 text-left text-alert-ink origin-center"
+        >
           <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
             <p className="text-base font-normal">{copy.widget.stopMoved}</p>
             <span className="inline-flex items-center gap-1 text-sm font-normal">

@@ -3,7 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Marshrutka — Home Anatomy</title>
+  <title>Marshrutka: Home Anatomy</title>
+  <script>
+    (function () {
+      var theme = /(?:^|[?&])theme=(dark|light)(?:&|$)/.exec(location.search);
+      if (theme && theme[1] === 'dark') document.documentElement.classList.add('theme-dark');
+      var canvas = /(?:^|[?&])canvas=([^&]*)/.exec(location.search);
+      if (canvas) {
+        try {
+          document.documentElement.style.setProperty('--canvas', decodeURIComponent(canvas[1]));
+        } catch (e) {}
+      }
+    })();
+  </script>
   <style>
     :root {
       --surface: #ffffff;
@@ -15,6 +27,20 @@
       --alert: #ffddd1;
       --alert-ink: 143 51 28;
       --radius-3xl: 1.5rem;
+      --route-blue-ink: rgb(var(--accent-ink));
+
+      /* Match site globals.css --background exactly. */
+      --canvas: oklch(1 0 0);
+      --anatomy-ink: #000000;
+      --anatomy-guide: #d1a7e2;
+      --anatomy-bone: rgba(0, 0, 0, 0.8);
+    }
+
+    html.theme-dark {
+      --canvas: oklch(0.141 0 0);
+      --anatomy-ink: rgba(255, 255, 255, 0.92);
+      --anatomy-guide: #d4a8e8;
+      --anatomy-bone: rgba(255, 255, 255, 0.72);
     }
 
     *, *::before, *::after { box-sizing: border-box; }
@@ -24,17 +50,32 @@
       padding: 0;
       width: 100%;
       min-height: 100%;
-      background: #fff;
+      background: var(--canvas);
       color: #000;
       font-family: "Google Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
       -webkit-font-smoothing: antialiased;
+    }
+
+    html.is-embed,
+    html.is-embed body {
+      height: 100%;
+      overflow: hidden;
+      background: var(--canvas);
     }
 
     .page {
       min-height: 100dvh;
       width: 100%;
       overflow: hidden;
-      background: #fff;
+      background: var(--canvas);
+    }
+
+    html.is-embed .page {
+      height: 100%;
+      min-height: 0;
+      background: var(--canvas);
+      /* Allow guide strokes to paint past the artboard box. */
+      overflow: visible;
     }
 
     .stage {
@@ -49,49 +90,66 @@
       padding: 2.5rem 1.5rem;
     }
 
-    .meta {
-      pointer-events: none;
-      position: absolute;
-      inset-inline: 1.5rem;
-      top: max(1.5rem, calc(50% - 400px));
-      z-index: 20;
-      display: flex;
-      justify-content: space-between;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      font-size: 11px;
-      letter-spacing: 0.08em;
-      color: #000;
+    html.is-embed .stage {
+      height: 100%;
+      min-height: 0;
+      max-width: none;
+      padding: 0;
+      overflow: visible;
     }
 
     .artboard {
       position: relative;
-      transform-origin: center;
+      transform-origin: center center;
       width: 470px;
       height: 980px;
+      overflow: visible;
+    }
+
+    html.is-embed .artboard {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      overflow: visible;
+    }
+
+    /* Hidden until GSAP setup() — avoids flash of full UI before timeline. */
+    [data-mock],
+    [data-phone-chrome],
+    [data-offset] {
+      opacity: 0;
+    }
+
+    html.is-embed:not(.is-ready) .artboard {
+      visibility: hidden;
     }
 
     .guides {
       pointer-events: none;
       position: absolute;
       inset: 0;
-      z-index: 30;
+      z-index: 100;
       width: 100%;
       height: 100%;
       overflow: visible;
     }
 
+    .guides line {
+      stroke: var(--anatomy-guide) !important;
+    }
+
     .hatch {
       position: absolute;
-      z-index: 30;
+      z-index: 50;
       width: 20px;
       height: 20px;
       background-color: transparent;
       background-image: repeating-linear-gradient(
         -45deg,
-        #d1a7e2 0 1px,
+        var(--anatomy-guide) 0 1px,
         transparent 1px 3.5px
       );
-      border: 1px solid #d1a7e2;
+      border: 1px solid var(--anatomy-guide);
     }
 
     .phone {
@@ -101,7 +159,9 @@
       width: 390px;
       height: 900px;
       overflow: hidden;
-      border-radius: 40px;
+      border-radius: 48px;
+      z-index: 1;
+      box-shadow: 0 0 0 10px #d3d8e0;
     }
 
     .phone-chrome {
@@ -109,9 +169,10 @@
       inset: 0;
       border-radius: 40px;
       background: var(--surface-muted);
-      box-shadow:
-        0 0 0 1px rgba(0, 0, 0, 0.1),
-        0 24px 80px rgba(21, 30, 44, 0.12);
+    }
+
+    html.theme-dark .phone {
+      box-shadow: 0 0 0 10px #d3d8e0;
     }
 
     .skeleton {
@@ -123,7 +184,7 @@
 
     .bone {
       position: absolute;
-      border: 1px solid rgba(0, 0, 0, 0.8);
+      border: 1px solid var(--anatomy-bone);
       background: transparent;
     }
 
@@ -264,6 +325,8 @@
       color: rgb(var(--alert-ink));
       padding: 12px 16px 16px;
       text-align: left;
+      transform-origin: center;
+      will-change: transform;
     }
 
     .alert-row {
@@ -328,19 +391,143 @@
       flex-shrink: 0;
       fill: rgb(var(--accent-ink) / 0.7);
     }
+
+    .footer {
+      margin-top: 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.75rem;
+      color: rgb(var(--ink) / 0.7);
+      text-align: center;
+    }
+
+    /* Stop-moved bottom sheet (vaul snaps 0.55 / 0.92) */
+    .sheet-scrim {
+      position: absolute;
+      inset: 0;
+      z-index: 40;
+      background: rgb(var(--ink) / 0.4);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .sheet {
+      position: absolute;
+      inset: 0;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      border-radius: 24px 24px 0 0;
+      background: var(--surface);
+      box-shadow: 0 -8px 40px rgba(21, 30, 44, 0.18);
+      will-change: transform;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .sheet-handle-wrap {
+      display: flex;
+      flex-shrink: 0;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 0 8px;
+    }
+
+    .sheet-handle {
+      width: 40px;
+      height: 4px;
+      border-radius: 9999px;
+      background: rgb(var(--ink) / 0.2);
+    }
+
+    .sheet-header {
+      display: flex;
+      flex-shrink: 0;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0 16px 12px;
+    }
+
+    .sheet-title {
+      margin: 0;
+      min-width: 0;
+      font-size: 1.125rem;
+      font-weight: 400;
+      color: rgb(var(--ink));
+    }
+
+    .sheet-close {
+      display: inline-flex;
+      flex-shrink: 0;
+      padding: 6px;
+      border-radius: 6px;
+      color: rgb(var(--ink) / 0.7);
+    }
+
+    .sheet-close svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    .sheet-map {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      margin: 0 0 env(safe-area-inset-bottom, 0);
+      background:
+        linear-gradient(90deg, rgb(var(--ink) / 0.04) 1px, transparent 1px) 0 0 / 28px 28px,
+        linear-gradient(rgb(var(--ink) / 0.04) 1px, transparent 1px) 0 0 / 28px 28px,
+        #e8eef5;
+    }
+
+    .sheet-map-road {
+      position: absolute;
+      background: #fff;
+      box-shadow: 0 0 0 1px rgb(var(--ink) / 0.06);
+    }
+
+    .sheet-map-road.h {
+      left: 8%;
+      right: 8%;
+      height: 10px;
+      top: 42%;
+      border-radius: 4px;
+    }
+
+    .sheet-map-road.v {
+      top: 12%;
+      bottom: 12%;
+      width: 10px;
+      left: 48%;
+      border-radius: 4px;
+    }
+
+    .sheet-map-pin {
+      position: absolute;
+      left: 50%;
+      top: 46%;
+      width: 28px;
+      height: 28px;
+      transform: translate(-50%, -100%);
+      color: #3061d8;
+      filter: drop-shadow(0 4px 8px rgba(21, 30, 44, 0.25));
+    }
+
+    .sheet-map-pin svg {
+      width: 28px;
+      height: 28px;
+      fill: currentColor;
+    }
   </style>
 </head>
 <body>
   <div class="page" id="root">
     <div class="stage">
-      <div class="meta">
-        <span data-label>1:1</span>
-        <span data-label>390PX</span>
-      </div>
-
       <div class="artboard" id="artboard">
-        <svg class="guides" id="svg" viewBox="0 0 470 980" fill="none" aria-hidden="true"></svg>
-
         <div class="hatch" data-offset></div>
         <div class="hatch" data-offset></div>
         <div class="hatch" data-offset></div>
@@ -402,7 +589,7 @@
                         <p class="meta-line">Предыдущая ушла 4 мин назад</p>
                       </div>
                     </div>
-                    <div class="alert">
+                    <div class="alert" data-stop-notice>
                       <div class="alert-row">
                         <p>Остановка переехала</p>
                         <span class="alert-link">
@@ -429,10 +616,38 @@
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
                 </div>
               </div>
+
+              <div class="footer" data-block="footer">
+                <span>О проекте</span>
+                <span>Политика конфиденциальности</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="sheet-scrim" data-sheet-scrim></div>
+          <div class="sheet" data-sheet>
+            <div class="sheet-handle-wrap">
+              <div class="sheet-handle" aria-hidden="true"></div>
+            </div>
+            <div class="sheet-header">
+              <h2 class="sheet-title">Остановка на Ладожской</h2>
+              <span class="sheet-close" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+              </span>
+            </div>
+            <div class="sheet-map" aria-hidden="true">
+              <div class="sheet-map-road h"></div>
+              <div class="sheet-map-road v"></div>
+              <div class="sheet-map-pin">
+                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- Stage-level overlay: above scaled artboard so chrome can't cover strokes. -->
+      <svg class="guides" id="svg" viewBox="0 0 1 1" fill="none" aria-hidden="true"></svg>
     </div>
   </div>
 
@@ -456,11 +671,202 @@
       const skeleton = document.getElementById('skeleton')
       const phone = document.getElementById('phone')
 
+      const isEmbed = window.self !== window.top
+        || /(?:^|[?&])embed(?:=|$)/.test(location.search)
+      if (isEmbed) document.documentElement.classList.add('is-embed')
+
+      const EMBED_MAX_SCALE = 0.8
+
+      function applyTheme(theme, canvas) {
+        document.documentElement.classList.toggle('theme-dark', theme === 'dark')
+        if (typeof canvas === 'string' && canvas) {
+          document.documentElement.style.setProperty('--canvas', canvas)
+        }
+      }
+
+      var themeMatch = /(?:^|[?&])theme=(dark|light)(?:&|$)/.exec(location.search)
+      applyTheme(themeMatch ? themeMatch[1] : 'light')
+
+      var timeline = null
+      var playRequested = false
+      var lastArtH = PHONE_H_INIT + ART_PAD * 2
+      var guideXs = []
+      var guideYs = []
+
+      function startTimeline() {
+        playRequested = true
+        if (timeline) timeline.play(0)
+      }
+
+      window.addEventListener('message', function (event) {
+        if (!event.data) return
+        if (event.data.type === 'marshrutka-embed-theme') {
+          applyTheme(
+            event.data.theme === 'dark' ? 'dark' : 'light',
+            event.data.canvas,
+          )
+          return
+        }
+        if (event.data.type === 'marshrutka-embed-size-request') {
+          notifyParent(currentArtH())
+          return
+        }
+        if (event.data.type === 'marshrutka-embed-play') {
+          startTimeline()
+        }
+      })
+
+      function currentScale(artH) {
+        const pad = isEmbed ? 0 : 48
+        const sx = (window.innerWidth - pad) / ART_W
+        const sy = (window.innerHeight - pad) / artH
+        if (isEmbed) return Math.min(EMBED_MAX_SCALE, sx, sy)
+        return Math.min(1, sx, sy)
+      }
+
       function fitScale(artH) {
-        const sx = (window.innerWidth - 48) / ART_W
-        const sy = (window.innerHeight - 48) / artH
-        const s = Math.min(1, sx, sy)
-        artboard.style.transform = 'scale(' + s + ')'
+        const s = currentScale(artH)
+        if (isEmbed) {
+          artboard.style.transform = 'translate(-50%, -50%) scale(' + s + ')'
+        } else {
+          artboard.style.transform = 'scale(' + s + ')'
+        }
+        return s
+      }
+
+      function notifyParent(artH) {
+        if (!isEmbed || !window.parent || window.parent === window) return
+        const scale = currentScale(artH)
+        window.parent.postMessage({
+          type: 'marshrutka-embed-size',
+          width: ART_W,
+          height: artH,
+          // Full-bleed frame: parent uses 100% width and this pixel height.
+          displayHeight: Math.round(artH * scale),
+          fullBleed: true,
+        }, '*')
+      }
+
+      function currentArtH() {
+        return artboard.offsetHeight || (PHONE_H_INIT + ART_PAD * 2)
+      }
+
+      function syncGuideDash(el) {
+        if (!el.getTotalLength) return
+        const len = el.getTotalLength()
+        if (!(len > 0)) return
+        // GSAP writes dash via element.style, not attributes — read both.
+        const prevArr = el.style.strokeDasharray || el.getAttribute('stroke-dasharray')
+        const prevOff = el.style.strokeDashoffset || el.getAttribute('stroke-dashoffset')
+        if (prevArr == null || prevArr === '') return
+        const prevLen = parseFloat(String(prevArr).split(/[\s,]/)[0]) || 0
+        const off =
+          prevOff == null || prevOff === '' ? 0 : parseFloat(prevOff) || 0
+        if (!(prevLen > 0)) return
+        const progress = Math.max(0, Math.min(1, 1 - off / prevLen))
+        if (typeof gsap !== 'undefined') {
+          gsap.set(el, {
+            strokeDasharray: len,
+            strokeDashoffset: len * (1 - progress),
+          })
+        } else {
+          el.setAttribute('stroke-dasharray', String(len))
+          el.setAttribute('stroke-dashoffset', String(len * (1 - progress)))
+        }
+      }
+
+      function drawGuides(artH, xs, ys) {
+        guideXs = xs
+        guideYs = ys
+        lastArtH = artH
+
+        const scale = currentScale(artH)
+        const stage = artboard.parentElement
+        const vw = Math.max(1, isEmbed ? window.innerWidth : stage.clientWidth)
+        const vh = Math.max(1, isEmbed ? window.innerHeight : stage.clientHeight)
+
+        // Map artboard user-space → stage/iframe pixels, then extend to frame edges.
+        var originX
+        var originY
+        var pxScale
+        if (isEmbed) {
+          pxScale = scale
+          originX = vw / 2 - (ART_W * pxScale) / 2
+          originY = vh / 2 - (artH * pxScale) / 2
+        } else {
+          const stageRect = stage.getBoundingClientRect()
+          const artRect = artboard.getBoundingClientRect()
+          pxScale = artRect.width / ART_W
+          originX = artRect.left - stageRect.left
+          originY = artRect.top - stageRect.top
+        }
+
+        svg.setAttribute('viewBox', '0 0 ' + vw + ' ' + vh)
+        svg.style.left = '0'
+        svg.style.top = '0'
+        svg.style.width = '100%'
+        svg.style.height = '100%'
+
+        var existing = svg.querySelectorAll('[data-guide]')
+        var need = xs.length + ys.length
+
+        function setVertical(line, artX) {
+          const x = originX + artX * pxScale
+          line.setAttribute('data-guide', '')
+          line.removeAttribute('data-guide-h')
+          line.setAttribute('x1', String(x))
+          line.setAttribute('x2', String(x))
+          line.setAttribute('y1', '0')
+          line.setAttribute('y2', String(vh))
+          line.setAttribute('stroke', GUIDE)
+          line.setAttribute('stroke-width', '1')
+        }
+
+        function setHorizontal(line, artY) {
+          const y = originY + artY * pxScale
+          line.setAttribute('data-guide', '')
+          line.setAttribute('data-guide-h', '')
+          line.setAttribute('x1', '0')
+          line.setAttribute('x2', String(vw))
+          line.setAttribute('y1', String(y))
+          line.setAttribute('y2', String(y))
+          line.setAttribute('stroke', GUIDE)
+          line.setAttribute('stroke-width', '1')
+        }
+
+        if (existing.length !== need) {
+          svg.innerHTML = ''
+          xs.forEach(function (x) {
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+            setVertical(line, x)
+            svg.appendChild(line)
+          })
+          ys.forEach(function (y) {
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+            setHorizontal(line, y)
+            svg.appendChild(line)
+          })
+        } else {
+          var idx = 0
+          xs.forEach(function (x) { setVertical(existing[idx++], x) })
+          ys.forEach(function (y) { setHorizontal(existing[idx++], y) })
+          Array.prototype.forEach.call(existing, syncGuideDash)
+        }
+      }
+
+      function relayoutGuides() {
+        const artH = artboard.offsetHeight || (PHONE_H_INIT + ART_PAD * 2)
+        fitScale(artH)
+        if (guideXs.length && guideYs.length) drawGuides(artH, guideXs, guideYs)
+        notifyParent(artH)
+      }
+
+      if (isEmbed) {
+        var ping = 0
+        var pingId = setInterval(function () {
+          notifyParent(currentArtH())
+          if (++ping >= 30) clearInterval(pingId)
+        }, 100)
       }
 
       function yInArtboard(el) {
@@ -505,8 +911,8 @@
 
         phone.style.height = fittedH + 'px'
         artboard.style.height = artH + 'px'
-        svg.setAttribute('viewBox', '0 0 ' + ART_W + ' ' + artH)
         fitScale(artH)
+        notifyParent(artH)
 
         const phoneTop = ART_PAD
         const phoneBottom = ART_PAD + fittedH
@@ -540,38 +946,16 @@
           [phoneBottom]
         ))
 
-        svg.innerHTML = ''
-        ;[
+        const vXs = [
           ART_PAD,
           ART_PAD + INSET,
           ART_PAD + INSET + PAD,
           ART_PAD + PHONE_W - INSET - PAD,
           ART_PAD + PHONE_W - INSET,
           ART_PAD + PHONE_W,
-        ].forEach(function (x) {
-          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line')
-          line.setAttribute('data-guide', '')
-          line.setAttribute('x1', String(x))
-          line.setAttribute('x2', String(x))
-          line.setAttribute('y1', '0')
-          line.setAttribute('y2', String(artH))
-          line.setAttribute('stroke', GUIDE)
-          line.setAttribute('stroke-width', '1')
-          svg.appendChild(line)
-        })
+        ]
 
-        hYs.forEach(function (y) {
-          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line')
-          line.setAttribute('data-guide', '')
-          line.setAttribute('data-guide-h', '')
-          line.setAttribute('x1', '0')
-          line.setAttribute('x2', String(ART_W))
-          line.setAttribute('y1', String(y))
-          line.setAttribute('y2', String(y))
-          line.setAttribute('stroke', GUIDE)
-          line.setAttribute('stroke-width', '1')
-          svg.appendChild(line)
-        })
+        drawGuides(artH, vXs, hYs)
 
         skeleton.innerHTML = ''
 
@@ -644,9 +1028,11 @@
         const lines = q('[data-guide]')
         const offsets = q('[data-offset]')
         const bones = q('[data-bone]')
-        const labels = q('[data-label]')
         const mock = q('[data-mock]')
         const phoneChrome = q('[data-phone-chrome]')
+        const stopNotice = q('[data-stop-notice]')
+        const sheetScrim = q('[data-sheet-scrim]')
+        const sheet = q('[data-sheet]')
 
         lines.forEach(function (el) {
           const len = el.getTotalLength ? el.getTotalLength() : 0
@@ -659,11 +1045,21 @@
 
         gsap.set(offsets, { scale: 0.6, opacity: 0, transformOrigin: 'center' })
         gsap.set(bones, { opacity: 0, y: 8 })
-        gsap.set(labels, { opacity: 0, y: 6 })
         gsap.set(mock, { opacity: 0 })
         gsap.set(phoneChrome, { opacity: 0 })
+        gsap.set(stopNotice, { scale: 1, transformOrigin: 'center' })
+        gsap.set(sheetScrim, { opacity: 0 })
+
+        // Pixel y from phone height — avoids CSS transform / yPercent fights.
+        const sheetClosedY = phone.offsetHeight || fittedH
+        const sheetHalfY = sheetClosedY * 0.45 // ~55% visible (vaul SNAP_MEDIUM)
+        const sheetLargeY = sheetClosedY * 0.08 // ~92% visible (vaul SNAP_LARGE)
+        gsap.set(sheet, { y: sheetClosedY, force3D: true })
+
+        document.documentElement.classList.add('is-ready')
 
         const tl = gsap.timeline({
+          paused: isEmbed,
           repeat: -1,
           defaults: { ease: 'power2.inOut' },
         })
@@ -691,22 +1087,53 @@
           ease: 'power3.out',
         }, '-=0.1')
 
-        tl.to(labels, {
-          opacity: 1,
-          y: 0,
-          duration: 0.55,
-          stagger: 0.08,
-          ease: 'power3.out',
-        }, '-=0.25')
-
         tl.to(phoneChrome, { opacity: 1, duration: 0.5, ease: 'power2.out' }, '+=0.15')
         tl.to(mock, { opacity: 1, duration: 0.85, ease: 'power2.inOut' }, '-=0.25')
         tl.to([].concat(bones, offsets), { opacity: 0, duration: 0.55, ease: 'power2.inOut' }, '-=0.55')
         tl.to(lines, { opacity: 0.28, duration: 0.55, ease: 'power2.inOut' }, '<')
 
-        tl.to({}, { duration: 2.1 })
+        // Settle on UI, then interact with stop-moved notice
+        tl.to({}, { duration: 0.7 })
 
-        tl.to([].concat(mock, labels, phoneChrome, lines, offsets), {
+        tl.to(stopNotice, {
+          scale: 0.96,
+          duration: 0.12,
+          ease: 'power2.in',
+        })
+        tl.to(stopNotice, {
+          scale: 1,
+          duration: 0.2,
+          ease: 'power2.out',
+        })
+
+        // Bottom sheet: 55% → 92% (product snaps) → close
+        tl.to(sheetScrim, { opacity: 1, duration: 0.5, ease: 'power2.inOut' }, '-=0.05')
+        tl.to(sheet, {
+          y: sheetHalfY,
+          duration: 0.75,
+          ease: 'expo.out',
+        }, '<')
+
+        tl.to({}, { duration: 0.85 })
+
+        tl.to(sheet, {
+          y: sheetLargeY,
+          duration: 0.75,
+          ease: 'power4.inOut',
+        })
+
+        tl.to({}, { duration: 1.05 })
+
+        tl.to(sheet, {
+          y: sheetClosedY,
+          duration: 0.7,
+          ease: 'power4.inOut',
+        })
+        tl.to(sheetScrim, { opacity: 0, duration: 0.5, ease: 'power2.inOut' }, '-=0.4')
+
+        tl.to({}, { duration: 0.45 })
+
+        tl.to([].concat(mock, phoneChrome, lines, offsets), {
           opacity: 0,
           duration: 0.7,
           ease: 'power2.inOut',
@@ -721,22 +1148,49 @@
         })
         tl.set(offsets, { scale: 0.6, opacity: 0 })
         tl.set(bones, { opacity: 0, y: 8 })
-        tl.set(labels, { opacity: 0, y: 6 })
         tl.set([].concat(mock, phoneChrome), { opacity: 0 })
+        tl.set(stopNotice, { scale: 1 })
+        tl.set(sheetScrim, { opacity: 0 })
+        tl.set(sheet, { y: sheetClosedY })
         tl.to({}, { duration: 0.35 })
+
+        timeline = tl
+
+        if (isEmbed && window.parent && window.parent !== window) {
+          window.parent.postMessage({ type: 'marshrutka-embed-ready' }, '*')
+          if (playRequested) tl.play(0)
+          // Safety: never leave the embed frozen if parent ack is missed.
+          setTimeout(function () {
+            if (timeline && timeline.paused()) timeline.play(0)
+          }, 800)
+        }
       }
 
-      window.addEventListener('resize', function () {
-        const artH = artboard.offsetHeight || (PHONE_H_INIT + ART_PAD * 2)
-        fitScale(artH)
-      })
+      window.addEventListener('resize', relayoutGuides)
+
+      if (typeof ResizeObserver !== 'undefined') {
+        var resizePending = false
+        var ro = new ResizeObserver(function () {
+          if (resizePending) return
+          resizePending = true
+          requestAnimationFrame(function () {
+            resizePending = false
+            relayoutGuides()
+          })
+        })
+        ro.observe(document.documentElement)
+        if (artboard.parentElement) ro.observe(artboard.parentElement)
+      }
 
       const fontsReady = document.fonts && document.fonts.ready
         ? document.fonts.ready
         : Promise.resolve()
 
       fontsReady.then(function () {
-        requestAnimationFrame(setup)
+        // Wait two frames so the parent full-bleed height is applied before first draw.
+        requestAnimationFrame(function () {
+          requestAnimationFrame(setup)
+        })
       })
     })()
   </script>
