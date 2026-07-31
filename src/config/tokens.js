@@ -5,9 +5,9 @@
  * 2. tailwind.config.js                 ← var → utilities (+ opacity on ink/accent-ink)
  * 3. Components use TW classes
  * 4. routes.js color key → ROUTE_COLORS
- * 5. .hover-darken — затемнение фона на --hover-darken
+ * 5. .hover-darken — darkens background by --hover-darken
  * 6. Radius: --radius-* → rounded-{sm|md|lg|xl|2xl|3xl|full}
- * 7. Type: Google Sans + TW text-* / font-* (см. TYPE_SCALE / TYPE_USAGE)
+ * 7. Type: Google Sans + TW text-* / font-* (see TYPE_SCALE / TYPE_USAGE)
  */
 
 /** Raw CSS vars from index.css. Keep in sync with :root. */
@@ -15,13 +15,13 @@ export const CSS_PALETTE = [
   {
     id: 'surface',
     label: 'Surface',
-    note: 'Холодный ряд H≈258. chip — между muted и sunken (idle чипы).',
+    note: 'Cool neutrals (H≈258). Chip sits between muted and sunken for idle chips.',
     vars: ['--surface', '--surface-muted', '--surface-chip', '--surface-sunken'],
   },
   {
     id: 'ink',
     label: 'Ink',
-    note: 'Один токен (channels), холодный near-black. Прозрачность — через TW: text-ink/70, bg-ink/40, …',
+    note: 'One near-black token. Soften it with Tailwind opacity: text-ink/70, bg-ink/40, …',
     vars: ['--ink'],
     examples: [
       { tw: 'text-ink', label: '100%' },
@@ -38,20 +38,20 @@ export const CSS_PALETTE = [
   {
     id: 'accent',
     label: 'Accent',
-    note: 'Один hue (OKLCH H=264): solid для линий и иконок, soft для чипов и CTA. Hover → .hover-darken.',
+    note: 'One hue (OKLCH H=264): solid for lines/icons, soft for chips and CTAs. Hover uses .hover-darken.',
     vars: ['--accent', '--accent-soft', '--accent-ink'],
   },
   {
     id: 'feedback',
     label: 'Feedback',
-    note: 'alert — soft coral (не жёлтый). Hover → .hover-darken.',
+    note: 'Alert is soft coral (not yellow). Hover uses .hover-darken.',
     vars: ['--alert', '--alert-ink', '--danger', '--danger-ink', '--highlight', '--stroke', '--map-line', '--hover-darken'],
     aliases: [{ css: '--map-line', pointsTo: '--accent' }],
   },
   {
     id: 'routes',
     label: 'Routes',
-    note: 'Пары bg+ink на общей сетке: bg L=95% C=0.045, ink L=42%, контраст 7.0–7.9.',
+    note: 'bg + ink pairs on a shared grid: bg L=95% C=0.045, ink L=42%, contrast 7.0–7.9.',
     vars: [
       '--route-blue',
       '--route-blue-ink',
@@ -92,43 +92,43 @@ export const RADIUS_USAGE = [
     name: 'sm',
     tw: ['rounded-sm', 'rounded'],
     used: false,
-    notes: 'DEFAULT `rounded` = sm. Сейчас только на /ds (color picker, micro swatch).',
+    notes: 'DEFAULT `rounded` = sm. Only on /ds for now (color picker, micro swatch).',
     places: ['DesignSystem (color input, ink example chip)'],
   },
   {
     name: 'md',
     tw: ['rounded-md'],
     used: true,
-    notes: 'Контролы и «квадратные» поверхности поменьше.',
+    notes: 'Controls and smaller square surfaces.',
     places: [
-      'RouteMapPage — контейнер карты',
-      'StopLocationOverlay — кнопка закрыть',
+      'RouteMapPage — map container',
+      'StopLocationOverlay — close button',
       'index.css .skeleton — border-radius: var(--radius-md)',
-      'DesignSystem — мелкие превью',
+      'DesignSystem — small previews',
     ],
   },
   {
     name: 'lg',
     tw: ['rounded-lg'],
     used: true,
-    notes: 'Alert / EmptyState / DS-панели.',
+    notes: 'Alert / EmptyState / DS panels.',
     places: [
       'ui/Alert, EmptyState',
-      'DesignSystem — панели секций',
+      'DesignSystem — section panels',
     ],
   },
   {
     name: 'xl',
     tw: ['rounded-xl'],
     used: false,
-    notes: 'Запас. В продукте пока не используется.',
+    notes: 'Reserved. Not used in product yet.',
     places: [],
   },
   {
     name: '2xl',
     tw: ['rounded-2xl'],
     used: false,
-    notes: 'Запас. В продукте пока не используется.',
+    notes: 'Reserved. Not used in product yet.',
     places: [],
   },
   {
@@ -138,7 +138,7 @@ export const RADIUS_USAGE = [
     notes: 'DirectionCard + PromoCard + sheet/modal.',
     places: [
       'MarshrutkaWidget DirectionCard (+ skeleton, stop notice rounded-t-3xl)',
-      'ui/PromoCard — home CTA + homescreen platform cards (surface on muted page, muted on surface sheet)',
+      'ui/PromoCard — accent (AddToHomescreenPromo) + muted (HomescreenPlatformCards)',
       'StopLocationOverlay — mobile vaul sheet (rounded-t-3xl, snaps 0.55/0.92) + desktop modal (rounded-3xl)',
       'HomeScreen — mobile vaul sheet (rounded-t-3xl, snaps 0.55/0.92) over Home; desktop full-page portal',
     ],
@@ -170,7 +170,7 @@ export const TYPE_SCALE = [
     rem: '0.75rem',
     weight: '400',
     role: 'meta',
-    sample: 'Источник: расписание перевозчика',
+    sample: 'Source: carrier schedule',
   },
   {
     name: 'body-sm',
@@ -179,7 +179,7 @@ export const TYPE_SCALE = [
     rem: '0.875rem',
     weight: '400',
     role: 'secondary',
-    sample: 'До ближайшей · через 12 мин',
+    sample: 'Next departure · in 12 min',
   },
   {
     name: 'body',
@@ -188,7 +188,7 @@ export const TYPE_SCALE = [
     rem: '1rem',
     weight: '400',
     role: 'primary',
-    sample: 'Остановка перенесена',
+    sample: 'Stop has moved',
   },
   {
     name: 'label',
@@ -197,7 +197,7 @@ export const TYPE_SCALE = [
     rem: '0.875rem',
     weight: '500',
     role: 'chip',
-    sample: '533 · Всеволожск',
+    sample: '533 · Vsevolozhsk',
   },
   {
     name: 'title-sm',
@@ -206,7 +206,7 @@ export const TYPE_SCALE = [
     rem: '1.125rem',
     weight: '400',
     role: 'sheet',
-    sample: 'Где остановка',
+    sample: 'Where is the stop',
   },
   {
     name: 'title',
@@ -215,7 +215,7 @@ export const TYPE_SCALE = [
     rem: '1.25rem',
     weight: '400',
     role: 'page',
-    sample: 'В сторону Ладожской',
+    sample: 'Towards Ladozhskaya',
   },
   {
     name: 'display',
@@ -224,7 +224,7 @@ export const TYPE_SCALE = [
     rem: '1.5rem',
     weight: '400',
     role: 'hero',
-    sample: 'Маршрутки от метро',
+    sample: 'Minibuses from the metro',
   },
   {
     name: 'countdown',
@@ -242,7 +242,7 @@ export const TYPE_SCALE = [
 /** Ink opacity roles for type. Keep in sync with product classes. */
 export const TYPE_INK = [
   { name: 'ink', tw: 'text-ink', opacity: '100%', role: 'primary' },
-  { name: 'ink/80', tw: 'text-ink/80', opacity: '80%', role: 'soft primary (время, подписи)' },
+  { name: 'ink/80', tw: 'text-ink/80', opacity: '80%', role: 'soft primary (times, labels)' },
   { name: 'ink/70', tw: 'text-ink/70', opacity: '70%', role: 'secondary / meta' },
 ]
 
@@ -254,10 +254,10 @@ export const TYPE_USAGE = [
     name: 'caption',
     tw: ['text-xs', 'text-xs text-ink/70'],
     used: true,
-    notes: 'Сноски, source, мелкие ссылки.',
+    notes: 'Footnotes, sources, small links.',
     places: [
       'FullSchedule — sourceLabel + privacy link',
-      'RouteMapPage — подпись под картой',
+      'RouteMapPage — caption under the map',
       'ui/TextLink size=xs',
     ],
   },
@@ -265,19 +265,19 @@ export const TYPE_USAGE = [
     name: 'body-sm',
     tw: ['text-sm font-normal', 'text-sm text-ink/70', 'text-sm text-ink/80'],
     used: true,
-    notes: 'Основной secondary-текст UI.',
+    notes: 'Main secondary UI text.',
     places: [
       'Home, HomeScreen, DepartureRow, BackLink',
-      'MarshrutkaWidget — подписи к countdown',
-      'FullSchedule — ячейки таблицы',
-      'ui/TextLink size=sm, RouteBadge (с font-medium → label)',
+      'MarshrutkaWidget — countdown labels',
+      'FullSchedule — table cells',
+      'ui/TextLink size=sm, RouteBadge (with font-medium → label)',
     ],
   },
   {
     name: 'body',
     tw: ['text-base font-normal', 'text-base text-ink/70'],
     used: true,
-    notes: 'Чипы, notice, body на больших экранах.',
+    notes: 'Chips, notices, body on larger screens.',
     places: [
       'ui/Chip',
       'MarshrutkaWidget — stopMoved notice',
@@ -290,21 +290,21 @@ export const TYPE_USAGE = [
     name: 'label',
     tw: ['text-sm font-medium'],
     used: true,
-    notes: 'Единственный medium на compact controls.',
+    notes: 'Only medium weight on compact controls.',
     places: ['ui/RouteBadge'],
   },
   {
     name: 'title-sm',
     tw: ['text-lg font-normal'],
     used: true,
-    notes: 'Заголовки sheet / modal.',
+    notes: 'Sheet / modal titles.',
     places: ['StopLocationOverlay — Drawer.Title + desktop h2'],
   },
   {
     name: 'title',
     tw: ['text-xl font-normal', 'text-xl font-normal leading-7'],
     used: true,
-    notes: 'Заголовки экранов и карточек.',
+    notes: 'Screen and card titles.',
     places: [
       'Home — h1',
       'FullSchedule, RouteMapPage — h1',
@@ -318,22 +318,22 @@ export const TYPE_USAGE = [
     name: 'display',
     tw: ['text-2xl font-normal', 'text-2xl sm:text-3xl font-normal'],
     used: true,
-    notes: 'Крупный hero. sm:text-3xl только HomeScreen non-compact.',
+    notes: 'Large hero. sm:text-3xl only on HomeScreen non-compact.',
     places: ['About — h1', 'HomeScreen — title (non-compact)'],
   },
   {
     name: 'countdown',
     tw: ["font-normal text-ink", "style={{ fontSize: '40px', lineHeight: 1 }}"],
     used: true,
-    notes: 'Единственный custom size. font-size 40px + lh:1 → бокс 40px.',
-    places: ['MarshrutkaWidget DirectionCard — время ближайшего рейса'],
+    notes: 'Only custom size. 40px font + lh:1 → 40px box.',
+    places: ['MarshrutkaWidget DirectionCard — next departure time'],
   },
   {
     name: 'emphasis',
     tw: ['font-semibold'],
     used: true,
-    notes: 'Не отдельный size — только weight на body-sm.',
-    places: ['FullSchedule — highlighted ближайший рейс'],
+    notes: 'Not a separate size — weight only on body-sm.',
+    places: ['FullSchedule — highlighted next departure'],
   },
 ]
 
@@ -341,7 +341,7 @@ export const TOKEN_GROUPS = [
   {
     id: 'surface',
     label: 'Surface',
-    description: 'Фоны страниц, чипов и нейтральных панелей',
+    description: 'Page, chip, and neutral panel backgrounds',
     tokens: [
       { name: 'surface', css: '--surface', tw: 'bg-surface', role: 'bg' },
       { name: 'surface-muted', css: '--surface-muted', tw: 'bg-surface-muted', role: 'bg' },
@@ -352,7 +352,7 @@ export const TOKEN_GROUPS = [
   {
     id: 'ink',
     label: 'Ink',
-    description: 'text-ink + opacity modifiers',
+    description: 'text-ink plus opacity modifiers',
     tokens: [
       { name: 'ink', css: '--ink', tw: 'text-ink', role: 'fg' },
       { name: 'ink/70', css: '--ink', tw: 'text-ink/70', role: 'fg' },
@@ -363,7 +363,7 @@ export const TOKEN_GROUPS = [
   {
     id: 'accent',
     label: 'Accent',
-    description: 'Табы, CTA, линия маршрута',
+    description: 'Tabs, CTAs, and the route line',
     tokens: [
       { name: 'accent', css: '--accent', tw: 'bg-accent', role: 'bg' },
       { name: 'accent-soft', css: '--accent-soft', tw: 'bg-accent-soft', role: 'bg' },
@@ -373,7 +373,7 @@ export const TOKEN_GROUPS = [
   {
     id: 'feedback',
     label: 'Feedback',
-    description: 'Алерты, ошибки, выделение строки, бордер',
+    description: 'Alerts, errors, row highlight, borders',
     tokens: [
       { name: 'alert', css: '--alert', tw: 'bg-alert', role: 'bg' },
       { name: 'alert-ink', css: '--alert-ink', tw: 'text-alert-ink', role: 'fg' },

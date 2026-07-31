@@ -12,6 +12,8 @@ import {
   getRouteColorClasses,
 } from '../config/tokens'
 import { copy } from '../config/copy'
+import { AddToHomescreenPromo } from './AddToHomescreenPromo'
+import { HomescreenPlatformCards } from './HomescreenPlatformCards'
 import {
   Alert,
   BackLink,
@@ -19,11 +21,9 @@ import {
   ChipGroup,
   DepartureRow,
   EmptyState,
-  PromoCard,
   RouteBadge,
   TextLink,
 } from './ui'
-import { ArrowRightIcon } from './icons'
 
 const DS_NAV = [
   { id: 'how', label: 'How it works' },
@@ -62,7 +62,7 @@ function DsSideNav() {
 
   return (
     <nav
-      aria-label="Разделы"
+      aria-label="Sections"
       className="pointer-events-none fixed inset-y-0 left-0 z-20 hidden xl:flex items-center pl-4"
     >
       <ul className="pointer-events-auto flex flex-col gap-1.5 px-3">
@@ -168,45 +168,52 @@ function HowItWorks() {
       <div>
         <h2 className="text-lg font-medium text-ink">How it works</h2>
         <p className="text-sm text-ink/70 mt-1">
-          Значения только в <code className="text-ink">:root</code>. Ink — один channel-токен + opacity в классах.
+          Colors live in CSS variables. Components only use Tailwind classes that point at those
+          variables — never raw hex in JSX.
         </p>
       </div>
 
       <ol className="rounded-lg bg-surface border border-ink/10 divide-y divide-ink/5 text-sm">
         <li className="p-4 space-y-1">
-          <p className="font-medium text-ink">1. CSS vars — <code className="font-mono text-ink/70">src/index.css</code></p>
+          <p className="font-medium text-ink">
+            1. Define tokens — <code className="font-mono text-ink/70">src/index.css</code>
+          </p>
           <p className="text-ink/70">
-            <code className="text-ink">--surface-*</code>, <code className="text-ink">--ink</code> (channels),{' '}
-            <code className="text-ink">--accent-*</code>, feedback, routes.
+            Surfaces, ink, accent, alerts, and route colors all live under{' '}
+            <code className="text-ink">:root</code>.
           </p>
         </li>
         <li className="p-4 space-y-1">
-          <p className="font-medium text-ink">2. Tailwind — <code className="font-mono text-ink/70">tailwind.config.js</code></p>
+          <p className="font-medium text-ink">
+            2. Wire them to Tailwind —{' '}
+            <code className="font-mono text-ink/70">tailwind.config.js</code>
+          </p>
           <p className="text-ink/70">
-            <code className="text-ink">ink: rgb(var(--ink) / &lt;alpha-value&gt;)</code> →{' '}
-            <code className="text-ink">text-ink/70</code>, <code className="text-ink">bg-ink/40</code>.
+            Example: <code className="text-ink">text-ink/70</code> uses the ink token at 70%
+            opacity.
           </p>
         </li>
         <li className="p-4 space-y-1">
-          <p className="font-medium text-ink">3. Components</p>
+          <p className="font-medium text-ink">3. Use semantic classes in components</p>
           <p className="text-ink/70">
-            Semantic classes only. Пример: <code className="text-ink">bg-accent-soft text-accent-ink</code>.
+            Prefer meaning over hex:{' '}
+            <code className="text-ink">bg-accent-soft text-accent-ink</code>.
           </p>
         </li>
         <li className="p-4 space-y-1">
-          <p className="font-medium text-ink">4. Route keys</p>
+          <p className="font-medium text-ink">4. Route colors come from a key</p>
           <p className="text-ink/70">
-            <code className="text-ink">color: &apos;blue&apos;</code> →{' '}
-            <code className="text-ink">getRouteColor()</code> → TW classes.
+            A route has <code className="text-ink">color: &apos;blue&apos;</code> →{' '}
+            <code className="text-ink">getRouteColor()</code> returns the matching classes.
           </p>
         </li>
         <li className="p-4 space-y-1">
-          <p className="font-medium text-ink">5. Radius</p>
+          <p className="font-medium text-ink">5. Corner radius is tokenized too</p>
           <p className="text-ink/70">
-            <code className="text-ink">--radius-*</code> →{' '}
-            <code className="text-ink">rounded-lg</code> (card),{' '}
-            <code className="text-ink">rounded-md</code> (control),{' '}
-            <code className="text-ink">rounded-full</code> (pill).
+            <code className="text-ink">rounded-md</code> for controls,{' '}
+            <code className="text-ink">rounded-lg</code> for panels,{' '}
+            <code className="text-ink">rounded-3xl</code> for cards and sheets,{' '}
+            <code className="text-ink">rounded-full</code> for pills.
           </p>
         </li>
       </ol>
@@ -220,31 +227,29 @@ function RadiusSection({ revision = 0 }) {
       <div>
         <h2 className="text-lg font-medium text-ink">1b · Radius</h2>
         <p className="text-sm text-ink/70 mt-1">
-          Значения в <code className="text-ink">:root</code> (
-          <code className="text-ink">--radius-*</code>) → Tailwind{' '}
-          <code className="text-ink">borderRadius</code> → классы{' '}
-          <code className="text-ink">rounded-*</code>. Роли: md control, lg panel, 3xl card/sheet;
-          xl/2xl — запас.
+          Corner sizes are CSS variables that map to Tailwind{' '}
+          <code className="text-ink">rounded-*</code> classes.
         </p>
       </div>
 
       <div className="rounded-lg bg-surface p-4 border border-ink/10 space-y-3 text-sm text-ink/70">
-        <p className="font-medium text-ink">Как выбирать</p>
+        <p className="font-medium text-ink">When to use which</p>
         <ul className="list-disc list-inside space-y-1">
           <li>
-            <code className="text-ink">rounded-md</code> — контролы, карта, мелкие кнопки
+            <code className="text-ink">rounded-md</code> — buttons, map, small controls
           </li>
           <li>
-            <code className="text-ink">rounded-lg</code> — панели / Alert / EmptyState
+            <code className="text-ink">rounded-lg</code> — panels, Alert, EmptyState
           </li>
           <li>
-            <code className="text-ink">rounded-3xl</code> — DirectionCard, PromoCard, sheet
+            <code className="text-ink">rounded-3xl</code> — DirectionCard, PromoCard, sheets
           </li>
           <li>
             <code className="text-ink">rounded-full</code> — Chip, RouteBadge
           </li>
           <li>
-            <code className="text-ink">rounded-xl</code> / <code className="text-ink">rounded-2xl</code> — reserved, пока не юзать
+            <code className="text-ink">rounded-xl</code> / <code className="text-ink">rounded-2xl</code>{' '}
+            — reserved, don’t use yet
           </li>
         </ul>
       </div>
@@ -260,10 +265,10 @@ function RadiusSection({ revision = 0 }) {
 
       <div className="space-y-3">
         <div>
-          <p className="text-sm font-medium text-ink">Usage in project</p>
+          <p className="text-sm font-medium text-ink">Where it’s used</p>
           <p className="text-xs text-ink/50 mt-0.5">
-            Карта из <code className="text-ink">RADIUS_USAGE</code> в{' '}
-            <code className="text-ink">tokens.js</code> — обновляй при миграциях.
+            From <code className="text-ink">RADIUS_USAGE</code> in{' '}
+            <code className="text-ink">tokens.js</code> — update that file when usage changes.
           </p>
         </div>
         <div className="rounded-lg bg-surface border border-ink/10 overflow-x-auto">
@@ -359,8 +364,9 @@ function CssPaletteSection({ revision }) {
       <div>
         <h2 className="text-lg font-medium text-ink">1 · CSS palette</h2>
         <p className="text-sm text-ink/70 mt-1">
-          Всё из <code className="text-ink">:root</code>. Меньше токенов — прозрачность через{' '}
-          <code className="text-ink">/70</code> и т.п.
+          Everything below comes from <code className="text-ink">:root</code>. We keep few color
+          tokens and use opacity for softer text (
+          <code className="text-ink">text-ink/70</code>, etc.).
         </p>
       </div>
 
@@ -445,7 +451,7 @@ function LiveSyncDemo({ onChange }) {
       <div>
         <h2 className="text-lg font-medium text-ink">Live sync</h2>
         <p className="text-sm text-ink/70 mt-1">
-          Меняешь CSS var → utility-классы обновляются сами.
+          Change a CSS variable — every class that uses it updates automatically.
         </p>
       </div>
 
@@ -474,7 +480,7 @@ function LiveSyncDemo({ onChange }) {
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="rounded-lg bg-surface-muted p-4 border border-ink/10">
             <p className="text-xs text-ink/50 mb-2 font-mono">bg-surface-muted</p>
-            <p className="text-ink">Страница / body фон</p>
+            <p className="text-ink">Page background</p>
           </div>
           <div className="flex flex-wrap gap-2 items-center rounded-lg bg-surface-muted p-4 border border-ink/10">
             <Chip>chip</Chip>
@@ -498,7 +504,8 @@ function ComponentsGallery() {
       <div>
         <h2 className="text-lg font-medium text-ink">4 · Components</h2>
         <p className="text-sm text-ink/70 mt-1">
-          Те же модули, что на экранах — <code className="text-ink">src/components/ui</code>.
+          Live UI from <code className="text-ink">src/components/ui</code>. Promo blocks are the
+          same modules used on Home and HomeScreen — not separate mocks.
         </p>
       </div>
 
@@ -528,15 +535,10 @@ function ComponentsGallery() {
         <EmptyState>{copy.fromLadozhskaya.empty}</EmptyState>
       </GalleryBlock>
 
-      <GalleryBlock name="PromoCard" hint="variant=accent|surface">
-        <div className="grid gap-3 sm:grid-cols-2">
-          <PromoCard
-            to="/homescreen"
-            title={copy.home.promoTitle}
-            subtitle={copy.home.promoSubtitle}
-            trailing={<ArrowRightIcon className="ml-2 h-5 w-5 flex-shrink-0 text-accent-ink/70" />}
-          />
-          <PromoCard variant="surface" href="#" title={copy.homescreen.iphone} />
+      <GalleryBlock name="PromoCard" hint="accent (Home) · muted (HomeScreen)">
+        <div className="space-y-3">
+          <AddToHomescreenPromo />
+          <HomescreenPlatformCards className="grid grid-cols-1 gap-3 sm:grid-cols-2" />
         </div>
       </GalleryBlock>
 
@@ -587,7 +589,8 @@ function ComponentsGallery() {
 
       <GalleryBlock name="PageShell" hint="maxWidth, bg, fullHeight — layout chrome">
         <p className="text-sm text-ink/70">
-          Используется на Home, About, Privacy, HomeScreen. Здесь не вложен во избежание двойного shell.
+          Shared layout for Home, About, Privacy, and HomeScreen. Not nested here to avoid a double
+          shell.
         </p>
       </GalleryBlock>
     </section>
@@ -612,33 +615,32 @@ function TypeTokensSection() {
       <div>
         <h2 className="text-lg font-medium text-ink">5 · Typography</h2>
         <p className="text-sm text-ink/70 mt-1">
-          Google Sans (400/500) + TW <code className="text-ink">text-*</code> /{' '}
-          <code className="text-ink">font-*</code>. Роли в{' '}
-          <code className="text-ink">TYPE_SCALE</code> / <code className="text-ink">TYPE_USAGE</code>.
-          Privacy legal-страница — отдельный кейс, сюда не входит.
+          Google Sans (400 / 500) via Tailwind size and weight classes. Roles are listed in{' '}
+          <code className="text-ink">TYPE_SCALE</code> and <code className="text-ink">TYPE_USAGE</code>.
+          The privacy legal page is a separate case and is not covered here.
         </p>
       </div>
 
       <div className="rounded-lg bg-surface p-4 border border-ink/10 space-y-3 text-sm text-ink/70">
-        <p className="font-medium text-ink">Как выбирать</p>
+        <p className="font-medium text-ink">When to use which</p>
         <ul className="list-disc list-inside space-y-1">
           <li>
-            <code className="text-ink">caption</code> — сноски, source
+            <code className="text-ink">caption</code> — footnotes, sources
           </li>
           <li>
-            <code className="text-ink">body-sm</code> — secondary UI;{' '}
-            <code className="text-ink">body</code> — primary / чипы
+            <code className="text-ink">body-sm</code> — secondary text;{' '}
+            <code className="text-ink">body</code> — primary text and chips
           </li>
           <li>
-            <code className="text-ink">label</code> — RouteBadge (единственный medium на compact)
+            <code className="text-ink">label</code> — RouteBadge (only medium weight on compact UI)
           </li>
           <li>
-            <code className="text-ink">title-sm</code> — sheet/modal;{' '}
-            <code className="text-ink">title</code> — экраны и карточки
+            <code className="text-ink">title-sm</code> — sheets and modals;{' '}
+            <code className="text-ink">title</code> — screens and cards
           </li>
           <li>
-            <code className="text-ink">display</code> — hero;{' '}
-            <code className="text-ink">countdown</code> — 40/40 (lh:1) в DirectionCard
+            <code className="text-ink">display</code> — hero headlines;{' '}
+            <code className="text-ink">countdown</code> — 40px departure time in DirectionCard
           </li>
         </ul>
       </div>
@@ -675,7 +677,7 @@ function TypeTokensSection() {
         <div className="grid gap-3 sm:grid-cols-3">
           {TYPE_INK.map((ink) => (
             <div key={ink.name} className="min-w-0">
-              <p className={ink.tw}>Аа · {ink.opacity}</p>
+              <p className={ink.tw}>Aa · {ink.opacity}</p>
               <p className="font-mono text-[11px] text-ink/50 mt-1">{ink.tw}</p>
               <p className="text-xs text-ink/50">{ink.role}</p>
             </div>
@@ -685,10 +687,10 @@ function TypeTokensSection() {
 
       <div className="space-y-3">
         <div>
-          <p className="text-sm font-medium text-ink">Usage in project</p>
+          <p className="text-sm font-medium text-ink">Where it’s used</p>
           <p className="text-xs text-ink/50 mt-0.5">
-            Карта из <code className="text-ink">TYPE_USAGE</code> в{' '}
-            <code className="text-ink">tokens.js</code> — обновляй при миграциях.
+            From <code className="text-ink">TYPE_USAGE</code> in{' '}
+            <code className="text-ink">tokens.js</code> — update that file when usage changes.
           </p>
         </div>
         <div className="rounded-lg bg-surface border border-ink/10 overflow-x-auto">
@@ -761,7 +763,8 @@ function DesignSystem() {
           <BackLink to="/" />
           <h1 className="text-2xl font-normal text-ink">Design tokens</h1>
           <p className="text-sm text-ink/70 max-w-xl">
-            Один нейтральный ряд, один акцентный hue, ink × opacity. Без сторонних палитр.
+            One neutral surface range, one accent hue, and ink with opacity. No third-party
+            palettes.
           </p>
         </header>
 
@@ -773,7 +776,7 @@ function DesignSystem() {
         <section id="tailwind" className={`space-y-2 ${SECTION_SCROLL}`}>
           <h2 className="text-lg font-medium text-ink">2 · Tailwind mapping</h2>
           <p className="text-sm text-ink/70">
-            Hex/channels правятся в <code className="text-ink">index.css</code>, не здесь.
+            Edit hex values in <code className="text-ink">index.css</code>, not in this page.
           </p>
         </section>
 
@@ -795,7 +798,8 @@ function DesignSystem() {
           <div>
             <h2 className="text-lg font-medium text-ink">3 · Route keys</h2>
             <p className="text-sm text-ink/70 mt-1">
-              Key → classes через <code className="text-ink">getRouteColor</code>.
+              Each route picks a color key. <code className="text-ink">getRouteColor</code> turns
+              that key into Tailwind classes.
             </p>
           </div>
 

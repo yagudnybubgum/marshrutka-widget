@@ -5,8 +5,9 @@ import { Drawer } from 'vaul'
 import Footer from './Footer'
 import { copy } from '../config/copy'
 import { useMediaQuery } from '../hooks/useMediaQuery'
-import { ArrowRightIcon, XMarkIcon } from './icons'
-import { BackLink, PageShell, PromoCard } from './ui'
+import { HomescreenPlatformCards } from './HomescreenPlatformCards'
+import { XMarkIcon } from './icons'
+import { BackLink, PageShell } from './ui'
 
 const SNAP_MEDIUM = 0.55
 const SNAP_LARGE = 0.92
@@ -42,26 +43,11 @@ function HomeScreenBody({ compact = false, onClose }) {
         </p>
       </div>
 
-      <div className={compact ? 'grid grid-cols-1 gap-3' : 'grid grid-cols-1 md:grid-cols-2 gap-3'}>
-        <PromoCard
-          variant="muted"
-          external
-          href="https://www.iphones.ru/iNotes/q/kak-v-ios-dobavit-yarlyk-lyubogo-sayta-na-rabochiy-stol"
-          title={copy.homescreen.iphone}
-          trailing={
-            <ArrowRightIcon className="ml-2 h-5 w-5 flex-shrink-0 text-ink/40" />
-          }
-        />
-        <PromoCard
-          variant="muted"
-          external
-          href="https://androidinsider.ru/polezno-znat/kak-dobavit-yarlyk-sajta-na-rabochij-stol-android-smartfona.html"
-          title={copy.homescreen.android}
-          trailing={
-            <ArrowRightIcon className="ml-2 h-5 w-5 flex-shrink-0 text-ink/40" />
-          }
-        />
-      </div>
+      <HomescreenPlatformCards
+        className={
+          compact ? 'grid grid-cols-1 gap-3' : 'grid grid-cols-1 md:grid-cols-2 gap-3'
+        }
+      />
     </div>
   )
 }

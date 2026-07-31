@@ -7,8 +7,8 @@ import { copy } from '../config/copy'
 import { hasRouteGeo } from '../utils/routesGeo'
 import { useNow } from '../context/TimeContext'
 import { getDayType as getDayTypeUtil } from '../utils/holidays'
-import { ArrowRightIcon } from './icons'
-import { Chip, ChipGroup, PageShell, PromoCard, TextLink } from './ui'
+import { AddToHomescreenPromo } from './AddToHomescreenPromo'
+import { Chip, ChipGroup, PageShell, TextLink } from './ui'
 
 const DEFAULT_TAB = '533'
 
@@ -95,13 +95,7 @@ function Home() {
           ) : (
             <FromLadozhskaya active />
           )}
-          <PromoCard
-            to="/homescreen"
-            className="md:max-w-[360px] md:mx-auto"
-            title={copy.home.promoTitle}
-            subtitle={copy.home.promoSubtitle}
-            trailing={<ArrowRightIcon className="ml-2 h-5 w-5 flex-shrink-0 text-accent-ink/70" />}
-          />
+          <AddToHomescreenPromo className="md:max-w-[360px] md:mx-auto" />
         </div>
       </PageShell>
       <Outlet />

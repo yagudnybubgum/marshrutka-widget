@@ -2,8 +2,7 @@ import { Link } from 'react-router-dom'
 
 const variants = {
   accent: 'hover-darken bg-accent-soft text-accent-ink p-4',
-  surface: 'hover-darken bg-surface p-6',
-  // On bg-surface (e.g. mobile sheet) — muted fill so cards don't disappear
+  // On bg-surface (e.g. HomeScreen sheet/page) — muted fill so cards don't disappear
   muted: 'hover-darken bg-surface-muted p-4',
 }
 
