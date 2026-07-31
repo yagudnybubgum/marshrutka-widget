@@ -1,6 +1,7 @@
 import { ArrowRightIcon, MapPinIcon, XMarkIcon } from '../icons'
 import { copy } from '../../config/copy'
 import { ROUTES } from '../../config/routes'
+import { getDayType } from '../../utils/holidays'
 import { getRouteGeo } from '../../utils/routesGeo'
 import StopLocationMap from '../StopLocationMap'
 
@@ -8,6 +9,10 @@ const CHIP_IDLE =
   'flex-shrink-0 px-4 py-2 text-base font-normal rounded-full bg-surface-chip text-ink/70'
 const CHIP_ACTIVE =
   'flex-shrink-0 px-4 py-2 text-base font-normal rounded-full bg-accent-soft text-accent-ink'
+
+function formatHeaderDate(date = new Date()) {
+  return `${date.getDate()} ${copy.monthsGenitive[date.getMonth()]}, ${getDayType(date).toLowerCase()}`
+}
 
 const LADOZHSKAYA_STOP =
   getRouteGeo('533')?.directions
@@ -25,7 +30,7 @@ const LADOZHSKAYA_STOP =
 export default function AnatomyHomeMock() {
   return (
     <div
-      className="pointer-events-none select-none bg-surface-muted flex flex-col px-2 pt-6 pb-6"
+      className="pointer-events-none select-none bg-surface-muted flex flex-col px-2 pt-[78px] pb-6"
       aria-hidden
     >
       <div data-block="header" className="flex flex-col items-start gap-y-1 px-4">
@@ -33,7 +38,7 @@ export default function AnatomyHomeMock() {
           {copy.home.title}
         </h1>
         <span data-block="date" className="text-sm font-normal text-ink leading-5">
-          19 июля, выходной
+          {formatHeaderDate()}
         </span>
       </div>
 
@@ -58,19 +63,19 @@ export default function AnatomyHomeMock() {
         <div data-block="card1">
           <DirectionCard
             name={copy.direction.fromYanino}
-            until="17 мин"
-            time="20:38"
-            following="20:57, 21:16, 21:35"
-            previous="2 мин"
+            until="6 мин"
+            time="17:09"
+            following="17:28, 17:47, 18:06"
+            previous="13 мин"
           />
         </div>
         <div data-block="card2">
           <DirectionCard
             name={copy.direction.fromLadozhskaya}
-            until="9 мин"
-            time="21:05"
-            following="21:24, 21:43, 22:02"
-            previous="4 мин"
+            until="17 мин"
+            time="17:20"
+            following="17:39, 17:58, 18:17"
+            previous="2 мин"
             stopNotice
           />
         </div>
@@ -96,7 +101,7 @@ export default function AnatomyHomeMock() {
 
       <div
         data-block="footer"
-        className="mt-8 flex flex-col items-center gap-4"
+        className="mt-6 flex flex-col items-center gap-4 pb-2"
       >
         <span className="text-xs text-ink/70 text-center">{copy.nav.about}</span>
         <span className="text-xs text-ink/70 text-center">{copy.nav.privacy}</span>

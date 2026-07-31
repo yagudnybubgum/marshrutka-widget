@@ -102,7 +102,7 @@
       position: relative;
       transform-origin: center center;
       width: 470px;
-      height: 980px;
+      height: 924px;
       overflow: visible;
     }
 
@@ -116,6 +116,7 @@
     /* Hidden until GSAP setup() — avoids flash of full UI before timeline. */
     [data-mock],
     [data-phone-chrome],
+    [data-status-bar],
     [data-offset] {
       opacity: 0;
     }
@@ -157,11 +158,11 @@
       left: 40px;
       top: 40px;
       width: 390px;
-      height: 900px;
+      height: 844px;
       overflow: hidden;
       border-radius: 48px;
       z-index: 1;
-      box-shadow: 0 0 0 10px #d3d8e0;
+      box-shadow: 0 0 0 10px transparent;
     }
 
     .phone-chrome {
@@ -172,7 +173,7 @@
     }
 
     html.theme-dark .phone {
-      box-shadow: 0 0 0 10px #d3d8e0;
+      box-shadow: 0 0 0 10px transparent;
     }
 
     .skeleton {
@@ -203,9 +204,44 @@
     .home {
       display: flex;
       flex-direction: column;
-      padding: 24px 8px 24px;
+      padding: 78px 8px 24px;
       background: var(--surface-muted);
       color: rgb(var(--ink));
+    }
+
+    .status-bar {
+      position: absolute;
+      inset-inline: 0;
+      top: 0;
+      z-index: 30;
+      display: flex;
+      align-items: flex-end;
+      height: 54px;
+      padding: 0 32px 8px;
+      color: rgb(var(--ink));
+      pointer-events: none;
+      overflow: visible;
+    }
+
+    .status-time {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .status-icons {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow: visible;
+    }
+
+    .status-icons svg {
+      display: block;
+      overflow: visible;
     }
 
     .header {
@@ -393,7 +429,8 @@
     }
 
     .footer {
-      margin-top: 32px;
+      margin-top: 24px;
+      padding-bottom: 8px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -541,7 +578,7 @@
             <div class="home">
               <div class="header" data-block="header">
                 <h1 class="title" data-block="title">Маршрутки Янино-1</h1>
-                <span class="date" data-block="date">19 июля, выходной</span>
+                <span class="date" data-block="date"></span>
               </div>
 
               <div class="chips-wrap" data-block="chips">
@@ -562,13 +599,13 @@
                       <div class="card-top">
                         <div>
                           <h3>Из Янино</h3>
-                          <p class="muted">через 17 мин</p>
+                          <p class="muted">через 6 мин</p>
                         </div>
-                        <p class="time">20:38</p>
+                        <p class="time">17:09</p>
                       </div>
                       <div class="meta-lines">
-                        <p class="meta-line">Следующие в 20:57, 21:16, 21:35</p>
-                        <p class="meta-line">Предыдущая ушла 2 мин назад</p>
+                        <p class="meta-line">Следующие в 17:28, 17:47, 18:06</p>
+                        <p class="meta-line">Предыдущая ушла 13 мин назад</p>
                       </div>
                     </div>
                   </div>
@@ -580,13 +617,13 @@
                       <div class="card-top">
                         <div>
                           <h3>С Ладожской</h3>
-                          <p class="muted">через 9 мин</p>
+                          <p class="muted">через 17 мин</p>
                         </div>
-                        <p class="time">21:05</p>
+                        <p class="time">17:20</p>
                       </div>
                       <div class="meta-lines">
-                        <p class="meta-line">Следующие в 21:24, 21:43, 22:02</p>
-                        <p class="meta-line">Предыдущая ушла 4 мин назад</p>
+                        <p class="meta-line">Следующие в 17:39, 17:58, 18:17</p>
+                        <p class="meta-line">Предыдущая ушла 2 мин назад</p>
                       </div>
                     </div>
                     <div class="alert" data-stop-notice>
@@ -624,6 +661,29 @@
             </div>
           </div>
 
+          <div class="status-bar" data-status-bar>
+            <span class="status-time">17:03</span>
+            <div class="status-icons">
+              <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor" aria-hidden="true">
+                <rect x="0" y="7.5" width="3" height="4.5" rx="0.6" />
+                <rect x="4.5" y="5" width="3" height="7" rx="0.6" />
+                <rect x="9" y="2.5" width="3" height="9.5" rx="0.6" />
+                <rect x="13.5" y="0.5" width="3" height="11.5" rx="0.6" />
+              </svg>
+              <svg width="17" height="12" viewBox="0 0 16 12" fill="none" aria-hidden="true">
+                <path d="M8 9.4a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2Z" fill="currentColor" />
+                <path d="M5.1 7.6a4.1 4.1 0 0 1 5.8 0" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" />
+                <path d="M3.1 5.5a6.9 6.9 0 0 1 9.8 0" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" />
+                <path d="M1.2 3.5a9.6 9.6 0 0 1 13.6 0" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" />
+              </svg>
+              <svg width="25" height="12" viewBox="0 0 25 12" fill="none" aria-hidden="true">
+                <rect x="0.6" y="0.6" width="21" height="10.8" rx="2.2" stroke="currentColor" stroke-width="1.2" opacity="0.4" />
+                <rect x="2.2" y="2.2" width="17" height="7.6" rx="1.2" fill="currentColor" />
+                <path d="M23 3.8v4.4c.9-.4 1.4-1 1.4-2.2S23.9 4.2 23 3.8Z" fill="currentColor" opacity="0.4" />
+              </svg>
+            </div>
+          </div>
+
           <div class="sheet-scrim" data-sheet-scrim></div>
           <div class="sheet" data-sheet>
             <div class="sheet-handle-wrap">
@@ -656,14 +716,30 @@
     (function () {
       const GUIDE = '#D1A7E2'
       const PHONE_W = 390
-      const PHONE_H_INIT = 900
+      const PHONE_H = 844
       const ART_PAD = 40
       const PAD = 16
       const INSET = 8
       const ART_W = PHONE_W + ART_PAD * 2
+      const ART_H = PHONE_H + ART_PAD * 2
 
       const BLOCKS = ['header', 'title', 'date', 'chips', 'card1', 'card2', 'links', 'promo']
       const GUIDE_BLOCKS = ['card1', 'card2', 'links', 'promo']
+
+      const MONTHS_GENITIVE = [
+        'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+        'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря',
+      ]
+
+      function formatHeaderDate(date) {
+        const day = date.getDay()
+        const isWeekend = day === 0 || day === 6
+        const dayType = isWeekend ? 'выходной' : 'будний'
+        return date.getDate() + ' ' + MONTHS_GENITIVE[date.getMonth()] + ', ' + dayType
+      }
+
+      const dateEl = document.querySelector('[data-block="date"]')
+      if (dateEl) dateEl.textContent = formatHeaderDate(new Date())
 
       const root = document.getElementById('root')
       const artboard = document.getElementById('artboard')
@@ -689,7 +765,7 @@
 
       var timeline = null
       var playRequested = false
-      var lastArtH = PHONE_H_INIT + ART_PAD * 2
+      var lastArtH = ART_H
       var guideXs = []
       var guideYs = []
 
@@ -748,7 +824,7 @@
       }
 
       function currentArtH() {
-        return artboard.offsetHeight || (PHONE_H_INIT + ART_PAD * 2)
+        return ART_H
       }
 
       function syncGuideDash(el) {
@@ -855,7 +931,7 @@
       }
 
       function relayoutGuides() {
-        const artH = artboard.offsetHeight || (PHONE_H_INIT + ART_PAD * 2)
+        const artH = ART_H
         fitScale(artH)
         if (guideXs.length && guideYs.length) drawGuides(artH, guideXs, guideYs)
         notifyParent(artH)
@@ -905,17 +981,15 @@
       }
 
       function setup() {
-        const mockInner = root.querySelector('[data-mock] > *')
-        const fittedH = Math.ceil((mockInner && mockInner.offsetHeight) || PHONE_H_INIT)
-        const artH = fittedH + ART_PAD * 2
+        const artH = ART_H
 
-        phone.style.height = fittedH + 'px'
+        phone.style.height = PHONE_H + 'px'
         artboard.style.height = artH + 'px'
         fitScale(artH)
         notifyParent(artH)
 
         const phoneTop = ART_PAD
-        const phoneBottom = ART_PAD + fittedH
+        const phoneBottom = ART_PAD + PHONE_H
         const measured = {}
 
         BLOCKS.forEach(function (id) {
@@ -1030,6 +1104,7 @@
         const bones = q('[data-bone]')
         const mock = q('[data-mock]')
         const phoneChrome = q('[data-phone-chrome]')
+        const statusBar = q('[data-status-bar]')
         const stopNotice = q('[data-stop-notice]')
         const sheetScrim = q('[data-sheet-scrim]')
         const sheet = q('[data-sheet]')
@@ -1047,13 +1122,14 @@
         gsap.set(bones, { opacity: 0, y: 8 })
         gsap.set(mock, { opacity: 0 })
         gsap.set(phoneChrome, { opacity: 0 })
+        gsap.set(statusBar, { opacity: 0 })
+        gsap.set(phone, { boxShadow: '0 0 0 10px transparent' })
         gsap.set(stopNotice, { scale: 1, transformOrigin: 'center' })
         gsap.set(sheetScrim, { opacity: 0 })
 
-        // Pixel y from phone height — avoids CSS transform / yPercent fights.
-        const sheetClosedY = phone.offsetHeight || fittedH
-        const sheetHalfY = sheetClosedY * 0.45 // ~55% visible (vaul SNAP_MEDIUM)
-        const sheetLargeY = sheetClosedY * 0.08 // ~92% visible (vaul SNAP_LARGE)
+        const sheetClosedY = PHONE_H
+        const sheetHalfY = sheetClosedY * 0.45
+        const sheetLargeY = sheetClosedY * 0.08
         gsap.set(sheet, { y: sheetClosedY, force3D: true })
 
         document.documentElement.classList.add('is-ready')
@@ -1089,6 +1165,12 @@
 
         tl.to(phoneChrome, { opacity: 1, duration: 0.5, ease: 'power2.out' }, '+=0.15')
         tl.to(mock, { opacity: 1, duration: 0.85, ease: 'power2.inOut' }, '-=0.25')
+        tl.to(statusBar, { opacity: 1, duration: 0.85, ease: 'power2.inOut' }, '<')
+        tl.to(phone, {
+          boxShadow: '0 0 0 10px #d3d8e0',
+          duration: 0.85,
+          ease: 'power2.inOut',
+        }, '<')
         tl.to([].concat(bones, offsets), { opacity: 0, duration: 0.55, ease: 'power2.inOut' }, '-=0.55')
         tl.to(lines, { opacity: 0.28, duration: 0.55, ease: 'power2.inOut' }, '<')
 
@@ -1133,12 +1215,17 @@
 
         tl.to({}, { duration: 0.45 })
 
-        tl.to([].concat(mock, phoneChrome, lines, offsets), {
+        tl.to([].concat(mock, phoneChrome, statusBar, lines, offsets), {
           opacity: 0,
           duration: 0.7,
           ease: 'power2.inOut',
           stagger: { each: 0.02, from: 'end' },
         })
+        tl.to(phone, {
+          boxShadow: '0 0 0 10px transparent',
+          duration: 0.7,
+          ease: 'power2.inOut',
+        }, '<')
 
         tl.set(lines, {
           strokeDashoffset: function (_i, el) {
@@ -1148,7 +1235,8 @@
         })
         tl.set(offsets, { scale: 0.6, opacity: 0 })
         tl.set(bones, { opacity: 0, y: 8 })
-        tl.set([].concat(mock, phoneChrome), { opacity: 0 })
+        tl.set([].concat(mock, phoneChrome, statusBar), { opacity: 0 })
+        tl.set(phone, { boxShadow: '0 0 0 10px transparent' })
         tl.set(stopNotice, { scale: 1 })
         tl.set(sheetScrim, { opacity: 0 })
         tl.set(sheet, { y: sheetClosedY })

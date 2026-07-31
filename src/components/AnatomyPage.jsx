@@ -1,15 +1,17 @@
 import { useLayoutEffect, useRef } from 'react'
 import gsap from 'gsap'
 import AnatomyHomeMock, { AnatomyStopSheet } from './anatomy/AnatomyHomeMock'
+import AnatomyStatusBar from './anatomy/AnatomyStatusBar'
 
 const GUIDE = '#D1A7E2'
+/** iPhone 14/15 logical points */
 const PHONE_W = 390
-/** Initial tall enough to measure; fitted to mock after fonts. */
-const PHONE_H_INIT = 900
+const PHONE_H = 844
 const ART_PAD = 40
 const PAD = 16
 const INSET = 8
 const ART_W = PHONE_W + ART_PAD * 2
+const ART_H = PHONE_H + ART_PAD * 2
 
 const BLOCKS = ['header', 'title', 'date', 'chips', 'card1', 'card2', 'links', 'promo']
 const GUIDE_BLOCKS = ['card1', 'card2', 'links', 'promo']
@@ -58,11 +60,9 @@ export default function AnatomyPage() {
     const setup = () => {
       if (cancelled) return
 
-      const mockInner = root.querySelector('[data-mock] > *')
-      const fittedH = Math.ceil(mockInner?.offsetHeight || PHONE_H_INIT)
-      const artH = fittedH + ART_PAD * 2
+      const artH = ART_H
 
-      phone.style.height = `${fittedH}px`
+      phone.style.height = `${PHONE_H}px`
       artboard.style.height = `${artH}px`
       artboard.style.transform = `scale(min(1, (100vw - 48px) / ${ART_W}, (100dvh - 48px) / ${artH}))`
       svg.setAttribute('viewBox', `0 0 ${ART_W} ${artH}`)
@@ -71,7 +71,7 @@ export default function AnatomyPage() {
       })
 
       const phoneTop = ART_PAD
-      const phoneBottom = ART_PAD + fittedH
+      const phoneBottom = ART_PAD + PHONE_H
       const measured = {}
 
       for (const id of BLOCKS) {
@@ -200,6 +200,7 @@ export default function AnatomyPage() {
       const bones = q('[data-bone]')
       const mock = q('[data-mock]')
       const phoneChrome = q('[data-phone-chrome]')
+      const statusBar = q('[data-status-bar]')
       const stopNotice = q('[data-stop-notice]')
       const sheetScrim = q('[data-sheet-scrim]')
       const sheet = q('[data-sheet]')
@@ -217,10 +218,12 @@ export default function AnatomyPage() {
       gsap.set(bones, { opacity: 0, y: 8 })
       gsap.set(mock, { opacity: 0 })
       gsap.set(phoneChrome, { opacity: 0 })
+      gsap.set(statusBar, { opacity: 0 })
+      gsap.set(phone, { boxShadow: '0 0 0 10px transparent' })
       gsap.set(stopNotice, { scale: 1, transformOrigin: 'center' })
       gsap.set(sheetScrim, { opacity: 0 })
 
-      const sheetClosedY = phone.offsetHeight || fittedH
+      const sheetClosedY = PHONE_H
       const sheetHalfY = sheetClosedY * 0.45
       const sheetLargeY = sheetClosedY * 0.08
       gsap.set(sheet, { y: sheetClosedY, force3D: true })
@@ -264,6 +267,12 @@ export default function AnatomyPage() {
 
       tl.to(phoneChrome, { opacity: 1, duration: 0.5, ease: 'power2.out' }, '+=0.15')
       tl.to(mock, { opacity: 1, duration: 0.85, ease: 'power2.inOut' }, '-=0.25')
+      tl.to(statusBar, { opacity: 1, duration: 0.85, ease: 'power2.inOut' }, '<')
+      tl.to(
+        phone,
+        { boxShadow: '0 0 0 10px #d3d8e0', duration: 0.85, ease: 'power2.inOut' },
+        '<',
+      )
       tl.to(
         [...bones, ...offsets],
         { opacity: 0, duration: 0.55, ease: 'power2.inOut' },
@@ -291,7 +300,7 @@ export default function AnatomyPage() {
       tl.to({}, { duration: 0.45 })
 
       tl.to(
-        [...mock, ...phoneChrome, ...lines, ...offsets],
+        [...mock, ...phoneChrome, ...statusBar, ...lines, ...offsets],
         {
           opacity: 0,
           duration: 0.7,
@@ -299,13 +308,19 @@ export default function AnatomyPage() {
           stagger: { each: 0.02, from: 'end' },
         },
       )
+      tl.to(
+        phone,
+        { boxShadow: '0 0 0 10px transparent', duration: 0.7, ease: 'power2.inOut' },
+        '<',
+      )
       tl.set(lines, {
         strokeDashoffset: (_i, el) => el.getTotalLength?.() ?? 0,
         opacity: 1,
       })
       tl.set(offsets, { scale: 0.6, opacity: 0 })
       tl.set(bones, { opacity: 0, y: 8 })
-      tl.set([mock, phoneChrome], { opacity: 0 })
+      tl.set([mock, phoneChrome, statusBar], { opacity: 0 })
+      tl.set(phone, { boxShadow: '0 0 0 10px transparent' })
       tl.set(stopNotice, { scale: 1 })
       tl.set(sheetScrim, { opacity: 0 })
       tl.set(sheet, { y: sheetClosedY })
@@ -324,7 +339,6 @@ export default function AnatomyPage() {
 
   const contentL = INSET + PAD
   const contentR = PHONE_W - INSET - PAD
-  const artHInit = PHONE_H_INIT + ART_PAD * 2
 
   return (
     <div
@@ -337,14 +351,14 @@ export default function AnatomyPage() {
           className="relative origin-center"
           style={{
             width: ART_W,
-            height: artHInit,
-            transform: `scale(min(1, (100vw - 48px) / ${ART_W}, (100dvh - 48px) / ${artHInit}))`,
+            height: ART_H,
+            transform: `scale(min(1, (100vw - 48px) / ${ART_W}, (100dvh - 48px) / ${ART_H}))`,
           }}
         >
           <svg
             ref={svgRef}
             className="pointer-events-none absolute inset-0 z-30 h-full w-full overflow-visible"
-            viewBox={`0 0 ${ART_W} ${artHInit}`}
+            viewBox={`0 0 ${ART_W} ${ART_H}`}
             fill="none"
             aria-hidden
           >
@@ -363,7 +377,7 @@ export default function AnatomyPage() {
                 x1={x}
                 y1={0}
                 x2={x}
-                y2={artHInit}
+                y2={ART_H}
                 stroke={GUIDE}
                 strokeWidth="1"
               />
@@ -381,8 +395,8 @@ export default function AnatomyPage() {
               left: ART_PAD,
               top: ART_PAD,
               width: PHONE_W,
-              height: PHONE_H_INIT,
-              boxShadow: '0 0 0 10px #d3d8e0',
+              height: PHONE_H,
+              boxShadow: '0 0 0 10px transparent',
             }}
           >
             <div
@@ -402,6 +416,7 @@ export default function AnatomyPage() {
               <AnatomyHomeMock />
             </div>
 
+            <AnatomyStatusBar />
             <AnatomyStopSheet />
           </div>
         </div>
