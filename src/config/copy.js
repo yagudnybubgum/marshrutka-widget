@@ -15,6 +15,7 @@ export const copy = {
   home: {
     title: 'Маршрутки Янино-1',
     tabFromLadozhskaya: 'С Ладожской',
+    tabNew: 'new',
     promoTitle: 'Расписание всегда под рукой',
     promoSubtitle: 'Добавьте его на главный экран',
   },
@@ -49,7 +50,10 @@ export const copy = {
     empty: 'Нет данных расписания',
     title: (routeNumber) => `Маршрутка ${routeNumber}`,
     sourceLabel: 'Источник расписания',
-    sourceUrlLabel: 'https://vk.com/doc546677069_685452050',
+    sourceUrl: 'https://vk.com/doc546677069_685452050',
+    sourceUrlByRoute: {
+      '605': 'https://vk.ru/wall-31461620_3727',
+    },
   },
 
   map: {
@@ -75,6 +79,7 @@ export const copy = {
     fromEksolovo: 'Из Ёксолово',
     fromDubrovka: 'Из Дубровки',
     fromMega: 'От "МЕГА Дыбенко"',
+    fromPavlovo: 'Из Павлово, ул. Быкова',
     fallback1: 'Направление 1',
     fallback2: 'Направление 2',
   },

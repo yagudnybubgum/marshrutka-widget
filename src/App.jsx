@@ -8,7 +8,7 @@ import About from './components/About'
 import DesignSystem from './components/DesignSystem'
 import AnatomyPage from './components/AnatomyPage'
 
-const LEGACY_FULL_ROUTES = ['533', '429', '664', '430A', '453']
+const LEGACY_FULL_ROUTES = ['533', '429', '664', '430A', '453', '605']
 
 function App() {
   return (

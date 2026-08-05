@@ -54,6 +54,13 @@ describe('formatDirectionName', () => {
     expect(formatDirectionName('МЕГА Дыбенко')).toBe('От "МЕГА Дыбенко"')
     expect(formatDirectionName('Янино-1')).toBe('Из Янино')
   })
+
+  it('formats route 605 directions', () => {
+    expect(formatDirectionName('Из Павлово, ул. Быкова')).toBe('Из Павлово, ул. Быкова')
+    expect(formatDirectionName('Павлово')).toBe('Из Павлово, ул. Быкова')
+    expect(formatDirectionName('ул. Быкова')).toBe('Из Павлово, ул. Быкова')
+    expect(formatDirectionName('От "МЕГА Дыбенко"')).toBe('От "МЕГА Дыбенко"')
+  })
 })
 
 describe('getScheduleWindow', () => {

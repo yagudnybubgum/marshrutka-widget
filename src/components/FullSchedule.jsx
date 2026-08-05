@@ -212,6 +212,9 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
     )
   }
 
+  const sourceUrl =
+    copy.fullSchedule.sourceUrlByRoute[routeNumber] ?? copy.fullSchedule.sourceUrl
+
   return (
     <div className="h-[100dvh] bg-surface-muted flex flex-col relative overflow-hidden">
       <div
@@ -306,12 +309,12 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
               <div className="flex flex-col items-center gap-2">
                 <p className="text-xs text-ink/70">{copy.fullSchedule.sourceLabel}</p>
                 <a
-                  href="https://vk.com/doc546677069_685452050?hash=DNg9ALCXkg2QX3cQxTPS3fy3eG1D449zfQ9zZtxAuvk"
+                  href={sourceUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs text-ink/70 hover:text-ink transition-colors"
                 >
-                  {copy.fullSchedule.sourceUrlLabel}
+                  {sourceUrl}
                 </a>
               </div>
             </div>

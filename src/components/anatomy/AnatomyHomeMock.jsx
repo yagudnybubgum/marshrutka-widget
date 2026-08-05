@@ -42,15 +42,20 @@ export default function AnatomyHomeMock() {
         </span>
       </div>
 
-      <div data-block="chips" className="mt-4 -mx-2 overflow-hidden">
-        <div className="flex w-max flex-nowrap gap-2 px-2 pb-1">
+      <div data-block="chips" className="mt-4 px-2">
+        <div className="flex flex-wrap gap-2">
           {ROUTES.map((route) => (
             <span
               key={route.id}
               data-chip
-              className={route.id === '533' ? CHIP_ACTIVE : CHIP_IDLE}
+              className={`${route.id === '533' ? CHIP_ACTIVE : CHIP_IDLE} relative inline-flex items-center`}
             >
               {route.name}
+              {route.isNew ? (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-full leading-none">
+                  {copy.home.tabNew}
+                </span>
+              ) : null}
             </span>
           ))}
           <span data-chip className={CHIP_IDLE}>

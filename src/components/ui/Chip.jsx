@@ -1,9 +1,10 @@
 const chipBase =
-  'flex-shrink-0 px-4 py-2 text-base font-normal rounded-full transition-colors'
+  'relative inline-flex items-center flex-shrink-0 px-4 py-2 text-base font-normal rounded-full transition-colors'
 
 export function Chip({
   active = false,
   variant = 'default',
+  badge,
   onClick,
   className = '',
   style,
@@ -26,6 +27,11 @@ export function Chip({
       {...rest}
     >
       {children}
+      {badge ? (
+        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-full leading-none">
+          {badge}
+        </span>
+      ) : null}
     </button>
   )
 }

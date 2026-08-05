@@ -59,12 +59,13 @@ function Home() {
           </span>
         </div>
 
-        <ChipGroup scroll>
+        <ChipGroup className="px-4 pt-1">
           {ROUTES.map((route, i) => (
             <Chip
               key={route.id}
               onClick={() => setActiveTab(route.id)}
               active={activeTab === route.id}
+              badge={route.isNew ? copy.home.tabNew : undefined}
               style={{ '--chip-i': i }}
               className="chip-enter"
             >

@@ -6,9 +6,10 @@ export const ROUTES = [
   { id: '664', name: '664', destination: 'МЕГА Дыбенко', color: 'gray' },
   { id: '430A', name: '430А', destination: 'Ёксолово', color: 'purple' },
   { id: '453', name: '453', destination: 'Дубровка', color: 'orange' },
+  { id: '605', name: '605', destination: 'ул. Быкова (Павлово)', color: 'gray', isNew: true },
 ]
 
-export const ROUTES_FROM_LADOZHSKAYA = ROUTES.filter((r) => r.id !== '664')
+export const ROUTES_FROM_LADOZHSKAYA = ROUTES.filter((r) => r.id !== '664' && r.id !== '605')
 
 export const getRoute = (id) => ROUTES.find((r) => r.id === id)
 

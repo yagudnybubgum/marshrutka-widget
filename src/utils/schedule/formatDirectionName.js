@@ -29,6 +29,10 @@ export function formatDirectionName(name) {
     return copy.direction.fromLadozhskaya
   }
 
+  if (nameStr.includes('Павлово') || nameStr.includes('Быкова')) {
+    return copy.direction.fromPavlovo
+  }
+
   if (nameStr.includes('МЕГА') || nameStr.includes('Дыбенко')) {
     return copy.direction.fromMega
   }
