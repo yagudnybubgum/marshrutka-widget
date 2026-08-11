@@ -1,5 +1,6 @@
 import { parseTime } from './parseTime.js'
 import { formatDirectionName } from './formatDirectionName.js'
+import { filterCancelledTimes } from './cancellations.js'
 import { isWeekendOrHoliday } from '../holidays.js'
 import { copy } from '../../config/copy.js'
 
@@ -89,11 +90,12 @@ export function processScheduleForWidget(data, date = new Date()) {
   }
 }
 
-export function processScheduleForFull(data) {
+export function processScheduleForFull(data, { routeId = null, date = new Date() } = {}) {
   if (!data || data.length < 2) return null
 
   const { hasPeriodInfo, periodRow, directionRow, bodyRows } = detectFormat(data)
   const columnMeta = buildColumnMeta(hasPeriodInfo, periodRow, directionRow)
+  const isWeekend = isWeekendOrHoliday(date)
 
   const buildColumns = () => {
     const columns = []
@@ -101,29 +103,45 @@ export function processScheduleForFull(data) {
     if (hasPeriodInfo) {
       const weekdayCols = columnMeta.filter((col) => col.type === 'weekday')
       weekdayCols.forEach((col) => {
+        const name = formatDirectionName(directionRow[col.idx] || '')
+        let times = extractTimesForColumn(bodyRows, col.idx)
+        if (!isWeekend) {
+          times = filterCancelledTimes(times, routeId, date, name)
+        }
         columns.push({
           period: copy.period.weekday,
-          name: formatDirectionName(directionRow[col.idx] || ''),
-          times: extractTimesForColumn(bodyRows, col.idx),
+          name,
+          times,
           colIdx: col.idx,
         })
       })
 
       const weekendCols = columnMeta.filter((col) => col.type === 'weekend')
       weekendCols.forEach((col) => {
+        const name = formatDirectionName(directionRow[col.idx] || '')
+        let times = extractTimesForColumn(bodyRows, col.idx)
+        if (isWeekend) {
+          times = filterCancelledTimes(times, routeId, date, name)
+        }
         columns.push({
           period: copy.period.weekend,
-          name: formatDirectionName(directionRow[col.idx] || ''),
-          times: extractTimesForColumn(bodyRows, col.idx),
+          name,
+          times,
           colIdx: col.idx,
         })
       })
     } else {
       columnMeta.forEach((col) => {
+        const name = formatDirectionName(directionRow[col.idx] || '')
         columns.push({
           period: copy.period.weekday,
-          name: formatDirectionName(directionRow[col.idx] || ''),
-          times: extractTimesForColumn(bodyRows, col.idx),
+          name,
+          times: filterCancelledTimes(
+            extractTimesForColumn(bodyRows, col.idx),
+            routeId,
+            date,
+            name,
+          ),
           colIdx: col.idx,
         })
       })
@@ -138,7 +156,7 @@ export function processScheduleForFull(data) {
   }
 }
 
-export function extractLadozhskayaDepartures(data, date = new Date()) {
+export function extractLadozhskayaDepartures(data, date = new Date(), routeId = null) {
   if (!data || data.length < 2) return []
 
   const isWeekend = isWeekendOrHoliday(date)
@@ -193,5 +211,10 @@ export function extractLadozhskayaDepartures(data, date = new Date()) {
     })
   })
 
-  return times.sort((a, b) => a - b)
+  return filterCancelledTimes(
+    times.sort((a, b) => a - b),
+    routeId,
+    date,
+    copy.direction.fromLadozhskaya,
+  )
 }

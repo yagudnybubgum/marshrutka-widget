@@ -49,7 +49,7 @@ const FromLadozhskaya = ({ active = false }) => {
 
     for (const { routeId, data } of rawSchedules) {
       const route = ROUTES_FROM_LADOZHSKAYA.find((r) => r.id === routeId)
-      const times = extractLadozhskayaDepartures(data, now)
+      const times = extractLadozhskayaDepartures(data, now, routeId)
       times.forEach((time) => {
         departures.push({
           routeId,

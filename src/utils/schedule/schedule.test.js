@@ -3,6 +3,7 @@ import { parseTime } from './parseTime.js'
 import { formatTime, formatTimeUntil } from './formatTime.js'
 import { formatDirectionName } from './formatDirectionName.js'
 import { getScheduleWindow } from './getScheduleWindow.js'
+import { getCancelledTimesToday, filterCancelledTimes } from './cancellations.js'
 import { isHoliday, isWeekendOrHoliday } from '../holidays.js'
 
 describe('parseTime', () => {
@@ -81,6 +82,38 @@ describe('getScheduleWindow', () => {
   it('handles empty times', () => {
     const result = getScheduleWindow([], 100)
     expect(result.nextTrip).toBeNull()
+  })
+
+  it('skips cancelled trips today', () => {
+    const cancelled = new Set([420])
+    const result = getScheduleWindow(times, 400, 3, cancelled)
+    expect(result.nextTrip.time).toBe(480)
+    expect(result.nextTrip.isTomorrow).toBe(false)
+  })
+
+  it('keeps cancelled clock times for tomorrow wrap', () => {
+    const cancelled = new Set([360])
+    const result = getScheduleWindow(times, 600, 3, cancelled)
+    expect(result.nextTrip.time).toBe(360)
+    expect(result.nextTrip.isTomorrow).toBe(true)
+  })
+})
+
+describe('cancellations', () => {
+  const day = new Date(2026, 7, 11)
+
+  it('hides 533 Yanino cancellations on 2026-08-11', () => {
+    const cancelled = getCancelledTimesToday('533', day, 'Из Янино')
+    expect(cancelled.has(parseTime('05:46'))).toBe(true)
+    expect(cancelled.has(parseTime('21:10'))).toBe(true)
+    expect(
+      filterCancelledTimes([parseTime('05:46'), parseTime('05:54')], '533', day, 'Из Янино'),
+    ).toEqual([parseTime('05:54')])
+  })
+
+  it('does not apply on other dates', () => {
+    const cancelled = getCancelledTimesToday('533', new Date(2026, 7, 12), 'Из Янино')
+    expect(cancelled.size).toBe(0)
   })
 })
 

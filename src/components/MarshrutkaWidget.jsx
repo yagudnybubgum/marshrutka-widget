@@ -5,6 +5,7 @@ import { loadScheduleRaw, peekScheduleRaw } from '../utils/schedule/loadSchedule
 import { processScheduleForWidget } from '../utils/schedule/processSchedule'
 import { formatTime, formatTimeUntil, getCurrentTimeInMinutes } from '../utils/schedule/formatTime'
 import { getScheduleWindow } from '../utils/schedule/getScheduleWindow'
+import { getCancelledTimesToday } from '../utils/schedule/cancellations'
 import { getRouteGeo } from '../utils/routesGeo'
 import StopLocationOverlay from './StopLocationOverlay'
 import { MapPinIcon } from './icons'
@@ -200,8 +201,19 @@ const MarshrutkaWidget = ({ routeNumber = '533', onScheduleChange }) => {
 
   const currentTime = useMemo(() => getCurrentTimeInMinutes(now), [now])
 
-  const windowDir1 = schedule ? getScheduleWindow(schedule.direction1, currentTime) : { nextTrip: null, followingTrips: [], previousTrip: null }
-  const windowDir2 = schedule ? getScheduleWindow(schedule.direction2, currentTime) : { nextTrip: null, followingTrips: [], previousTrip: null }
+  const cancelledDir1 = schedule
+    ? getCancelledTimesToday(routeNumber, now, schedule.direction1Name)
+    : null
+  const cancelledDir2 = schedule
+    ? getCancelledTimesToday(routeNumber, now, schedule.direction2Name)
+    : null
+
+  const windowDir1 = schedule
+    ? getScheduleWindow(schedule.direction1, currentTime, 3, cancelledDir1)
+    : { nextTrip: null, followingTrips: [], previousTrip: null }
+  const windowDir2 = schedule
+    ? getScheduleWindow(schedule.direction2, currentTime, 3, cancelledDir2)
+    : { nextTrip: null, followingTrips: [], previousTrip: null }
 
   return (
     <div className="w-full">

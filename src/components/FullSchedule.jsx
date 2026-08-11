@@ -13,7 +13,7 @@ const HEADER_DELTA = 12
 const HEADER_BOTTOM_GUARD = 50
 
 const FullSchedule = ({ routeNumber = '533', onBack }) => {
-  const [scheduleData, setScheduleData] = useState(null)
+  const [rawData, setRawData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [headerVisible, setHeaderVisible] = useState(true)
@@ -50,18 +50,14 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
       setError(null)
 
       try {
-        const rawData = await loadScheduleRaw(routeNumber)
+        const data = await loadScheduleRaw(routeNumber)
         if (cancelled) return
 
-        const processedData = processScheduleForFull(rawData)
-        if (!processedData) {
-          throw new Error(copy.errors.scheduleProcessGeneric)
-        }
-
-        setScheduleData(processedData)
+        setRawData(data)
         setLoading(false)
       } catch {
         if (cancelled) return
+        setRawData(null)
         setError(copy.errors.scheduleFile)
         setLoading(false)
       }
@@ -73,6 +69,14 @@ const FullSchedule = ({ routeNumber = '533', onBack }) => {
       cancelled = true
     }
   }, [routeNumber])
+
+  const scheduleData = useMemo(() => {
+    if (!rawData) return null
+    return processScheduleForFull(rawData, {
+      routeId: routeNumber,
+      date: now,
+    })
+  }, [rawData, routeNumber, now])
 
   useEffect(() => {
     if (!scheduleData) return
