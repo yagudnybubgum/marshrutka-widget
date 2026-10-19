@@ -90,7 +90,7 @@ export function processScheduleForWidget(data, date = new Date()) {
   }
 }
 
-export function processScheduleForFull(data, { routeId = null, date = new Date() } = {}) {
+export function processScheduleForFull(data, { routeId = null, date = new Date(), applyCancellations = true } = {}) {
   if (!data || data.length < 2) return null
 
   const { hasPeriodInfo, periodRow, directionRow, bodyRows } = detectFormat(data)
@@ -105,7 +105,7 @@ export function processScheduleForFull(data, { routeId = null, date = new Date()
       weekdayCols.forEach((col) => {
         const name = formatDirectionName(directionRow[col.idx] || '')
         let times = extractTimesForColumn(bodyRows, col.idx)
-        if (!isWeekend) {
+        if (applyCancellations && !isWeekend) {
           times = filterCancelledTimes(times, routeId, date, name)
         }
         columns.push({
@@ -120,7 +120,7 @@ export function processScheduleForFull(data, { routeId = null, date = new Date()
       weekendCols.forEach((col) => {
         const name = formatDirectionName(directionRow[col.idx] || '')
         let times = extractTimesForColumn(bodyRows, col.idx)
-        if (isWeekend) {
+        if (applyCancellations && isWeekend) {
           times = filterCancelledTimes(times, routeId, date, name)
         }
         columns.push({
@@ -133,15 +133,13 @@ export function processScheduleForFull(data, { routeId = null, date = new Date()
     } else {
       columnMeta.forEach((col) => {
         const name = formatDirectionName(directionRow[col.idx] || '')
+        const times = extractTimesForColumn(bodyRows, col.idx)
         columns.push({
           period: copy.period.weekday,
           name,
-          times: filterCancelledTimes(
-            extractTimesForColumn(bodyRows, col.idx),
-            routeId,
-            date,
-            name,
-          ),
+          times: applyCancellations
+            ? filterCancelledTimes(times, routeId, date, name)
+            : times,
           colIdx: col.idx,
         })
       })
