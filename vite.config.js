@@ -3,8 +3,7 @@ import { fileURLToPath } from 'url'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
-import { injectHomeIndex, renderHomeIndex } from './src/seo/render.js'
-import { buildDocuments, writeSeoFiles } from './scripts/seo-data.mjs'
+import { writeSeoFiles } from './scripts/seo-data.mjs'
 
 const publicDir = path.join(path.dirname(fileURLToPath(import.meta.url)), 'public')
 
@@ -17,10 +16,6 @@ function seoHomePlugin() {
     },
     configureServer() {
       writeSeoFiles(publicDir)
-    },
-    transformIndexHtml(html) {
-      const { homeEntries } = buildDocuments(publicDir)
-      return injectHomeIndex(html, renderHomeIndex(homeEntries))
     },
   }
 }
